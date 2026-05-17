@@ -31,7 +31,7 @@
             panelTop = new Panel();
             lblFecha = new Label();
             label2 = new Label();
-            btnSalir = new Button();
+            btnLogout = new Button();
             label1 = new Label();
             statusStrip1 = new StatusStrip();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
@@ -57,7 +57,7 @@
             // 
             panelTop.Controls.Add(lblFecha);
             panelTop.Controls.Add(label2);
-            panelTop.Controls.Add(btnSalir);
+            panelTop.Controls.Add(btnLogout);
             panelTop.Controls.Add(label1);
             panelTop.Dock = DockStyle.Top;
             panelTop.Location = new Point(0, 0);
@@ -84,15 +84,15 @@
             label2.TabIndex = 2;
             label2.Text = "Fecha:";
             // 
-            // btnSalir
+            // btnLogout
             // 
-            btnSalir.Location = new Point(852, 24);
-            btnSalir.Name = "btnSalir";
-            btnSalir.Size = new Size(75, 29);
-            btnSalir.TabIndex = 1;
-            btnSalir.Text = "Salir";
-            btnSalir.UseVisualStyleBackColor = true;
-            btnSalir.Click += btnSalir_Click;
+            btnLogout.Location = new Point(852, 24);
+            btnLogout.Name = "btnLogout";
+            btnLogout.Size = new Size(75, 29);
+            btnLogout.TabIndex = 1;
+            btnLogout.Text = "Logout";
+            btnLogout.UseVisualStyleBackColor = true;
+            btnLogout.Click += btnSalir_Click;
             // 
             // label1
             // 
@@ -260,7 +260,7 @@
         private Label label1;
         private Label lblFecha;
         private Label label2;
-        private Button btnSalir;
+        private Button btnLogout;
         private StatusStrip statusStrip1;
         private ToolStripStatusLabel toolStripStatusLabel1;
         private ToolStripStatusLabel lblUsuario;

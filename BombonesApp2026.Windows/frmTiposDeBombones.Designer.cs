@@ -1,6 +1,6 @@
 ﻿namespace BombonesApp2026.Windows
 {
-    partial class frmRoles
+    partial class frmTiposDeBombones
     {
         /// <summary>
         /// Required designer variable.
@@ -42,13 +42,12 @@
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvRoles = new DataGridView();
-            colId = new DataGridViewTextBoxColumn();
-            colRol = new DataGridViewTextBoxColumn();
-            colActivo = new DataGridViewCheckBoxColumn();
             lblCantidad = new Label();
             label1 = new Label();
-            tsbDetalles = new ToolStripButton();
-            toolStripSeparator3 = new ToolStripSeparator();
+            colId = new DataGridViewTextBoxColumn();
+            colNombre = new DataGridViewTextBoxColumn();
+            colDescripcion = new DataGridViewTextBoxColumn();
+            colActivo = new DataGridViewCheckBoxColumn();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -59,7 +58,7 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbDetalles, toolStripSeparator3, tsbFiltrar, tsbActualizar, toolStripSeparator2, tsbCerrar });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbFiltrar, tsbActualizar, toolStripSeparator2, tsbCerrar });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(800, 70);
@@ -75,7 +74,6 @@
             tsbNuevo.Size = new Size(52, 67);
             tsbNuevo.Text = "&Nuevo";
             tsbNuevo.TextImageRelation = TextImageRelation.ImageAboveText;
-            tsbNuevo.Click += tsbNuevo_Click;
             // 
             // tsbBorrar
             // 
@@ -86,7 +84,6 @@
             tsbBorrar.Size = new Size(52, 67);
             tsbBorrar.Text = "&Borrar";
             tsbBorrar.TextImageRelation = TextImageRelation.ImageAboveText;
-            tsbBorrar.Click += tsbBorrar_Click;
             // 
             // tsbEditar
             // 
@@ -97,7 +94,6 @@
             tsbEditar.Size = new Size(52, 67);
             tsbEditar.Text = "&Editar";
             tsbEditar.TextImageRelation = TextImageRelation.ImageAboveText;
-            tsbEditar.Click += tsbEditar_Click;
             // 
             // toolStripSeparator1
             // 
@@ -120,14 +116,12 @@
             activosToolStripMenuItem.Name = "activosToolStripMenuItem";
             activosToolStripMenuItem.Size = new Size(132, 22);
             activosToolStripMenuItem.Text = "Activos";
-            activosToolStripMenuItem.Click += activosToolStripMenuItem_Click;
             // 
             // noActivosToolStripMenuItem
             // 
             noActivosToolStripMenuItem.Name = "noActivosToolStripMenuItem";
             noActivosToolStripMenuItem.Size = new Size(132, 22);
             noActivosToolStripMenuItem.Text = "No Activos";
-            noActivosToolStripMenuItem.Click += noActivosToolStripMenuItem_Click;
             // 
             // tsbActualizar
             // 
@@ -138,7 +132,6 @@
             tsbActualizar.Size = new Size(63, 67);
             tsbActualizar.Text = "&Actualizar";
             tsbActualizar.TextImageRelation = TextImageRelation.ImageAboveText;
-            tsbActualizar.Click += tsbActualizar_Click;
             // 
             // toolStripSeparator2
             // 
@@ -154,7 +147,6 @@
             tsbCerrar.Size = new Size(52, 67);
             tsbCerrar.Text = "&Cerrar";
             tsbCerrar.TextImageRelation = TextImageRelation.ImageAboveText;
-            tsbCerrar.Click += tsbCerrar_Click;
             // 
             // splitContainer1
             // 
@@ -182,7 +174,7 @@
             dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
             dgvRoles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvRoles.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvRoles.Columns.AddRange(new DataGridViewColumn[] { colId, colRol, colActivo });
+            dgvRoles.Columns.AddRange(new DataGridViewColumn[] { colId, colNombre, colDescripcion, colActivo });
             dgvRoles.Dock = DockStyle.Fill;
             dgvRoles.Location = new Point(0, 0);
             dgvRoles.MultiSelect = false;
@@ -191,26 +183,6 @@
             dgvRoles.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvRoles.Size = new Size(800, 321);
             dgvRoles.TabIndex = 0;
-            // 
-            // colId
-            // 
-            colId.HeaderText = "Id";
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            colId.Visible = false;
-            // 
-            // colRol
-            // 
-            colRol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colRol.HeaderText = "Rol";
-            colRol.Name = "colRol";
-            colRol.ReadOnly = true;
-            // 
-            // colActivo
-            // 
-            colActivo.HeaderText = "Activo";
-            colActivo.Name = "colActivo";
-            colActivo.ReadOnly = true;
             // 
             // lblCantidad
             // 
@@ -231,32 +203,43 @@
             label1.TabIndex = 0;
             label1.Text = "Cantidad:";
             // 
-            // tsbDetalles
+            // colId
             // 
-            tsbDetalles.Image = Properties.Resources.details_48px;
-            tsbDetalles.ImageScaling = ToolStripItemImageScaling.None;
-            tsbDetalles.ImageTransparentColor = Color.Magenta;
-            tsbDetalles.Name = "tsbDetalles";
-            tsbDetalles.Size = new Size(52, 67);
-            tsbDetalles.Text = "Detalles";
-            tsbDetalles.TextImageRelation = TextImageRelation.ImageAboveText;
+            colId.HeaderText = "Id";
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            colId.Visible = false;
             // 
-            // toolStripSeparator3
+            // colNombre
             // 
-            toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new Size(6, 70);
+            colNombre.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colNombre.HeaderText = "Tipo de Bombón";
+            colNombre.Name = "colNombre";
+            colNombre.ReadOnly = true;
             // 
-            // frmRoles
+            // colDescripcion
+            // 
+            colDescripcion.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colDescripcion.HeaderText = "Descripción";
+            colDescripcion.Name = "colDescripcion";
+            colDescripcion.ReadOnly = true;
+            // 
+            // colActivo
+            // 
+            colActivo.HeaderText = "Activo";
+            colActivo.Name = "colActivo";
+            colActivo.ReadOnly = true;
+            // 
+            // frmTiposDeBombones
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer1);
             Controls.Add(toolStrip1);
-            Name = "frmRoles";
+            Name = "frmTiposDeBombones";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "frmRoles";
-            Load += frmRoles_Load;
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
@@ -283,13 +266,12 @@
         private DataGridView dgvRoles;
         private Label lblCantidad;
         private Label label1;
-        private DataGridViewTextBoxColumn colId;
-        private DataGridViewTextBoxColumn colRol;
-        private DataGridViewCheckBoxColumn colActivo;
         private ToolStripDropDownButton tsbFiltrar;
         private ToolStripMenuItem activosToolStripMenuItem;
         private ToolStripMenuItem noActivosToolStripMenuItem;
-        private ToolStripButton tsbDetalles;
-        private ToolStripSeparator toolStripSeparator3;
+        private DataGridViewTextBoxColumn colId;
+        private DataGridViewTextBoxColumn colNombre;
+        private DataGridViewTextBoxColumn colDescripcion;
+        private DataGridViewCheckBoxColumn colActivo;
     }
 }
