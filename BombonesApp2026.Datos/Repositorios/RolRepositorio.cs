@@ -1,10 +1,10 @@
 ﻿using BombonesApp2026.Entidades;
-using Microsoft.EntityFrameworkCore;
 
 namespace BombonesApp2026.Datos.Repositorios
 {
     public class RolRepositorio
     {
+        //TODO: Ojo explicar el no seguiento en las consultas
         public List<Rol> ObtenerTodos()
         {
             using (var context = new BombonesDbContext())
@@ -54,7 +54,7 @@ namespace BombonesApp2026.Datos.Repositorios
         }
         public Rol? ObtenerPorId(int id)
         {
-            using (var context=new BombonesDbContext())
+            using (var context = new BombonesDbContext())
             {
                 return context.Roles
                     .FirstOrDefault(r => r.RolId == id);
@@ -63,16 +63,16 @@ namespace BombonesApp2026.Datos.Repositorios
 
         public bool ExisteRol(Rol rol)
         {
-            using (var context=new BombonesDbContext())
+            using (var context = new BombonesDbContext())
             {
-                if (rol.RolId==0)
+                if (rol.RolId == 0)
                 {
                     return context.Roles.Any(r => r.Nombre == rol.Nombre);
                 }
                 else
                 {
-                    return context.Roles.Any(r=>r.Nombre==rol.Nombre &&
-                            r.RolId!=rol.RolId);
+                    return context.Roles.Any(r => r.Nombre == rol.Nombre &&
+                            r.RolId != rol.RolId);
                 }
             }
         }

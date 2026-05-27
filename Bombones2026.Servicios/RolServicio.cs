@@ -4,7 +4,6 @@ using BombonesApp2026.Entidades;
 
 namespace Bombones2026.Servicios
 {
-    //TODO: ajustar las excepciones
     public class RolServicio
     {
         private readonly RolRepositorio _rolRepositorio;
@@ -26,23 +25,32 @@ namespace Bombones2026.Servicios
         public void Agregar(RolCreateDto? rolDto)
         {
             if (rolDto == null)
-                throw new ArgumentNullException("El rol no puede ser nulo");
-            if (string.IsNullOrEmpty(rolDto.Nombre))
-                throw new ArgumentException("El nombre del rol es requerido");
+                throw new ArgumentNullException(nameof(rolDto),"El rol no puede ser nulo");
+            if (string.IsNullOrWhiteSpace(rolDto.Nombre))
+                throw new ArgumentException(nameof(rolDto.Nombre),"El nombre del rol es requerido");
             Rol rol = new Rol
             {
                 Nombre = rolDto.Nombre,
                 Descripcion = rolDto.Descripcion,
                 Activo = true//Nuevo roles son activos por defecto
             };
-            if (_rolRepositorio.ExisteRol(rol)) throw new ArgumentException("Rol duplicado");
+            if (_rolRepositorio.ExisteRol(rol)) throw new InvalidOperationException($"Ya existe un rol {rol.Nombre}");
             _rolRepositorio.Agregar(rol);
         }
         public void Borrar(int rolId)
         {
+            if (rolId<=0)
+            {
+                throw new ArgumentException(nameof(rolId), "El id debe ser positivo");
+            }
+            var rolEnDb=_rolRepositorio.ObtenerPorId(rolId);
+            if (rolEnDb is null)
+            {
+                throw new KeyNotFoundException($"No existe rol con Id {rolId}");
+            }
             if (_rolRepositorio.TieneRegistrosRelacionados(rolId))
             {
-                throw new Exception("Rol con registros relacionados");
+                throw new InvalidOperationException("Rol con registros relacionados");
             }
             _rolRepositorio.Borrar(rolId);
         }
@@ -50,9 +58,9 @@ namespace Bombones2026.Servicios
         public void Editar(RolEditDto? rolDto)
         {
             if (rolDto == null)
-                throw new ArgumentNullException("El rol no puede ser nulo");
-            if (string.IsNullOrEmpty(rolDto.Nombre))
-                throw new ArgumentException("El nombre del rol es requerido");
+                throw new ArgumentNullException(nameof(rolDto),"El rol no puede ser nulo");
+            if (string.IsNullOrWhiteSpace(rolDto.Nombre))
+                throw new ArgumentException(nameof(rolDto.Nombre),"El nombre del rol es requerido");
             Rol rol = new Rol
             {
                 RolId = rolDto.RolId,
@@ -60,13 +68,18 @@ namespace Bombones2026.Servicios
                 Descripcion = rolDto.Descripcion,
                 Activo = rolDto.Activo
             };
-            if (_rolRepositorio.ExisteRol(rol)) throw new ArgumentException("Rol duplicado");
+            if (_rolRepositorio.ExisteRol(rol)) throw new InvalidOperationException($"Ya existe un rol {rol.Nombre}");
             _rolRepositorio.Editar(rol);
         }
         public RolEditDto GetForUpdate(int id)
         {
+            if (id <= 0)
+            {
+                throw new ArgumentException(nameof(id), "El id debe ser positivo");
+            }
+
             Rol? rol = _rolRepositorio.ObtenerPorId(id);
-            if (rol is null) throw new ArgumentException($"Id {id} no encontrado");
+            if (rol is null) throw new KeyNotFoundException($"Id {id} no encontrado");
             RolEditDto rolDto = new RolEditDto
             {
                 RolId = rol.RolId,
