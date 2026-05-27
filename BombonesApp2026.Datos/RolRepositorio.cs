@@ -10,7 +10,7 @@ namespace BombonesApp2026.Datos
         {
             _cadenaConexion = "Data Source=.; Initial Catalog=Bombones2026; Integrated Security=True;TrustServerCertificate=True";
         }
-        public List<Rol> GetLista()
+        public List<Rol> ObtenerTodos()
         {
             List<Rol> lista = new List<Rol>();
             using (SqlConnection conn=new SqlConnection(_cadenaConexion) )
@@ -155,7 +155,7 @@ namespace BombonesApp2026.Datos
                 throw new Exception("Error al intentar editar un registro",ex);
             } 
         }
-        public Rol? GetById(int id)
+        public Rol? ObtenerPorId(int id)
         {
             using (SqlConnection conn =new SqlConnection(_cadenaConexion))
             {

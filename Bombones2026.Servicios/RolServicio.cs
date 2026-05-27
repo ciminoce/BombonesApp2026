@@ -1,7 +1,6 @@
 ﻿using Bombones2026.Servicios.DTOs.Rol;
 using BombonesApp2026.Datos;
 using BombonesApp2026.Entidades;
-using System.Diagnostics.Contracts;
 
 namespace Bombones2026.Servicios
 {
@@ -15,7 +14,7 @@ namespace Bombones2026.Servicios
 
         public List<RolListDto> GetLista()
         {
-            return _rolRepositorio.GetLista()
+            return _rolRepositorio.ObtenerTodos()
                 .Select(r => new RolListDto
                 {
                     RolId = r.RolId,
@@ -55,7 +54,7 @@ namespace Bombones2026.Servicios
                 throw new ArgumentException("El nombre del rol es requerido");
             Rol rol = new Rol
             {
-                RolId=rolDto.RolId,
+                RolId = rolDto.RolId,
                 Nombre = rolDto.Nombre,
                 Descripcion = rolDto.Descripcion,
                 Activo = rolDto.Activo
@@ -65,7 +64,7 @@ namespace Bombones2026.Servicios
         }
         public RolEditDto GetForUpdate(int id)
         {
-            Rol? rol = _rolRepositorio.GetById(id);
+            Rol? rol = _rolRepositorio.ObtenerPorId(id);
             if (rol is null) throw new ArgumentException($"Id {id} no encontrado");
             RolEditDto rolDto = new RolEditDto
             {
