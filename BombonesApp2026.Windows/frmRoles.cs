@@ -88,8 +88,8 @@ namespace BombonesApp2026.Windows
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message,
-                                            "Error", MessageBoxButtons.OK,
-                                            MessageBoxIcon.Error);
+                                "Error", MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
                 }
             }
         }
@@ -157,10 +157,10 @@ namespace BombonesApp2026.Windows
                     _rolServicio.Editar(rolEditDto);
                     listaRoles = _rolServicio.GetLista();
                     MostrarDatosEnGrilla(listaRoles);
-                    MessageBox.Show("Rol agregado",
-    "Mensaje",
-    MessageBoxButtons.OK,
-    MessageBoxIcon.Information);
+                    MessageBox.Show("Rol editado",
+                        "Mensaje",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
 
                 }
                 catch (Exception ex)
