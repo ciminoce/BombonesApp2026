@@ -1,9 +1,10 @@
 ﻿using Bombones2026.Servicios.DTOs.Rol;
-using BombonesApp2026.Datos;
+using BombonesApp2026.Datos.Repositorios;
 using BombonesApp2026.Entidades;
 
 namespace Bombones2026.Servicios
 {
+    //TODO: ajustar las excepciones
     public class RolServicio
     {
         private readonly RolRepositorio _rolRepositorio;
