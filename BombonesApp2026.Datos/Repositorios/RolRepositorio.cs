@@ -6,7 +6,6 @@ namespace BombonesApp2026.Datos.Repositorios
 {
     public class RolRepositorio
     {
-        //TODO: Ojo explicar el no seguiento en las consultas
         public List<Rol> ObtenerTodos()
         {
             using (var context = new BombonesDbContext())
