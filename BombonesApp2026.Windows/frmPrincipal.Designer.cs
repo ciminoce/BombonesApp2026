@@ -184,6 +184,7 @@
             btnTiposBombones.TabIndex = 0;
             btnTiposBombones.Text = "Tipos de Bombones";
             btnTiposBombones.UseVisualStyleBackColor = true;
+            btnTiposBombones.Click += btnTiposBombones_Click;
             // 
             // btnUsuarios
             // 

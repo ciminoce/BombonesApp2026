@@ -1,5 +1,5 @@
-﻿using Bombones2026.Servicios;
-using Bombones2026.Servicios.DTOs.Rol;
+﻿using Bombones2026.Servicios.DTOs.Rol;
+using Bombones2026.Servicios.Servicios;
 
 namespace BombonesApp2026.Windows
 {
@@ -26,12 +26,12 @@ namespace BombonesApp2026.Windows
 
         private void MostrarDatosEnGrilla(List<RolListDto> listaRoles)
         {
-            LimpiarGrilla(dgvRoles);
+            LimpiarGrilla(dgvDatos);
             foreach (var rol in listaRoles)
             {
-                DataGridViewRow r = ConstruirFila(dgvRoles);
+                DataGridViewRow r = ConstruirFila(dgvDatos);
                 SetearFila(r, rol);
-                AgregarFila(r, dgvRoles);
+                AgregarFila(r, dgvDatos);
             }
             lblCantidad.Text = listaRoles.Count.ToString();
         }
@@ -96,7 +96,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbBorrar_Click(object sender, EventArgs e)
         {
-            if (dgvRoles.SelectedRows.Count == 0)
+            if (dgvDatos.SelectedRows.Count == 0)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -104,7 +104,7 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvRoles.SelectedRows[0];
+            var r = dgvDatos.SelectedRows[0];
             RolListDto rolDto = (RolListDto)r.Tag!;
             DialogResult dr = MessageBox.Show($"¿Desea borrar el rol {rolDto.Nombre}?",
                 "Confirmar",
@@ -134,7 +134,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbEditar_Click(object sender, EventArgs e)
         {
-            if (dgvRoles.SelectedRows.Count == 0)
+            if (dgvDatos.SelectedRows.Count == 0)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -142,7 +142,7 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvRoles.SelectedRows[0];
+            var r = dgvDatos.SelectedRows[0];
             RolListDto rolDto = (RolListDto)r.Tag!;
             RolEditDto? rolEditDto = _rolServicio.GetForUpdate(rolDto.RolId);
             if (rolEditDto is null) return;

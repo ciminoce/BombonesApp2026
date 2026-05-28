@@ -28,12 +28,14 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
+            tsbDetalles = new ToolStripButton();
+            toolStripSeparator3 = new ToolStripSeparator();
             tsbFiltrar = new ToolStripDropDownButton();
             activosToolStripMenuItem = new ToolStripMenuItem();
             noActivosToolStripMenuItem = new ToolStripMenuItem();
@@ -41,20 +43,18 @@
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
-            dgvRoles = new DataGridView();
+            dgvDatos = new DataGridView();
             colId = new DataGridViewTextBoxColumn();
             colRol = new DataGridViewTextBoxColumn();
             colActivo = new DataGridViewCheckBoxColumn();
             lblCantidad = new Label();
             label1 = new Label();
-            tsbDetalles = new ToolStripButton();
-            toolStripSeparator3 = new ToolStripSeparator();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvRoles).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
             SuspendLayout();
             // 
             // toolStrip1
@@ -103,6 +103,21 @@
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 70);
+            // 
+            // tsbDetalles
+            // 
+            tsbDetalles.Image = Properties.Resources.details_48px;
+            tsbDetalles.ImageScaling = ToolStripItemImageScaling.None;
+            tsbDetalles.ImageTransparentColor = Color.Magenta;
+            tsbDetalles.Name = "tsbDetalles";
+            tsbDetalles.Size = new Size(52, 67);
+            tsbDetalles.Text = "Detalles";
+            tsbDetalles.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new Size(6, 70);
             // 
             // tsbFiltrar
             // 
@@ -165,7 +180,7 @@
             // 
             // splitContainer1.Panel1
             // 
-            splitContainer1.Panel1.Controls.Add(dgvRoles);
+            splitContainer1.Panel1.Controls.Add(dgvDatos);
             // 
             // splitContainer1.Panel2
             // 
@@ -175,22 +190,22 @@
             splitContainer1.SplitterDistance = 321;
             splitContainer1.TabIndex = 1;
             // 
-            // dgvRoles
+            // dgvDatos
             // 
-            dgvRoles.AllowUserToAddRows = false;
-            dgvRoles.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
-            dgvRoles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            dgvRoles.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvRoles.Columns.AddRange(new DataGridViewColumn[] { colId, colRol, colActivo });
-            dgvRoles.Dock = DockStyle.Fill;
-            dgvRoles.Location = new Point(0, 0);
-            dgvRoles.MultiSelect = false;
-            dgvRoles.Name = "dgvRoles";
-            dgvRoles.ReadOnly = true;
-            dgvRoles.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvRoles.Size = new Size(800, 321);
-            dgvRoles.TabIndex = 0;
+            dgvDatos.AllowUserToAddRows = false;
+            dgvDatos.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colRol, colActivo });
+            dgvDatos.Dock = DockStyle.Fill;
+            dgvDatos.Location = new Point(0, 0);
+            dgvDatos.MultiSelect = false;
+            dgvDatos.Name = "dgvDatos";
+            dgvDatos.ReadOnly = true;
+            dgvDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvDatos.Size = new Size(800, 321);
+            dgvDatos.TabIndex = 0;
             // 
             // colId
             // 
@@ -231,21 +246,6 @@
             label1.TabIndex = 0;
             label1.Text = "Cantidad:";
             // 
-            // tsbDetalles
-            // 
-            tsbDetalles.Image = Properties.Resources.details_48px;
-            tsbDetalles.ImageScaling = ToolStripItemImageScaling.None;
-            tsbDetalles.ImageTransparentColor = Color.Magenta;
-            tsbDetalles.Name = "tsbDetalles";
-            tsbDetalles.Size = new Size(52, 67);
-            tsbDetalles.Text = "Detalles";
-            tsbDetalles.TextImageRelation = TextImageRelation.ImageAboveText;
-            // 
-            // toolStripSeparator3
-            // 
-            toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new Size(6, 70);
-            // 
             // frmRoles
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -264,7 +264,7 @@
             splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dgvRoles).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -280,7 +280,7 @@
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripButton tsbCerrar;
         private SplitContainer splitContainer1;
-        private DataGridView dgvRoles;
+        private DataGridView dgvDatos;
         private Label lblCantidad;
         private Label label1;
         private DataGridViewTextBoxColumn colId;

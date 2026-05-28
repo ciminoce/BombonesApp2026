@@ -1,6 +1,5 @@
 ﻿using BombonesApp2026.Entidades;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace BombonesApp2026.Datos.Repositorios
 {
@@ -10,10 +9,6 @@ namespace BombonesApp2026.Datos.Repositorios
         {
             using (var context = new BombonesDbContext())
             {
-                //var lista = context.Roles
-                //    .AsNoTracking()
-                //    .ToList();
-                //return lista;
                 return context.TipoBombones
                     .AsNoTracking()
                     .ToList();

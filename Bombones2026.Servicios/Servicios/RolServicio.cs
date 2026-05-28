@@ -2,7 +2,7 @@
 using BombonesApp2026.Datos.Repositorios;
 using BombonesApp2026.Entidades;
 
-namespace Bombones2026.Servicios
+namespace Bombones2026.Servicios.Servicios
 {
     public class RolServicio
     {

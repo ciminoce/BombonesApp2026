@@ -19,5 +19,14 @@
         {
             Close();
         }
+
+        private void btnTiposBombones_Click(object sender, EventArgs e)
+        {
+            using (frmTiposDeBombones frm = new frmTiposDeBombones() { Text = "Listado de Tipos de Bombones" })
+            {
+                frm.ShowDialog();
+            }
+
+        }
     }
 }
