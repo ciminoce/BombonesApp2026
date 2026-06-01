@@ -9,6 +9,7 @@ namespace BombonesApp2026.Windows
         private readonly TipoBombonServicio _tipoServicio;
         private List<TipoBombonListDto>? _listaTipos;
         private bool filtroOn = false;
+
         public frmTiposDeBombones()
         {
             InitializeComponent();
