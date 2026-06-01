@@ -9,6 +9,22 @@ namespace BombonesApp2026.Windows
         {
             InitializeComponent();
         }
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (tipoDto is not null)
+            {
+                txtTipoBombon.Text = tipoDto.Nombre;
+                txtDescripcion.Text = tipoDto.Descripcion;
+                chkActivo.Checked = tipoDto.Activo;
+            }
+            else
+            {
+                chkActivo.Checked = true;
+                chkActivo.Enabled = false;
+
+            }
+        }
 
         public TipoBombonEditDto? GetTipo()
         {
@@ -50,22 +66,6 @@ namespace BombonesApp2026.Windows
         public void SetTipo(TipoBombonEditDto tipoEditDto)
         {
             tipoDto = tipoEditDto;
-        }
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-            if (tipoDto is not null)
-            {
-                txtTipoBombon.Text = tipoDto.Nombre;
-                txtDescripcion.Text = tipoDto.Descripcion;
-                chkActivo.Checked = tipoDto.Activo;
-            }
-            else
-            {
-                chkActivo.Checked = true;
-                chkActivo.Enabled = false;
-
-            }
         }
 
     }

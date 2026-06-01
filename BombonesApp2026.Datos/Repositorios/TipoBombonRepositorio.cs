@@ -39,7 +39,7 @@ namespace BombonesApp2026.Datos.Repositorios
             using (var context = new BombonesDbContext())
             {
 
-                var tipoEnDb = context.Roles.Find(tipoBombon.TipoBombonId);
+                var tipoEnDb = context.TipoBombones.Find(tipoBombon.TipoBombonId);
 
                 if (tipoEnDb is null) throw new Exception("Tipo de Bombon no encontrado");
                 tipoEnDb.Nombre = tipoBombon.Nombre;
