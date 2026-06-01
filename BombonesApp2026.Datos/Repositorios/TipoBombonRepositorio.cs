@@ -1,4 +1,4 @@
-﻿using BombonesApp2026.Entidades;
+﻿using BombonesApp2026.Entidades.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace BombonesApp2026.Datos.Repositorios

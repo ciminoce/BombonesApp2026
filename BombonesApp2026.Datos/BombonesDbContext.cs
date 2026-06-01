@@ -1,5 +1,5 @@
 ﻿using BombonesApp2026.Datos.EntityTypeConfigurations;
-using BombonesApp2026.Entidades;
+using BombonesApp2026.Entidades.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;

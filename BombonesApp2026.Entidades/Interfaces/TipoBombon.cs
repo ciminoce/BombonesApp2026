@@ -1,4 +1,4 @@
-﻿namespace BombonesApp2026.Entidades
+﻿namespace BombonesApp2026.Entidades.Interfaces
 {
     public class TipoBombon
     {
