@@ -217,7 +217,7 @@ namespace BombonesApp2026.Windows
             }
             var r = dgvDatos.SelectedRows[0];
             TipoBombonListDto tipoBombonDto = (TipoBombonListDto)r.Tag!;
-            TipoBombonEditDto? tipoBombonEditDto = _tipoServicio.GetForUpdate(tipoBombonDto.TipoBombonId);
+            TipoBombonEditDto? tipoBombonEditDto = _tipoServicio.ObtenerParaEditar(tipoBombonDto.TipoBombonId);
             if (tipoBombonEditDto is null) return;
             using (frmTipoDeBombonesAe frm = new frmTipoDeBombonesAe() { Text = "Editar Tipo de Bombón " })
             {

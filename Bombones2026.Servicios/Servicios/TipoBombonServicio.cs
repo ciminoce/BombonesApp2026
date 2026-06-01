@@ -93,7 +93,7 @@ namespace Bombones2026.Servicios.Servicios
             if (_tipoBombonRepositorio.ExisteTipoBombon(tipo)) throw new InvalidOperationException($"Ya existe un tipo de bombón {tipo.Nombre}");
             _tipoBombonRepositorio.Editar(tipo);
         }
-        public TipoBombonEditDto GetForUpdate(int id)
+        public TipoBombonEditDto ObtenerParaEditar(int id)
         {
             // AJUSTE: Validación defensiva del ID antes de operar
             if (id <= 0)

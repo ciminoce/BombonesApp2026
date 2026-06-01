@@ -12,7 +12,7 @@ namespace Bombones2026.Servicios.Servicios
             _rolRepositorio = new RolRepositorio();
         }
 
-        public List<RolListDto> GetLista()
+        public List<RolListDto> ObtenerTodos()
         {
             return _rolRepositorio.ObtenerTodos()
                 .Select(r => new RolListDto
@@ -74,7 +74,7 @@ namespace Bombones2026.Servicios.Servicios
             if (_rolRepositorio.ExisteRol(rol)) throw new InvalidOperationException($"Ya existe un Rol {rol.Nombre}");
             _rolRepositorio.Editar(rol);
         }
-        public RolEditDto GetForUpdate(int id)
+        public RolEditDto ObtenerParaEditar(int id)
         {
             // AJUSTE: Validación defensiva del ID antes de operar
             if (id <= 0)
@@ -92,7 +92,7 @@ namespace Bombones2026.Servicios.Servicios
             };
             return rolDto;
         }
-        public List<RolListDto> GetPorActivo(bool activo)
+        public List<RolListDto> FiltrarPorActivo(bool activo)
         {
             return _rolRepositorio.FiltrarPorActivo(activo)
                 .Select(r => new RolListDto

@@ -20,7 +20,7 @@ namespace BombonesApp2026.Windows
 
         private void frmRoles_Load(object sender, EventArgs e)
         {
-            listaRoles = _rolServicio.GetLista();
+            listaRoles = _rolServicio.ObtenerTodos();
             MostrarDatosEnGrilla(listaRoles);
         }
 
@@ -79,7 +79,7 @@ namespace BombonesApp2026.Windows
                         Descripcion = rolEditDto.Descripcion,
                     };
                     _rolServicio.Agregar(rolCreateDto);
-                    listaRoles = _rolServicio.GetLista();
+                    listaRoles = _rolServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(listaRoles);
                     MessageBox.Show("Rol Agregado",
                         "Mensaje", MessageBoxButtons.OK,
@@ -114,7 +114,7 @@ namespace BombonesApp2026.Windows
             try
             {
                 _rolServicio.Borrar(rolDto.RolId);
-                listaRoles = _rolServicio.GetLista();
+                listaRoles = _rolServicio.ObtenerTodos();
                 MostrarDatosEnGrilla(listaRoles);
                 MessageBox.Show("Rol eliminado",
                     "Mensaje",
@@ -144,7 +144,7 @@ namespace BombonesApp2026.Windows
             }
             var r = dgvDatos.SelectedRows[0];
             RolListDto rolDto = (RolListDto)r.Tag!;
-            RolEditDto? rolEditDto = _rolServicio.GetForUpdate(rolDto.RolId);
+            RolEditDto? rolEditDto = _rolServicio.ObtenerParaEditar(rolDto.RolId);
             if (rolEditDto is null) return;
             using (frmRolesAe frm = new frmRolesAe() { Text = "Editar Rol" })
             {
@@ -155,7 +155,7 @@ namespace BombonesApp2026.Windows
                 try
                 {
                     _rolServicio.Editar(rolEditDto);
-                    listaRoles = _rolServicio.GetLista();
+                    listaRoles = _rolServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(listaRoles);
                     MessageBox.Show("Rol editado",
                         "Mensaje",
@@ -177,7 +177,7 @@ namespace BombonesApp2026.Windows
 
         private void activosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            listaRoles = _rolServicio.GetPorActivo(true);
+            listaRoles = _rolServicio.FiltrarPorActivo(true);
             MostrarDatosEnGrilla(listaRoles);
             ManejarBotones(true);
         }
@@ -193,7 +193,7 @@ namespace BombonesApp2026.Windows
 
         private void noActivosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            listaRoles = _rolServicio.GetPorActivo(false);
+            listaRoles = _rolServicio.FiltrarPorActivo(false);
             MostrarDatosEnGrilla(listaRoles);
             ManejarBotones(true);
 
@@ -201,7 +201,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbActualizar_Click(object sender, EventArgs e)
         {
-            listaRoles = _rolServicio.GetLista();
+            listaRoles = _rolServicio.ObtenerTodos();
             MostrarDatosEnGrilla(listaRoles);
             ManejarBotones(false);
         }
