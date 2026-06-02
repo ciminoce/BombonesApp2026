@@ -1,6 +1,6 @@
 ﻿namespace BombonesApp2026.Windows
 {
-    partial class frmClienteAe
+    partial class frmEmpleadoAe
     {
         /// <summary>
         /// Required designer variable.
@@ -39,6 +39,8 @@
             txtNombre = new TextBox();
             label1 = new Label();
             groupBox1 = new GroupBox();
+            cboLocalidad = new ComboBox();
+            cboProvincia = new ComboBox();
             textBox2 = new TextBox();
             textBox3 = new TextBox();
             textBox1 = new TextBox();
@@ -52,8 +54,6 @@
             txtTelefono = new TextBox();
             label6 = new Label();
             errorProvider1 = new ErrorProvider(components);
-            cboProvincia = new ComboBox();
-            cboLocalidad = new ComboBox();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -94,7 +94,7 @@
             groupBox2.Size = new Size(565, 125);
             groupBox2.TabIndex = 7;
             groupBox2.TabStop = false;
-            groupBox2.Text = " Datos del Cliente";
+            groupBox2.Text = "Datos del Empleado";
             // 
             // txtDocumento
             // 
@@ -169,6 +169,22 @@
             groupBox1.TabIndex = 7;
             groupBox1.TabStop = false;
             groupBox1.Text = " Datos Optativos del Cliente";
+            // 
+            // cboLocalidad
+            // 
+            cboLocalidad.FormattingEnabled = true;
+            cboLocalidad.Location = new Point(99, 156);
+            cboLocalidad.Name = "cboLocalidad";
+            cboLocalidad.Size = new Size(399, 23);
+            cboLocalidad.TabIndex = 2;
+            // 
+            // cboProvincia
+            // 
+            cboProvincia.FormattingEnabled = true;
+            cboProvincia.Location = new Point(99, 125);
+            cboProvincia.Name = "cboProvincia";
+            cboProvincia.Size = new Size(399, 23);
+            cboProvincia.TabIndex = 2;
             // 
             // textBox2
             // 
@@ -277,23 +293,7 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
-            // cboProvincia
-            // 
-            cboProvincia.FormattingEnabled = true;
-            cboProvincia.Location = new Point(99, 125);
-            cboProvincia.Name = "cboProvincia";
-            cboProvincia.Size = new Size(399, 23);
-            cboProvincia.TabIndex = 2;
-            // 
-            // cboLocalidad
-            // 
-            cboLocalidad.FormattingEnabled = true;
-            cboLocalidad.Location = new Point(99, 156);
-            cboLocalidad.Name = "cboLocalidad";
-            cboLocalidad.Size = new Size(399, 23);
-            cboLocalidad.TabIndex = 2;
-            // 
-            // frmClienteAe
+            // frmEmpleadoAe
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -302,7 +302,7 @@
             Controls.Add(groupBox2);
             Controls.Add(btnCancelar);
             Controls.Add(btnOK);
-            Name = "frmClienteAe";
+            Name = "frmEmpleadoAe";
             Text = "frmClienteAe";
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
