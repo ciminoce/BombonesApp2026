@@ -33,7 +33,6 @@
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
-            toolStripSeparator1 = new ToolStripSeparator();
             tsbFiltrar = new ToolStripDropDownButton();
             activosToolStripMenuItem = new ToolStripMenuItem();
             noActivosToolStripMenuItem = new ToolStripMenuItem();
@@ -48,6 +47,7 @@
             colActivo = new DataGridViewCheckBoxColumn();
             lblCantidad = new Label();
             label1 = new Label();
+            toolStripSeparator1 = new ToolStripSeparator();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -98,11 +98,6 @@
             tsbEditar.TextImageRelation = TextImageRelation.ImageAboveText;
             tsbEditar.Click += tsbEditar_Click;
             // 
-            // toolStripSeparator1
-            // 
-            toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(6, 70);
-            // 
             // tsbFiltrar
             // 
             tsbFiltrar.DropDownItems.AddRange(new ToolStripItem[] { activosToolStripMenuItem, noActivosToolStripMenuItem });
@@ -117,14 +112,14 @@
             // activosToolStripMenuItem
             // 
             activosToolStripMenuItem.Name = "activosToolStripMenuItem";
-            activosToolStripMenuItem.Size = new Size(132, 22);
+            activosToolStripMenuItem.Size = new Size(180, 22);
             activosToolStripMenuItem.Text = "Activos";
             activosToolStripMenuItem.Click += activosToolStripMenuItem_Click;
             // 
             // noActivosToolStripMenuItem
             // 
             noActivosToolStripMenuItem.Name = "noActivosToolStripMenuItem";
-            noActivosToolStripMenuItem.Size = new Size(132, 22);
+            noActivosToolStripMenuItem.Size = new Size(180, 22);
             noActivosToolStripMenuItem.Text = "No Activos";
             noActivosToolStripMenuItem.Click += noActivosToolStripMenuItem_Click;
             // 
@@ -237,6 +232,11 @@
             label1.TabIndex = 0;
             label1.Text = "Cantidad:";
             // 
+            // toolStripSeparator1
+            // 
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(6, 70);
+            // 
             // frmTiposDeBombones
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -266,7 +266,6 @@
         private ToolStripButton tsbNuevo;
         private ToolStripButton tsbBorrar;
         private ToolStripButton tsbEditar;
-        private ToolStripSeparator toolStripSeparator1;
         private ToolStripButton tsbActualizar;
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripButton tsbCerrar;
@@ -281,5 +280,6 @@
         private DataGridViewTextBoxColumn colNombre;
         private DataGridViewTextBoxColumn colDescripcion;
         private DataGridViewCheckBoxColumn colActivo;
+        private ToolStripSeparator toolStripSeparator1;
     }
 }

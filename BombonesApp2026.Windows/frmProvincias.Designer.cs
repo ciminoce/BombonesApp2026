@@ -1,6 +1,6 @@
 ﻿namespace BombonesApp2026.Windows
 {
-    partial class frmRoles
+    partial class frmProvincias
     {
         /// <summary>
         /// Required designer variable.
@@ -28,13 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
-            tsbDetalles = new ToolStripButton();
-            toolStripSeparator3 = new ToolStripSeparator();
+            toolStripSeparator1 = new ToolStripSeparator();
             tsbFiltrar = new ToolStripDropDownButton();
             activosToolStripMenuItem = new ToolStripMenuItem();
             noActivosToolStripMenuItem = new ToolStripMenuItem();
@@ -43,11 +42,11 @@
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvDatos = new DataGridView();
-            colId = new DataGridViewTextBoxColumn();
-            colRol = new DataGridViewTextBoxColumn();
-            colActivo = new DataGridViewCheckBoxColumn();
             lblCantidad = new Label();
             label1 = new Label();
+            colId = new DataGridViewTextBoxColumn();
+            colProvincia = new DataGridViewTextBoxColumn();
+            colActivo = new DataGridViewCheckBoxColumn();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -58,7 +57,7 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, tsbDetalles, toolStripSeparator3, tsbFiltrar, tsbActualizar, toolStripSeparator2, tsbCerrar });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbFiltrar, tsbActualizar, toolStripSeparator2, tsbCerrar });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(800, 70);
@@ -98,20 +97,10 @@
             tsbEditar.TextImageRelation = TextImageRelation.ImageAboveText;
             tsbEditar.Click += tsbEditar_Click;
             // 
-            // tsbDetalles
+            // toolStripSeparator1
             // 
-            tsbDetalles.Image = Properties.Resources.details_48px;
-            tsbDetalles.ImageScaling = ToolStripItemImageScaling.None;
-            tsbDetalles.ImageTransparentColor = Color.Magenta;
-            tsbDetalles.Name = "tsbDetalles";
-            tsbDetalles.Size = new Size(52, 67);
-            tsbDetalles.Text = "Detalles";
-            tsbDetalles.TextImageRelation = TextImageRelation.ImageAboveText;
-            // 
-            // toolStripSeparator3
-            // 
-            toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new Size(6, 70);
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(6, 70);
             // 
             // tsbFiltrar
             // 
@@ -127,14 +116,14 @@
             // activosToolStripMenuItem
             // 
             activosToolStripMenuItem.Name = "activosToolStripMenuItem";
-            activosToolStripMenuItem.Size = new Size(132, 22);
+            activosToolStripMenuItem.Size = new Size(180, 22);
             activosToolStripMenuItem.Text = "Activos";
             activosToolStripMenuItem.Click += activosToolStripMenuItem_Click;
             // 
             // noActivosToolStripMenuItem
             // 
             noActivosToolStripMenuItem.Name = "noActivosToolStripMenuItem";
-            noActivosToolStripMenuItem.Size = new Size(132, 22);
+            noActivosToolStripMenuItem.Size = new Size(180, 22);
             noActivosToolStripMenuItem.Text = "No Activos";
             noActivosToolStripMenuItem.Click += noActivosToolStripMenuItem_Click;
             // 
@@ -188,10 +177,10 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colRol, colActivo });
+            dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colProvincia, colActivo });
             dgvDatos.Dock = DockStyle.Fill;
             dgvDatos.Location = new Point(0, 0);
             dgvDatos.MultiSelect = false;
@@ -200,26 +189,6 @@
             dgvDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvDatos.Size = new Size(800, 321);
             dgvDatos.TabIndex = 0;
-            // 
-            // colId
-            // 
-            colId.HeaderText = "Id";
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            colId.Visible = false;
-            // 
-            // colRol
-            // 
-            colRol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colRol.HeaderText = "Rol";
-            colRol.Name = "colRol";
-            colRol.ReadOnly = true;
-            // 
-            // colActivo
-            // 
-            colActivo.HeaderText = "Activo";
-            colActivo.Name = "colActivo";
-            colActivo.ReadOnly = true;
             // 
             // lblCantidad
             // 
@@ -240,17 +209,36 @@
             label1.TabIndex = 0;
             label1.Text = "Cantidad:";
             // 
-            // frmRoles
+            // colId
+            // 
+            colId.HeaderText = "Id";
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            colId.Visible = false;
+            // 
+            // colProvincia
+            // 
+            colProvincia.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colProvincia.HeaderText = "Provincia";
+            colProvincia.Name = "colProvincia";
+            colProvincia.ReadOnly = true;
+            // 
+            // colActivo
+            // 
+            colActivo.HeaderText = "Activo";
+            colActivo.Name = "colActivo";
+            colActivo.ReadOnly = true;
+            // 
+            // frmProvincias
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer1);
             Controls.Add(toolStrip1);
-            Name = "frmRoles";
+            Name = "frmProvincias";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "frmRoles";
-            Load += frmRoles_Load;
+            Text = "frmProvincias";
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
@@ -263,12 +251,48 @@
             PerformLayout();
         }
 
+        private void tsbCerrar_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void tsbActualizar_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void noActivosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void activosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void tsbEditar_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void tsbBorrar_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void tsbNuevo_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         private ToolStrip toolStrip1;
         private ToolStripButton tsbNuevo;
         private ToolStripButton tsbBorrar;
         private ToolStripButton tsbEditar;
+        private ToolStripSeparator toolStripSeparator1;
         private ToolStripButton tsbActualizar;
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripButton tsbCerrar;
@@ -276,13 +300,11 @@
         private DataGridView dgvDatos;
         private Label lblCantidad;
         private Label label1;
-        private DataGridViewTextBoxColumn colId;
-        private DataGridViewTextBoxColumn colRol;
-        private DataGridViewCheckBoxColumn colActivo;
         private ToolStripDropDownButton tsbFiltrar;
         private ToolStripMenuItem activosToolStripMenuItem;
         private ToolStripMenuItem noActivosToolStripMenuItem;
-        private ToolStripButton tsbDetalles;
-        private ToolStripSeparator toolStripSeparator3;
+        private DataGridViewTextBoxColumn colId;
+        private DataGridViewTextBoxColumn colProvincia;
+        private DataGridViewCheckBoxColumn colActivo;
     }
 }
