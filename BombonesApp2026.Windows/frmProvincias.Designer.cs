@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
@@ -42,11 +42,10 @@
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvDatos = new DataGridView();
-            lblCantidad = new Label();
-            label1 = new Label();
             colId = new DataGridViewTextBoxColumn();
             colProvincia = new DataGridViewTextBoxColumn();
-            colActivo = new DataGridViewCheckBoxColumn();
+            lblCantidad = new Label();
+            label1 = new Label();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -116,16 +115,14 @@
             // activosToolStripMenuItem
             // 
             activosToolStripMenuItem.Name = "activosToolStripMenuItem";
-            activosToolStripMenuItem.Size = new Size(180, 22);
+            activosToolStripMenuItem.Size = new Size(132, 22);
             activosToolStripMenuItem.Text = "Activos";
-            activosToolStripMenuItem.Click += activosToolStripMenuItem_Click;
             // 
             // noActivosToolStripMenuItem
             // 
             noActivosToolStripMenuItem.Name = "noActivosToolStripMenuItem";
-            noActivosToolStripMenuItem.Size = new Size(180, 22);
+            noActivosToolStripMenuItem.Size = new Size(132, 22);
             noActivosToolStripMenuItem.Text = "No Activos";
-            noActivosToolStripMenuItem.Click += noActivosToolStripMenuItem_Click;
             // 
             // tsbActualizar
             // 
@@ -136,7 +133,6 @@
             tsbActualizar.Size = new Size(63, 67);
             tsbActualizar.Text = "&Actualizar";
             tsbActualizar.TextImageRelation = TextImageRelation.ImageAboveText;
-            tsbActualizar.Click += tsbActualizar_Click;
             // 
             // toolStripSeparator2
             // 
@@ -177,10 +173,10 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colProvincia, colActivo });
+            dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colProvincia });
             dgvDatos.Dock = DockStyle.Fill;
             dgvDatos.Location = new Point(0, 0);
             dgvDatos.MultiSelect = false;
@@ -189,6 +185,20 @@
             dgvDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvDatos.Size = new Size(800, 321);
             dgvDatos.TabIndex = 0;
+            // 
+            // colId
+            // 
+            colId.HeaderText = "Id";
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            colId.Visible = false;
+            // 
+            // colProvincia
+            // 
+            colProvincia.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colProvincia.HeaderText = "Provincia";
+            colProvincia.Name = "colProvincia";
+            colProvincia.ReadOnly = true;
             // 
             // lblCantidad
             // 
@@ -209,26 +219,6 @@
             label1.TabIndex = 0;
             label1.Text = "Cantidad:";
             // 
-            // colId
-            // 
-            colId.HeaderText = "Id";
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            colId.Visible = false;
-            // 
-            // colProvincia
-            // 
-            colProvincia.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colProvincia.HeaderText = "Provincia";
-            colProvincia.Name = "colProvincia";
-            colProvincia.ReadOnly = true;
-            // 
-            // colActivo
-            // 
-            colActivo.HeaderText = "Activo";
-            colActivo.Name = "colActivo";
-            colActivo.ReadOnly = true;
-            // 
             // frmProvincias
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -239,6 +229,7 @@
             Name = "frmProvincias";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "frmProvincias";
+            Load += frmProvincias_Load;
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
@@ -251,40 +242,6 @@
             PerformLayout();
         }
 
-        private void tsbCerrar_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void tsbActualizar_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void noActivosToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void activosToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void tsbEditar_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void tsbBorrar_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void tsbNuevo_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion
 
@@ -305,6 +262,5 @@
         private ToolStripMenuItem noActivosToolStripMenuItem;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colProvincia;
-        private DataGridViewCheckBoxColumn colActivo;
     }
 }

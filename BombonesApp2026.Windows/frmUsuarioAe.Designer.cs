@@ -37,8 +37,8 @@
             cboRoles = new ComboBox();
             textBox1 = new TextBox();
             label3 = new Label();
-            txtEmpleado = new TextBox();
             label4 = new Label();
+            comboBox1 = new ComboBox();
             SuspendLayout();
             // 
             // chkActivo
@@ -77,7 +77,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(52, 81);
+            label2.Location = new Point(66, 81);
             label2.Name = "label2";
             label2.Size = new Size(50, 15);
             label2.TabIndex = 5;
@@ -85,7 +85,7 @@
             // 
             // txtUsuario
             // 
-            txtUsuario.Location = new Point(130, 78);
+            txtUsuario.Location = new Point(131, 78);
             txtUsuario.MaxLength = 30;
             txtUsuario.Name = "txtUsuario";
             txtUsuario.Size = new Size(334, 23);
@@ -94,7 +94,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(52, 43);
+            label1.Location = new Point(89, 46);
             label1.Name = "label1";
             label1.Size = new Size(27, 15);
             label1.TabIndex = 7;
@@ -120,34 +120,36 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(53, 110);
+            label3.Location = new Point(56, 107);
             label3.Name = "label3";
             label3.Size = new Size(60, 15);
             label3.TabIndex = 5;
             label3.Text = "Password:";
             // 
-            // txtEmpleado
-            // 
-            txtEmpleado.Location = new Point(131, 136);
-            txtEmpleado.MaxLength = 100;
-            txtEmpleado.Name = "txtEmpleado";
-            txtEmpleado.Size = new Size(334, 23);
-            txtEmpleado.TabIndex = 6;
-            // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(53, 139);
+            label4.Location = new Point(53, 136);
             label4.Name = "label4";
             label4.Size = new Size(63, 15);
             label4.TabIndex = 5;
             label4.Text = "Empleado:";
+            // 
+            // comboBox1
+            // 
+            comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(131, 136);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(333, 23);
+            comboBox1.TabIndex = 12;
             // 
             // frmUsuarioAe
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(529, 300);
+            Controls.Add(comboBox1);
             Controls.Add(cboRoles);
             Controls.Add(chkActivo);
             Controls.Add(btnCancelar);
@@ -156,7 +158,6 @@
             Controls.Add(label4);
             Controls.Add(label2);
             Controls.Add(textBox1);
-            Controls.Add(txtEmpleado);
             Controls.Add(txtUsuario);
             Controls.Add(label1);
             Name = "frmUsuarioAe";
@@ -176,7 +177,7 @@
         private ComboBox cboRoles;
         private TextBox textBox1;
         private Label label3;
-        private TextBox txtEmpleado;
         private Label label4;
+        private ComboBox comboBox1;
     }
 }

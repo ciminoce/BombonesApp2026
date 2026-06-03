@@ -1,6 +1,6 @@
 ﻿using Bombones2026.Servicios.DTOs.Rol;
 using BombonesApp2026.Datos.Repositorios;
-using BombonesApp2026.Entidades.Interfaces;
+using BombonesApp2026.Entidades.Entidades;
 
 namespace Bombones2026.Servicios.Servicios
 {

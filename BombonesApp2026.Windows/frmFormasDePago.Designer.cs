@@ -42,11 +42,11 @@
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvDatos = new DataGridView();
-            lblCantidad = new Label();
-            label1 = new Label();
             colId = new DataGridViewTextBoxColumn();
             colNombre = new DataGridViewTextBoxColumn();
             colActivo = new DataGridViewCheckBoxColumn();
+            lblCantidad = new Label();
+            label1 = new Label();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -73,6 +73,7 @@
             tsbNuevo.Size = new Size(52, 67);
             tsbNuevo.Text = "&Nuevo";
             tsbNuevo.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbNuevo.Click += tsbNuevo_Click;
             // 
             // tsbBorrar
             // 
@@ -83,6 +84,7 @@
             tsbBorrar.Size = new Size(52, 67);
             tsbBorrar.Text = "&Borrar";
             tsbBorrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbBorrar.Click += tsbBorrar_Click;
             // 
             // tsbEditar
             // 
@@ -93,6 +95,7 @@
             tsbEditar.Size = new Size(52, 67);
             tsbEditar.Text = "&Editar";
             tsbEditar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbEditar.Click += tsbEditar_Click;
             // 
             // toolStripSeparator1
             // 
@@ -113,14 +116,16 @@
             // activosToolStripMenuItem
             // 
             activosToolStripMenuItem.Name = "activosToolStripMenuItem";
-            activosToolStripMenuItem.Size = new Size(132, 22);
+            activosToolStripMenuItem.Size = new Size(180, 22);
             activosToolStripMenuItem.Text = "Activos";
+            activosToolStripMenuItem.Click += activosToolStripMenuItem_Click;
             // 
             // noActivosToolStripMenuItem
             // 
             noActivosToolStripMenuItem.Name = "noActivosToolStripMenuItem";
-            noActivosToolStripMenuItem.Size = new Size(132, 22);
+            noActivosToolStripMenuItem.Size = new Size(180, 22);
             noActivosToolStripMenuItem.Text = "No Activos";
+            noActivosToolStripMenuItem.Click += noActivosToolStripMenuItem_Click;
             // 
             // tsbActualizar
             // 
@@ -131,6 +136,7 @@
             tsbActualizar.Size = new Size(63, 67);
             tsbActualizar.Text = "&Actualizar";
             tsbActualizar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbActualizar.Click += tsbActualizar_Click;
             // 
             // toolStripSeparator2
             // 
@@ -146,6 +152,7 @@
             tsbCerrar.Size = new Size(52, 67);
             tsbCerrar.Text = "&Cerrar";
             tsbCerrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbCerrar.Click += tsbCerrar_Click;
             // 
             // splitContainer1
             // 
@@ -183,25 +190,6 @@
             dgvDatos.Size = new Size(800, 321);
             dgvDatos.TabIndex = 0;
             // 
-            // lblCantidad
-            // 
-            lblCantidad.AutoSize = true;
-            lblCantidad.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblCantidad.Location = new Point(93, 18);
-            lblCantidad.Name = "lblCantidad";
-            lblCantidad.Size = new Size(14, 15);
-            lblCantidad.TabIndex = 1;
-            lblCantidad.Text = "0";
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(32, 18);
-            label1.Name = "label1";
-            label1.Size = new Size(58, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Cantidad:";
-            // 
             // colId
             // 
             colId.HeaderText = "Id";
@@ -222,6 +210,25 @@
             colActivo.Name = "colActivo";
             colActivo.ReadOnly = true;
             // 
+            // lblCantidad
+            // 
+            lblCantidad.AutoSize = true;
+            lblCantidad.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblCantidad.Location = new Point(93, 18);
+            lblCantidad.Name = "lblCantidad";
+            lblCantidad.Size = new Size(14, 15);
+            lblCantidad.TabIndex = 1;
+            lblCantidad.Text = "0";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(32, 18);
+            label1.Name = "label1";
+            label1.Size = new Size(58, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Cantidad:";
+            // 
             // frmFormasDePago
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -232,6 +239,7 @@
             Name = "frmFormasDePago";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "frmFormasDePago";
+            Load += frmFormasDePago_Load;
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);

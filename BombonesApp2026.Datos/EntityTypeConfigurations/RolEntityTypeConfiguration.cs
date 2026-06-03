@@ -1,4 +1,4 @@
-﻿using BombonesApp2026.Entidades.Interfaces;
+﻿using BombonesApp2026.Entidades.Entidades;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

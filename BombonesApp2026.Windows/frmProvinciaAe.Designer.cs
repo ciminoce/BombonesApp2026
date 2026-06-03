@@ -114,15 +114,6 @@
             PerformLayout();
         }
 
-        private void btnCancelar_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion
 

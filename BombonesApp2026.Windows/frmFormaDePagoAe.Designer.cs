@@ -30,7 +30,7 @@
         {
             components = new System.ComponentModel.Container();
             label1 = new Label();
-            txtTipoBombon = new TextBox();
+            txtFormaDePago = new TextBox();
             errorProvider1 = new ErrorProvider(components);
             btnOK = new Button();
             btnCancelar = new Button();
@@ -47,13 +47,13 @@
             label1.TabIndex = 0;
             label1.Text = "Nombre:";
             // 
-            // txtTipoBombon
+            // txtFormaDePago
             // 
-            txtTipoBombon.Location = new Point(123, 25);
-            txtTipoBombon.MaxLength = 30;
-            txtTipoBombon.Name = "txtTipoBombon";
-            txtTipoBombon.Size = new Size(334, 23);
-            txtTipoBombon.TabIndex = 0;
+            txtFormaDePago.Location = new Point(123, 25);
+            txtFormaDePago.MaxLength = 30;
+            txtFormaDePago.Name = "txtFormaDePago";
+            txtFormaDePago.Size = new Size(334, 23);
+            txtFormaDePago.TabIndex = 0;
             // 
             // errorProvider1
             // 
@@ -69,6 +69,7 @@
             btnOK.Text = "OK";
             btnOK.TextImageRelation = TextImageRelation.ImageAboveText;
             btnOK.UseVisualStyleBackColor = true;
+            btnOK.Click += btnOK_Click;
             // 
             // btnCancelar
             // 
@@ -80,6 +81,7 @@
             btnCancelar.Text = "Cancelar";
             btnCancelar.TextImageRelation = TextImageRelation.ImageAboveText;
             btnCancelar.UseVisualStyleBackColor = true;
+            btnCancelar.Click += btnCancelar_Click;
             // 
             // chkActivo
             // 
@@ -100,7 +102,7 @@
             Controls.Add(chkActivo);
             Controls.Add(btnCancelar);
             Controls.Add(btnOK);
-            Controls.Add(txtTipoBombon);
+            Controls.Add(txtFormaDePago);
             Controls.Add(label1);
             MaximumSize = new Size(536, 273);
             MinimumSize = new Size(536, 273);
@@ -115,7 +117,7 @@
         #endregion
 
         private Label label1;
-        private TextBox txtTipoBombon;
+        private TextBox txtFormaDePago;
         private ErrorProvider errorProvider1;
         private Button btnCancelar;
         private Button btnOK;

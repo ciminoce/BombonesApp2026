@@ -38,6 +38,9 @@
             lblUsuario = new ToolStripStatusLabel();
             panelMenu = new Panel();
             btnVentas = new Button();
+            btnProvincias = new Button();
+            btnCiudades = new Button();
+            btnFormaDePago = new Button();
             btnClientes = new Button();
             btnCajas = new Button();
             btnBombones = new Button();
@@ -107,7 +110,7 @@
             // statusStrip1
             // 
             statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, lblUsuario });
-            statusStrip1.Location = new Point(0, 517);
+            statusStrip1.Location = new Point(0, 617);
             statusStrip1.Name = "statusStrip1";
             statusStrip1.Size = new Size(949, 22);
             statusStrip1.TabIndex = 1;
@@ -128,6 +131,9 @@
             // panelMenu
             // 
             panelMenu.Controls.Add(btnVentas);
+            panelMenu.Controls.Add(btnProvincias);
+            panelMenu.Controls.Add(btnCiudades);
+            panelMenu.Controls.Add(btnFormaDePago);
             panelMenu.Controls.Add(btnClientes);
             panelMenu.Controls.Add(btnCajas);
             panelMenu.Controls.Add(btnBombones);
@@ -137,21 +143,50 @@
             panelMenu.Dock = DockStyle.Left;
             panelMenu.Location = new Point(0, 74);
             panelMenu.Name = "panelMenu";
-            panelMenu.Size = new Size(238, 443);
+            panelMenu.Size = new Size(238, 543);
             panelMenu.TabIndex = 2;
             // 
             // btnVentas
             // 
-            btnVentas.Location = new Point(37, 321);
+            btnVentas.Location = new Point(37, 462);
             btnVentas.Name = "btnVentas";
             btnVentas.Size = new Size(171, 37);
             btnVentas.TabIndex = 0;
             btnVentas.Text = "Ventas";
             btnVentas.UseVisualStyleBackColor = true;
             // 
+            // btnProvincias
+            // 
+            btnProvincias.Location = new Point(37, 249);
+            btnProvincias.Name = "btnProvincias";
+            btnProvincias.Size = new Size(171, 37);
+            btnProvincias.TabIndex = 0;
+            btnProvincias.Text = "Provincias";
+            btnProvincias.UseVisualStyleBackColor = true;
+            btnProvincias.Click += btnProvincias_Click;
+            // 
+            // btnCiudades
+            // 
+            btnCiudades.Location = new Point(37, 289);
+            btnCiudades.Name = "btnCiudades";
+            btnCiudades.Size = new Size(171, 37);
+            btnCiudades.TabIndex = 0;
+            btnCiudades.Text = "Ciudades";
+            btnCiudades.UseVisualStyleBackColor = true;
+            // 
+            // btnFormaDePago
+            // 
+            btnFormaDePago.Location = new Point(37, 343);
+            btnFormaDePago.Name = "btnFormaDePago";
+            btnFormaDePago.Size = new Size(171, 37);
+            btnFormaDePago.TabIndex = 0;
+            btnFormaDePago.Text = "Formas de Pago";
+            btnFormaDePago.UseVisualStyleBackColor = true;
+            btnFormaDePago.Click += btnFormaDePago_Click;
+            // 
             // btnClientes
             // 
-            btnClientes.Location = new Point(37, 262);
+            btnClientes.Location = new Point(37, 386);
             btnClientes.Name = "btnClientes";
             btnClientes.Size = new Size(171, 37);
             btnClientes.TabIndex = 0;
@@ -212,7 +247,7 @@
             panelContent.Dock = DockStyle.Fill;
             panelContent.Location = new Point(238, 74);
             panelContent.Name = "panelContent";
-            panelContent.Size = new Size(711, 443);
+            panelContent.Size = new Size(711, 543);
             panelContent.TabIndex = 3;
             // 
             // label4
@@ -237,7 +272,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(949, 539);
+            ClientSize = new Size(949, 639);
             Controls.Add(panelContent);
             Controls.Add(panelMenu);
             Controls.Add(statusStrip1);
@@ -276,5 +311,8 @@
         private Panel panelContent;
         private Label label4;
         private Label label3;
+        private Button btnProvincias;
+        private Button btnCiudades;
+        private Button btnFormaDePago;
     }
 }

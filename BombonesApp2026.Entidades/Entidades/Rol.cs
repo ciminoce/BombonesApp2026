@@ -1,4 +1,4 @@
-﻿namespace BombonesApp2026.Entidades.Interfaces
+﻿namespace BombonesApp2026.Entidades.Entidades
 {
     public class Rol
     {

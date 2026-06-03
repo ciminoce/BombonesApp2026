@@ -28,5 +28,22 @@
             }
 
         }
+
+        private void btnFormaDePago_Click(object sender, EventArgs e)
+        {
+            using (frmFormasDePago frm = new frmFormasDePago() { Text = "Listado de Formas de Pago" })
+            {
+                frm.ShowDialog();
+            }
+
+        }
+
+        private void btnProvincias_Click(object sender, EventArgs e)
+        {
+            using (frmProvincias frm = new frmProvincias() { Text = "Listado de Provincias" })
+            {
+                frm.ShowDialog();
+            }
+        }
     }
 }
