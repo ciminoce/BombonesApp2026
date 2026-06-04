@@ -33,7 +33,7 @@ namespace BombonesApp2026.Datos.Repositorios
                 var provinciaEnDb = context.Provincias.Find(provincia.ProvinciaId);
 
                 if (provinciaEnDb is null) throw new Exception("Provincia no encontrada");
-                provinciaEnDb.Nombre = provincia.Nombre;
+                provinciaEnDb.NombreProvincia = provincia.NombreProvincia;
 
                 context.SaveChanges();
 
@@ -65,11 +65,11 @@ namespace BombonesApp2026.Datos.Repositorios
             {
                 if (provincia.ProvinciaId == 0)
                 {
-                    return context.Provincias.Any(p => p.Nombre == provincia.Nombre);
+                    return context.Provincias.Any(p => p.NombreProvincia == provincia.NombreProvincia);
                 }
                 else
                 {
-                    return context.Provincias.Any(p => p.Nombre == provincia.Nombre &&
+                    return context.Provincias.Any(p => p.NombreProvincia == provincia.NombreProvincia &&
                             p.ProvinciaId != provincia.ProvinciaId);
                 }
             }

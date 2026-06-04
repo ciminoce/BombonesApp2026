@@ -12,6 +12,7 @@ namespace BombonesApp2026.Datos
         public DbSet<TipoBombon> TipoBombones { get; set; }
         public DbSet<Provincia> Provincias { get; set; }
         public DbSet<FormaDePago> FormasDePago { get; set; }
+        public DbSet<Ciudad> Ciudades { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Data Source=.; Initial Catalog=Bombones2026;
@@ -20,10 +21,7 @@ namespace BombonesApp2026.Datos
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration<Rol>(new RolEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration<TipoBombon>(new TipoBombonEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration<Provincia>(new ProvinciaEntityTypeConfiguration());
-            modelBuilder.ApplyConfiguration<FormaDePago>(new FormaDePagoEntityTypeConfiguration());
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(RolEntityTypeConfiguration).Assembly);
         }
     }
 }

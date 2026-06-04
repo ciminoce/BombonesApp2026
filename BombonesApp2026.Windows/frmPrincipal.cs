@@ -45,5 +45,13 @@
                 frm.ShowDialog();
             }
         }
+
+        private void btnCiudades_Click(object sender, EventArgs e)
+        {
+            using (frmCiudades frm = new frmCiudades() { Text = "Listado de Ciudades" })
+            {
+                frm.ShowDialog();
+            }
+        }
     }
 }

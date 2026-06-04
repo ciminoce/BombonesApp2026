@@ -11,10 +11,10 @@ namespace BombonesApp2026.Datos.EntityTypeConfigurations
         {
             builder.ToTable("Provincias");
             builder.HasKey(p => p.ProvinciaId);
-            builder.Property(p => p.Nombre)
+            builder.Property(p => p.NombreProvincia)
                 .IsRequired()
                 .HasMaxLength(100);
-            builder.HasIndex(p => p.Nombre, "IX_Provincias_Nombre")
+            builder.HasIndex(p => p.NombreProvincia, "IX_Provincias_NombreProvincia")
                 .IsUnique();
         }
     }

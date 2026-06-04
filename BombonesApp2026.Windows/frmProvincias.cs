@@ -6,7 +6,7 @@ namespace BombonesApp2026.Windows
     public partial class frmProvincias : Form
     {
         private readonly ProvinciaServicio _provinciaServicio;
-        private List<ProvinciaListDto>? listaProvincias;
+        private List<ProvinciaListDto>? _listaProvincias;
         public frmProvincias()
         {
             InitializeComponent();
@@ -70,8 +70,8 @@ namespace BombonesApp2026.Windows
                         Nombre = provinciaEditDto.Nombre,
                     };
                     _provinciaServicio.Agregar(provinciaCreateDto);
-                    listaProvincias = _provinciaServicio.ObtenerTodos();
-                    MostrarDatosEnGrilla(listaProvincias);
+                    _listaProvincias = _provinciaServicio.ObtenerTodos();
+                    MostrarDatosEnGrilla(_listaProvincias);
                     MessageBox.Show("Provincia Agregada",
                         "Mensaje", MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
@@ -105,8 +105,8 @@ namespace BombonesApp2026.Windows
             try
             {
                 _provinciaServicio.Borrar(provinciaDto.ProvinciaId);
-                listaProvincias = _provinciaServicio.ObtenerTodos();
-                MostrarDatosEnGrilla(listaProvincias);
+                _listaProvincias = _provinciaServicio.ObtenerTodos();
+                MostrarDatosEnGrilla(_listaProvincias);
                 MessageBox.Show("Provincia eliminada",
                     "Mensaje",
                     MessageBoxButtons.OK,
@@ -146,8 +146,8 @@ namespace BombonesApp2026.Windows
                 try
                 {
                     _provinciaServicio.Editar(provinciaEditDto);
-                    listaProvincias = _provinciaServicio.ObtenerTodos();
-                    MostrarDatosEnGrilla(listaProvincias);
+                    _listaProvincias = _provinciaServicio.ObtenerTodos();
+                    MostrarDatosEnGrilla(_listaProvincias);
                     MessageBox.Show("Provincia editada",
                         "Mensaje",
                         MessageBoxButtons.OK,
@@ -175,8 +175,8 @@ namespace BombonesApp2026.Windows
         {
             try
             {
-                listaProvincias = _provinciaServicio.ObtenerTodos();
-                MostrarDatosEnGrilla(listaProvincias);
+                _listaProvincias = _provinciaServicio.ObtenerTodos();
+                MostrarDatosEnGrilla(_listaProvincias);
 
             }
             catch (Exception ex)

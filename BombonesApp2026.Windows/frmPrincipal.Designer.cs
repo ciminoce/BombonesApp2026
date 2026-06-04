@@ -50,6 +50,7 @@
             panelContent = new Panel();
             label4 = new Label();
             label3 = new Label();
+            btnTransportes = new Button();
             panelTop.SuspendLayout();
             statusStrip1.SuspendLayout();
             panelMenu.SuspendLayout();
@@ -132,6 +133,7 @@
             // 
             panelMenu.Controls.Add(btnVentas);
             panelMenu.Controls.Add(btnProvincias);
+            panelMenu.Controls.Add(btnTransportes);
             panelMenu.Controls.Add(btnCiudades);
             panelMenu.Controls.Add(btnFormaDePago);
             panelMenu.Controls.Add(btnClientes);
@@ -148,7 +150,7 @@
             // 
             // btnVentas
             // 
-            btnVentas.Location = new Point(37, 462);
+            btnVentas.Location = new Point(37, 493);
             btnVentas.Name = "btnVentas";
             btnVentas.Size = new Size(171, 37);
             btnVentas.TabIndex = 0;
@@ -167,16 +169,17 @@
             // 
             // btnCiudades
             // 
-            btnCiudades.Location = new Point(37, 289);
+            btnCiudades.Location = new Point(37, 292);
             btnCiudades.Name = "btnCiudades";
             btnCiudades.Size = new Size(171, 37);
             btnCiudades.TabIndex = 0;
             btnCiudades.Text = "Ciudades";
             btnCiudades.UseVisualStyleBackColor = true;
+            btnCiudades.Click += btnCiudades_Click;
             // 
             // btnFormaDePago
             // 
-            btnFormaDePago.Location = new Point(37, 343);
+            btnFormaDePago.Location = new Point(37, 391);
             btnFormaDePago.Name = "btnFormaDePago";
             btnFormaDePago.Size = new Size(171, 37);
             btnFormaDePago.TabIndex = 0;
@@ -186,7 +189,7 @@
             // 
             // btnClientes
             // 
-            btnClientes.Location = new Point(37, 386);
+            btnClientes.Location = new Point(37, 434);
             btnClientes.Name = "btnClientes";
             btnClientes.Size = new Size(171, 37);
             btnClientes.TabIndex = 0;
@@ -268,6 +271,16 @@
             label3.TabIndex = 0;
             label3.Text = "Sistema de Gestión de Bombonería";
             // 
+            // btnTransportes
+            // 
+            btnTransportes.Location = new Point(37, 335);
+            btnTransportes.Name = "btnTransportes";
+            btnTransportes.Size = new Size(171, 37);
+            btnTransportes.TabIndex = 0;
+            btnTransportes.Text = "Transportes";
+            btnTransportes.UseVisualStyleBackColor = true;
+            btnTransportes.Click += btnCiudades_Click;
+            // 
             // frmPrincipal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -314,5 +327,6 @@
         private Button btnProvincias;
         private Button btnCiudades;
         private Button btnFormaDePago;
+        private Button btnTransportes;
     }
 }

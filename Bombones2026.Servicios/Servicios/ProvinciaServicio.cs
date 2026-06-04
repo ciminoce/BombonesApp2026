@@ -19,7 +19,7 @@ namespace Bombones2026.Servicios.Servicios
                 .Select(p => new ProvinciaListDto           
                 {
                     ProvinciaId = p.ProvinciaId,
-                    Nombre = p.Nombre,
+                    Nombre = p.NombreProvincia,
                 }).ToList();
         }
         public void Agregar(ProvinciaCreateDto? provinciaDto)
@@ -30,9 +30,9 @@ namespace Bombones2026.Servicios.Servicios
                 throw new ArgumentException(nameof(provinciaDto.Nombre), "El nombre de la provincia es requerido");
             Provincia provincia = new Provincia
             {
-                Nombre = provinciaDto.Nombre,
+                NombreProvincia = provinciaDto.Nombre,
             };
-            if (_provinciaRepositorio.ExisteProvincia(provincia)) throw new InvalidCastException($"Ya existe una Provincia {provincia.Nombre}");
+            if (_provinciaRepositorio.ExisteProvincia(provincia)) throw new InvalidCastException($"Ya existe una Provincia {provincia.NombreProvincia}");
             _provinciaRepositorio.Agregar(provincia);
         }
         public void Borrar(int provinciaId)
@@ -65,9 +65,9 @@ namespace Bombones2026.Servicios.Servicios
             Provincia provincia = new Provincia
             {
                 ProvinciaId = provinciaDto.ProvinciaId,
-                Nombre = provinciaDto.Nombre    
+                NombreProvincia = provinciaDto.Nombre  
             };
-            if (_provinciaRepositorio.ExisteProvincia(provincia)) throw new InvalidOperationException($"Ya existe una Provincia {provincia.Nombre}");
+            if (_provinciaRepositorio.ExisteProvincia(provincia)) throw new InvalidOperationException($"Ya existe una Provincia {provincia.NombreProvincia}");
             _provinciaRepositorio.Editar(provincia);
         }
         public ProvinciaEditDto ObtenerParaEditar(int id)
@@ -82,7 +82,7 @@ namespace Bombones2026.Servicios.Servicios
             ProvinciaEditDto provinciaDto = new ProvinciaEditDto
             {
                 ProvinciaId = provincia.ProvinciaId,
-                Nombre = provincia.Nombre
+                Nombre = provincia.NombreProvincia
             };
             return provinciaDto;
         }
