@@ -43,11 +43,11 @@
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvDatos = new DataGridView();
+            lblCantidad = new Label();
+            label1 = new Label();
             colId = new DataGridViewTextBoxColumn();
             colRol = new DataGridViewTextBoxColumn();
             colActivo = new DataGridViewCheckBoxColumn();
-            lblCantidad = new Label();
-            label1 = new Label();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -201,26 +201,6 @@
             dgvDatos.Size = new Size(800, 321);
             dgvDatos.TabIndex = 0;
             // 
-            // colId
-            // 
-            colId.HeaderText = "Id";
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            colId.Visible = false;
-            // 
-            // colRol
-            // 
-            colRol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colRol.HeaderText = "Rol";
-            colRol.Name = "colRol";
-            colRol.ReadOnly = true;
-            // 
-            // colActivo
-            // 
-            colActivo.HeaderText = "Activo";
-            colActivo.Name = "colActivo";
-            colActivo.ReadOnly = true;
-            // 
             // lblCantidad
             // 
             lblCantidad.AutoSize = true;
@@ -239,6 +219,29 @@
             label1.Size = new Size(58, 15);
             label1.TabIndex = 0;
             label1.Text = "Cantidad:";
+            // 
+            // colId
+            // 
+            colId.DataPropertyName = "RolId";
+            colId.HeaderText = "Id";
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            colId.Visible = false;
+            // 
+            // colRol
+            // 
+            colRol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colRol.DataPropertyName = "Nombre";
+            colRol.HeaderText = "Rol";
+            colRol.Name = "colRol";
+            colRol.ReadOnly = true;
+            // 
+            // colActivo
+            // 
+            colActivo.DataPropertyName = "Activo";
+            colActivo.HeaderText = "Activo";
+            colActivo.Name = "colActivo";
+            colActivo.ReadOnly = true;
             // 
             // frmRoles
             // 
@@ -276,13 +279,13 @@
         private DataGridView dgvDatos;
         private Label lblCantidad;
         private Label label1;
-        private DataGridViewTextBoxColumn colId;
-        private DataGridViewTextBoxColumn colRol;
-        private DataGridViewCheckBoxColumn colActivo;
         private ToolStripDropDownButton tsbFiltrar;
         private ToolStripMenuItem activosToolStripMenuItem;
         private ToolStripMenuItem noActivosToolStripMenuItem;
         private ToolStripButton tsbDetalles;
         private ToolStripSeparator toolStripSeparator3;
+        private DataGridViewTextBoxColumn colId;
+        private DataGridViewTextBoxColumn colRol;
+        private DataGridViewCheckBoxColumn colActivo;
     }
 }

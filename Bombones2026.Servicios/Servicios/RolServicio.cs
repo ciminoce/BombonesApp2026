@@ -22,7 +22,7 @@ namespace Bombones2026.Servicios.Servicios
                     Activo = r.Activo,
                 }).ToList();
         }
-        public void Agregar(RolCreateDto? rolDto)
+        public int Agregar(RolCreateDto? rolDto)
         {
             if (rolDto == null)
                 throw new ArgumentNullException(nameof(rolDto), "El rol no puede ser nulo");
@@ -35,7 +35,16 @@ namespace Bombones2026.Servicios.Servicios
                 Activo = true//Nuevo roles son activos por defecto
             };
             if (_rolRepositorio.ExisteRol(rol)) throw new InvalidCastException($"Ya existe un Rol {rol.Nombre}");
-            _rolRepositorio.Agregar(rol);
+            try
+            {
+                _rolRepositorio.Agregar(rol);
+                return rol.RolId;//retorno el nuevo id generado
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Error al intentar agregar un rol: {ex.Message}");
+            }  
         }
         public void Borrar(int rolId)
         {

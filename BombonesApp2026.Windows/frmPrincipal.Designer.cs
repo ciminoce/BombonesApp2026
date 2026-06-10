@@ -39,6 +39,7 @@
             panelMenu = new Panel();
             btnVentas = new Button();
             btnProvincias = new Button();
+            btnTransportes = new Button();
             btnCiudades = new Button();
             btnFormaDePago = new Button();
             btnClientes = new Button();
@@ -50,7 +51,6 @@
             panelContent = new Panel();
             label4 = new Label();
             label3 = new Label();
-            btnTransportes = new Button();
             panelTop.SuspendLayout();
             statusStrip1.SuspendLayout();
             panelMenu.SuspendLayout();
@@ -167,6 +167,16 @@
             btnProvincias.UseVisualStyleBackColor = true;
             btnProvincias.Click += btnProvincias_Click;
             // 
+            // btnTransportes
+            // 
+            btnTransportes.Location = new Point(37, 335);
+            btnTransportes.Name = "btnTransportes";
+            btnTransportes.Size = new Size(171, 37);
+            btnTransportes.TabIndex = 0;
+            btnTransportes.Text = "Transportes";
+            btnTransportes.UseVisualStyleBackColor = true;
+            btnTransportes.Click += btnTransportes_Click;
+            // 
             // btnCiudades
             // 
             btnCiudades.Location = new Point(37, 292);
@@ -270,16 +280,6 @@
             label3.Size = new Size(191, 15);
             label3.TabIndex = 0;
             label3.Text = "Sistema de Gestión de Bombonería";
-            // 
-            // btnTransportes
-            // 
-            btnTransportes.Location = new Point(37, 335);
-            btnTransportes.Name = "btnTransportes";
-            btnTransportes.Size = new Size(171, 37);
-            btnTransportes.TabIndex = 0;
-            btnTransportes.Text = "Transportes";
-            btnTransportes.UseVisualStyleBackColor = true;
-            btnTransportes.Click += btnCiudades_Click;
             // 
             // frmPrincipal
             // 

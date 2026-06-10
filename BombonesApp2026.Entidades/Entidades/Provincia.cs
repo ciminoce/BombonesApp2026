@@ -6,6 +6,7 @@
 
         public string NombreProvincia { get; set; } = null!;
         public ICollection<Ciudad> Ciudades { get; set; } = new List<Ciudad>();
+        public ICollection<Transporte> Transportes { get; set; } = new List<Transporte>();
 
     }
 }

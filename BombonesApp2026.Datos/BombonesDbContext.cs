@@ -13,6 +13,7 @@ namespace BombonesApp2026.Datos
         public DbSet<Provincia> Provincias { get; set; }
         public DbSet<FormaDePago> FormasDePago { get; set; }
         public DbSet<Ciudad> Ciudades { get; set; }
+        public DbSet<Transporte> Transportes { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Data Source=.; Initial Catalog=Bombones2026;

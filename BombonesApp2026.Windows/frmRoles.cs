@@ -1,12 +1,14 @@
 ﻿using Bombones2026.Servicios.DTOs.Rol;
 using Bombones2026.Servicios.Servicios;
+using System.ComponentModel;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmRoles : Form
     {
         private readonly RolServicio _rolServicio;
-        private List<RolListDto>? listaRoles;
+        private List<RolListDto>? _listaRoles;
+        private BindingSource _bindingSource = new BindingSource();
         public frmRoles()
         {
             InitializeComponent();
@@ -20,48 +22,26 @@ namespace BombonesApp2026.Windows
 
         private void frmRoles_Load(object sender, EventArgs e)
         {
-            listaRoles = _rolServicio.ObtenerTodos();
-            MostrarDatosEnGrilla(listaRoles);
+            _listaRoles = _rolServicio.ObtenerTodos();
+            MostrarDatosEnGrilla(_listaRoles);
         }
 
         private void MostrarDatosEnGrilla(List<RolListDto> listaRoles)
         {
-            LimpiarGrilla(dgvDatos);
-            foreach (var rol in listaRoles)
-            {
-                DataGridViewRow r = ConstruirFila(dgvDatos);
-                SetearFila(r, rol);
-                AgregarFila(r, dgvDatos);
-            }
+            //LimpiarGrilla(dgvDatos);
+            //foreach (var rol in listaRoles)
+            //{
+            //    DataGridViewRow r = ConstruirFila(dgvDatos);
+            //    SetearFila(r, rol);
+            //    AgregarFila(r, dgvDatos);
+            //}
+            var bindingList = new BindingList<RolListDto>(listaRoles);
+            _bindingSource.DataSource= bindingList;
+            dgvDatos.DataSource = _bindingSource;
+
             lblCantidad.Text = listaRoles.Count.ToString();
         }
 
-        private void AgregarFila(DataGridViewRow r, DataGridView dgv)
-        {
-            dgv.Rows.Add(r);
-        }
-
-        private void SetearFila(DataGridViewRow r, RolListDto rol)
-        {
-            r.Cells[0].Value = rol.RolId;
-            r.Cells[1].Value = rol.Nombre;
-            r.Cells[2].Value = rol.Activo;
-
-            r.Tag = rol;
-        }
-
-        private DataGridViewRow ConstruirFila(DataGridView dgv)
-        {
-            DataGridViewRow r = new DataGridViewRow();
-            r.CreateCells(dgv);
-            return r;
-
-        }
-
-        private void LimpiarGrilla(DataGridView dgv)
-        {
-            dgv.Rows.Clear();
-        }
 
         private void tsbNuevo_Click(object sender, EventArgs e)
         {
@@ -78,9 +58,12 @@ namespace BombonesApp2026.Windows
                         Nombre = rolEditDto.Nombre,
                         Descripcion = rolEditDto.Descripcion,
                     };
-                    _rolServicio.Agregar(rolCreateDto);
-                    listaRoles = _rolServicio.ObtenerTodos();
-                    MostrarDatosEnGrilla(listaRoles);
+                    var nuevoId=_rolServicio.Agregar(rolCreateDto);
+                    _listaRoles = _rolServicio.ObtenerTodos();
+                    MostrarDatosEnGrilla(_listaRoles);
+                    var nuevoRol = _listaRoles.FirstOrDefault(r => r.RolId == nuevoId);
+                    if (nuevoRol is null) return;
+                    _bindingSource.Position = _bindingSource.IndexOf(nuevoRol);
                     MessageBox.Show("Rol Agregado",
                         "Mensaje", MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
@@ -104,8 +87,7 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvDatos.SelectedRows[0];
-            RolListDto rolDto = (RolListDto)r.Tag!;
+            RolListDto rolDto = (RolListDto)_bindingSource.Current!;
             DialogResult dr = MessageBox.Show($"¿Desea borrar el rol {rolDto.Nombre}?",
                 "Confirmar",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question,
@@ -114,8 +96,8 @@ namespace BombonesApp2026.Windows
             try
             {
                 _rolServicio.Borrar(rolDto.RolId);
-                listaRoles = _rolServicio.ObtenerTodos();
-                MostrarDatosEnGrilla(listaRoles);
+                _listaRoles = _rolServicio.ObtenerTodos();
+                MostrarDatosEnGrilla(_listaRoles);
                 MessageBox.Show("Rol eliminado",
                     "Mensaje",
                     MessageBoxButtons.OK,
@@ -142,8 +124,8 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvDatos.SelectedRows[0];
-            RolListDto rolDto = (RolListDto)r.Tag!;
+            //var r = dgvDatos.SelectedRows[0];
+            RolListDto rolDto =(RolListDto) _bindingSource.Current!;
             RolEditDto? rolEditDto = _rolServicio.ObtenerParaEditar(rolDto.RolId);
             if (rolEditDto is null) return;
             using (frmRolesAe frm = new frmRolesAe() { Text = "Editar Rol" })
@@ -152,11 +134,15 @@ namespace BombonesApp2026.Windows
                 DialogResult dr = frm.ShowDialog();
                 if (dr == DialogResult.Cancel) return;
                 rolEditDto = frm.GetRol();
+                if (rolEditDto is null) return;
                 try
                 {
                     _rolServicio.Editar(rolEditDto);
-                    listaRoles = _rolServicio.ObtenerTodos();
-                    MostrarDatosEnGrilla(listaRoles);
+                    _listaRoles = _rolServicio.ObtenerTodos();
+                    MostrarDatosEnGrilla(_listaRoles);
+                    var rolEditado = _listaRoles
+                        .FirstOrDefault(r => r.RolId == rolEditDto.RolId);
+                    _bindingSource.Position = _bindingSource.IndexOf(rolEditado);
                     MessageBox.Show("Rol editado",
                         "Mensaje",
                         MessageBoxButtons.OK,
@@ -177,8 +163,8 @@ namespace BombonesApp2026.Windows
 
         private void activosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            listaRoles = _rolServicio.FiltrarPorActivo(true);
-            MostrarDatosEnGrilla(listaRoles);
+            _listaRoles = _rolServicio.FiltrarPorActivo(true);
+            MostrarDatosEnGrilla(_listaRoles);
             ManejarBotones(true);
         }
 
@@ -193,16 +179,16 @@ namespace BombonesApp2026.Windows
 
         private void noActivosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            listaRoles = _rolServicio.FiltrarPorActivo(false);
-            MostrarDatosEnGrilla(listaRoles);
+            _listaRoles = _rolServicio.FiltrarPorActivo(false);
+            MostrarDatosEnGrilla(_listaRoles);
             ManejarBotones(true);
 
         }
 
         private void tsbActualizar_Click(object sender, EventArgs e)
         {
-            listaRoles = _rolServicio.ObtenerTodos();
-            MostrarDatosEnGrilla(listaRoles);
+            _listaRoles = _rolServicio.ObtenerTodos();
+            MostrarDatosEnGrilla(_listaRoles);
             ManejarBotones(false);
         }
     }

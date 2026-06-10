@@ -1,0 +1,73 @@
+﻿using Bombones2026.Servicios.DTOs.Transporte;
+using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Entidades.Entidades;
+
+namespace Bombones2026.Servicios.Servicios
+{
+    public class TransporteServicio
+    {
+        private readonly TransporteRepositorio _transporteRepositorio;
+        public TransporteServicio()
+        {
+            _transporteRepositorio = new TransporteRepositorio();
+        }
+
+        public int Agregar(TransporteCreateDto? transporteDto)
+        {
+            if (transporteDto is null)
+            {
+                throw new ArgumentNullException(nameof(transporteDto), "El transporte no puede ser nulo");
+            }
+            if (string.IsNullOrWhiteSpace(transporteDto.NombreEmpresa))
+            {
+                throw new ArgumentNullException(nameof(transporteDto.NombreEmpresa), "El nombre es requerido");
+            }
+            if (string.IsNullOrWhiteSpace(transporteDto.Telefono))
+            {
+                throw new ArgumentNullException(nameof(transporteDto.Telefono), "El teléfono es requerido");
+            }
+            if (string.IsNullOrWhiteSpace(transporteDto.Email))
+            {
+                throw new ArgumentNullException(nameof(transporteDto.Email), "El Email es requerido");
+            }
+
+            Transporte transporte = new Transporte()
+            {
+                NombreEmpresa = transporteDto.NombreEmpresa,
+                Telefono = transporteDto.Telefono,
+                Email = transporteDto.Email,
+                ProvinciaId = transporteDto.ProvinciaId,
+                Activo = true
+            };
+            if (_transporteRepositorio.ExisteTransporte(transporte))
+            {
+                throw new InvalidOperationException($"Ya existe un transporte {transporte.NombreEmpresa}");
+            }
+            try
+            {
+                _transporteRepositorio.Agregar(transporte);
+                return transporte.TransporteId;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Error al intentar agregar un transporte: {ex.Message}");
+            }
+        }
+
+        public List<TransporteListDto> ObtenerTodos()
+        {
+            return _transporteRepositorio.ObtenerTodos()
+                .Select(t => new TransporteListDto
+                {
+                    TransporteId = t.TransporteId,
+                    NombreEmpresa = t.NombreEmpresa,
+                    Provincia = t.Provincia is not null?t.Provincia.NombreProvincia:"Sin Provincia",
+                    Telefono = t.Telefono,
+                    Email = t.Email,
+                    Activo=t.Activo
+
+                }).ToList();
+        }
+    }
+}

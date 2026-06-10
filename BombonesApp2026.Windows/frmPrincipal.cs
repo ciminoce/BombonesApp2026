@@ -53,5 +53,13 @@
                 frm.ShowDialog();
             }
         }
+
+        private void btnTransportes_Click(object sender, EventArgs e)
+        {
+            using (frmTransportes frm=new frmTransportes() { Text="Listado de Transportes"})
+            {
+                frm.ShowDialog();
+            }
+        }
     }
 }
