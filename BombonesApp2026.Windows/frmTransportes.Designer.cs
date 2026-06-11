@@ -34,9 +34,6 @@
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
-            tsbFiltrar = new ToolStripDropDownButton();
-            activosToolStripMenuItem = new ToolStripMenuItem();
-            noActivosToolStripMenuItem = new ToolStripMenuItem();
             tsbActualizar = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
@@ -50,6 +47,7 @@
             colActivo = new DataGridViewCheckBoxColumn();
             lblCantidad = new Label();
             label1 = new Label();
+            tsbFiltrar = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -102,29 +100,6 @@
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 70);
-            // 
-            // tsbFiltrar
-            // 
-            tsbFiltrar.DropDownItems.AddRange(new ToolStripItem[] { activosToolStripMenuItem, noActivosToolStripMenuItem });
-            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
-            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbFiltrar.ImageTransparentColor = Color.Magenta;
-            tsbFiltrar.Name = "tsbFiltrar";
-            tsbFiltrar.Size = new Size(61, 67);
-            tsbFiltrar.Text = "&Filtrar";
-            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
-            // 
-            // activosToolStripMenuItem
-            // 
-            activosToolStripMenuItem.Name = "activosToolStripMenuItem";
-            activosToolStripMenuItem.Size = new Size(132, 22);
-            activosToolStripMenuItem.Text = "Activos";
-            // 
-            // noActivosToolStripMenuItem
-            // 
-            noActivosToolStripMenuItem.Name = "noActivosToolStripMenuItem";
-            noActivosToolStripMenuItem.Size = new Size(132, 22);
-            noActivosToolStripMenuItem.Text = "No Activos";
             // 
             // tsbActualizar
             // 
@@ -254,6 +229,16 @@
             label1.TabIndex = 0;
             label1.Text = "Cantidad:";
             // 
+            // tsbFiltrar
+            // 
+            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
+            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbFiltrar.ImageTransparentColor = Color.Magenta;
+            tsbFiltrar.Name = "tsbFiltrar";
+            tsbFiltrar.Size = new Size(52, 67);
+            tsbFiltrar.Text = "&Filtrar";
+            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
             // frmTransportes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -291,14 +276,12 @@
         private DataGridView dgvDatos;
         private Label lblCantidad;
         private Label label1;
-        private ToolStripDropDownButton tsbFiltrar;
-        private ToolStripMenuItem activosToolStripMenuItem;
-        private ToolStripMenuItem noActivosToolStripMenuItem;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colTransporte;
         private DataGridViewTextBoxColumn colProvincia;
         private DataGridViewTextBoxColumn colTelefono;
         private DataGridViewTextBoxColumn colEmail;
         private DataGridViewCheckBoxColumn colActivo;
+        private ToolStripButton tsbFiltrar;
     }
 }

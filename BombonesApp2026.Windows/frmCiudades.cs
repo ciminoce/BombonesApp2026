@@ -1,5 +1,6 @@
 ﻿using Bombones2026.Servicios.DTOs.Ciudad;
 using Bombones2026.Servicios.Servicios;
+using System.ComponentModel;
 
 namespace BombonesApp2026.Windows
 {
@@ -7,6 +8,7 @@ namespace BombonesApp2026.Windows
     {
         private readonly CiudadServicio _ciudadServicio;
         private List<CiudadListDto>? _listaCiudades;
+        private BindingSource _bindingSource = new BindingSource();
         public frmCiudades()
         {
             InitializeComponent();
@@ -35,40 +37,11 @@ namespace BombonesApp2026.Windows
 
         private void MostrarDatosEnGrilla(List<CiudadListDto> lista)
         {
-            LimpiarGrilla(dgvDatos);
-            foreach (var item in lista)
-            {
-                var r = ConstruirFila(dgvDatos);
-                SetearFila(r, item);
-                AgregarFila(r, dgvDatos);
-            }
+            var bindingList = new BindingList<CiudadListDto>(lista);
+            _bindingSource.DataSource = bindingList;
+            dgvDatos.DataSource = _bindingSource;
+
             lblCantidad.Text = lista.Count.ToString();
-        }
-
-        private void LimpiarGrilla(DataGridView dgvDatos)
-        {
-            dgvDatos.Rows.Clear();
-        }
-
-        private void SetearFila(DataGridViewRow r, CiudadListDto obj)
-        {
-            r.Cells[0].Value = obj.CiudadId;
-            r.Cells[1].Value = obj.Ciudad;
-            r.Cells[2].Value = obj.Provincia;
-
-            r.Tag = obj;
-        }
-
-        private void AgregarFila(DataGridViewRow r, DataGridView dgvDatos)
-        {
-            dgvDatos.Rows.Add(r);
-        }
-
-        private DataGridViewRow ConstruirFila(DataGridView dgvDatos)
-        {
-            var r = new DataGridViewRow();
-            r.CreateCells(dgvDatos);
-            return r;
         }
 
         private void tsbNuevo_Click(object sender, EventArgs e)
@@ -86,9 +59,13 @@ namespace BombonesApp2026.Windows
                         Nombre = ciudad.Nombre,
                         ProvinciaId = ciudad.ProvinciaId
                     };
-                    _ciudadServicio.Agregar(ciudadCreateDto);
+                    int nuevoId=_ciudadServicio.Agregar(ciudadCreateDto);
+
                     _listaCiudades = _ciudadServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaCiudades);
+                    var nuevaCiudad = _listaCiudades.FirstOrDefault(c => c.CiudadId == nuevoId);
+                    if (nuevaCiudad is null) return;
+                    _bindingSource.Position = _bindingSource.IndexOf(nuevaCiudad);
                     MessageBox.Show("Registro agregado", "Información",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }

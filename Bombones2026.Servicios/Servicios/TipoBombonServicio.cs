@@ -34,7 +34,7 @@ namespace Bombones2026.Servicios.Servicios
                 }).ToList();
         }
 
-        public void Agregar(TipoBombonCreateDto? tipoDto)
+        public int Agregar(TipoBombonCreateDto? tipoDto)
         {
 
             if (tipoDto is null)
@@ -53,7 +53,16 @@ namespace Bombones2026.Servicios.Servicios
             {
                 throw new InvalidOperationException($"Ya existe un tipo de bombón {tipo.Nombre}");
             }
-            _tipoBombonRepositorio.Agregar(tipo);
+            try
+            {
+                _tipoBombonRepositorio.Agregar(tipo);
+                return tipo.TipoBombonId;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Error al intentar guardar un rol {ex.Message}");
+            }
         }
 
         public void Borrar(int tipoBombonId)

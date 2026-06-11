@@ -22,7 +22,7 @@ namespace Bombones2026.Servicios.Servicios
                     Activo = f.Activo,
                 }).ToList();
         }
-        public void Agregar(FormaDePagoCreateDto? formaDePagoDto)
+        public int Agregar(FormaDePagoCreateDto? formaDePagoDto)
         {
             if (formaDePagoDto == null)
                 throw new ArgumentNullException(nameof(formaDePagoDto), "La forma de pago no puede ser nula");
@@ -34,7 +34,16 @@ namespace Bombones2026.Servicios.Servicios
                 Activo = true//Nuevas formas de pago son activas por defecto
             };
             if (_formasDePagoRepositorio.ExisteFormaDePago(formaDePago)) throw new InvalidCastException($"Ya existe una Forma de Pago {formaDePago.Nombre}");
-            _formasDePagoRepositorio.Agregar(formaDePago);
+            try
+            {
+                _formasDePagoRepositorio.Agregar(formaDePago);
+                return formaDePago.FormaDePagoId;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Error al intentar guardar una forma de pago {ex.Message}");
+            }
         }
         public void Borrar(int formaDePagoId)
         {

@@ -22,7 +22,7 @@ namespace Bombones2026.Servicios.Servicios
                     Nombre = p.NombreProvincia,
                 }).ToList();
         }
-        public void Agregar(ProvinciaCreateDto? provinciaDto)
+        public int Agregar(ProvinciaCreateDto? provinciaDto)
         {
             if (provinciaDto == null)
                 throw new ArgumentNullException(nameof(provinciaDto), "La provincia no puede ser nula");
@@ -33,7 +33,16 @@ namespace Bombones2026.Servicios.Servicios
                 NombreProvincia = provinciaDto.Nombre,
             };
             if (_provinciaRepositorio.ExisteProvincia(provincia)) throw new InvalidCastException($"Ya existe una Provincia {provincia.NombreProvincia}");
-            _provinciaRepositorio.Agregar(provincia);
+            try
+            {
+                _provinciaRepositorio.Agregar(provincia);
+                return provincia.ProvinciaId;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Error al intentar guardar una provincia {ex.Message}");
+            }
         }
         public void Borrar(int provinciaId)
         {

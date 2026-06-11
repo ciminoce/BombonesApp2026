@@ -21,7 +21,7 @@ namespace Bombones2026.Servicios.Servicios
                     Provincia = c.Provincia!.NombreProvincia
                 }).ToList();
         }
-        public void Agregar(CiudadCreateDto ciudadDto)
+        public int Agregar(CiudadCreateDto ciudadDto)
         {
             Ciudad ciudad = new Ciudad
             {
@@ -35,6 +35,7 @@ namespace Bombones2026.Servicios.Servicios
             try
             {
                 _ciudadRepositorio.Agregar(ciudad);
+                return ciudad.CiudadId;
             }
             catch (Exception ex)
             {

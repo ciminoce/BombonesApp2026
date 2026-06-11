@@ -1,12 +1,15 @@
-﻿using Bombones2026.Servicios.DTOs.FormaDePago;
+﻿using Bombones2026.Servicios.DTOs.Ciudad;
+using Bombones2026.Servicios.DTOs.FormaDePago;
 using Bombones2026.Servicios.Servicios;
+using System.ComponentModel;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmFormasDePago : Form
     {
         private readonly FormaDePagoServicio _formaDePagoServicio;
-        private List<FormaDePagoListDto>? formaDePagoLista;
+        private List<FormaDePagoListDto>? _listaformaDePago;
+        private BindingSource _bindingSource = new BindingSource();
         public frmFormasDePago()
         {
             InitializeComponent();
@@ -18,43 +21,13 @@ namespace BombonesApp2026.Windows
         }
 
 
-        private void MostrarDatosEnGrilla(List<FormaDePagoListDto> listaFormasDePago)
+        private void MostrarDatosEnGrilla(List<FormaDePagoListDto> lista)
         {
-            LimpiarGrilla(dgvDatos);
-            foreach (var formaDePago in listaFormasDePago)
-            {
-                DataGridViewRow r = ConstruirFila(dgvDatos);
-                SetearFila(r, formaDePago);
-                AgregarFila(r, dgvDatos);
-            }
-            lblCantidad.Text = listaFormasDePago.Count.ToString();
-        }
+            var bindingList = new BindingList<FormaDePagoListDto>(lista);
+            _bindingSource.DataSource = bindingList;
+            dgvDatos.DataSource = _bindingSource;
 
-        private void AgregarFila(DataGridViewRow r, DataGridView dgv)
-        {
-            dgv.Rows.Add(r);
-        }
-
-        private void SetearFila(DataGridViewRow r, FormaDePagoListDto formaDePago)
-        {
-            r.Cells[0].Value = formaDePago.FormaDePagoId;
-            r.Cells[1].Value = formaDePago.Nombre;
-            r.Cells[2].Value = formaDePago.Activo;
-
-            r.Tag = formaDePago;
-        }
-
-        private DataGridViewRow ConstruirFila(DataGridView dgv)
-        {
-            DataGridViewRow r = new DataGridViewRow();
-            r.CreateCells(dgv);
-            return r;
-
-        }
-
-        private void LimpiarGrilla(DataGridView dgv)
-        {
-            dgv.Rows.Clear();
+            lblCantidad.Text = lista.Count.ToString();
         }
 
         private void tsbNuevo_Click(object sender, EventArgs e)
@@ -71,9 +44,13 @@ namespace BombonesApp2026.Windows
                     {
                         Nombre = formaDePagoEditDto.Nombre,
                     };
-                    _formaDePagoServicio.Agregar(formaDePagoCreateDto);
-                    formaDePagoLista = _formaDePagoServicio.ObtenerTodos();
-                    MostrarDatosEnGrilla(formaDePagoLista);
+                    int nuevoId = _formaDePagoServicio.Agregar(formaDePagoCreateDto);
+
+                     _listaformaDePago= _formaDePagoServicio.ObtenerTodos();
+                    MostrarDatosEnGrilla(_listaformaDePago);
+                    var nuevaForma = _listaformaDePago.FirstOrDefault(f => f.FormaDePagoId == nuevoId);
+                    if (nuevaForma is null) return;
+                    _bindingSource.Position = _bindingSource.IndexOf(nuevaForma);
                     MessageBox.Show("Forma de Pago Agregada",
                         "Mensaje", MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
@@ -107,8 +84,8 @@ namespace BombonesApp2026.Windows
             try
             {
                 _formaDePagoServicio.Borrar(formaDePagoDto.FormaDePagoId);
-                formaDePagoLista = _formaDePagoServicio.ObtenerTodos();
-                MostrarDatosEnGrilla(formaDePagoLista);
+                _listaformaDePago = _formaDePagoServicio.ObtenerTodos();
+                MostrarDatosEnGrilla(_listaformaDePago);
                 MessageBox.Show("Forma de Pago eliminada",
                     "Mensaje",
                     MessageBoxButtons.OK,
@@ -148,8 +125,8 @@ namespace BombonesApp2026.Windows
                 try
                 {
                     _formaDePagoServicio.Editar(formaDePagoEditDto);
-                    formaDePagoLista = _formaDePagoServicio.ObtenerTodos();
-                    MostrarDatosEnGrilla(formaDePagoLista);
+                    _listaformaDePago = _formaDePagoServicio.ObtenerTodos();
+                    MostrarDatosEnGrilla(_listaformaDePago);
                     MessageBox.Show("Forma de Pago editada",
                         "Mensaje",
                         MessageBoxButtons.OK,
@@ -170,8 +147,8 @@ namespace BombonesApp2026.Windows
 
         private void activosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            formaDePagoLista = _formaDePagoServicio.FiltrarPorActivo(true);
-            MostrarDatosEnGrilla(formaDePagoLista);
+            _listaformaDePago = _formaDePagoServicio.FiltrarPorActivo(true);
+            MostrarDatosEnGrilla(_listaformaDePago);
             ManejarBotones(true);
         }
 
@@ -186,16 +163,16 @@ namespace BombonesApp2026.Windows
 
         private void noActivosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            formaDePagoLista = _formaDePagoServicio.FiltrarPorActivo(false);
-            MostrarDatosEnGrilla(formaDePagoLista);
+            _listaformaDePago = _formaDePagoServicio.FiltrarPorActivo(false);
+            MostrarDatosEnGrilla(_listaformaDePago);
             ManejarBotones(true);
 
         }
 
         private void tsbActualizar_Click(object sender, EventArgs e)
         {
-            formaDePagoLista = _formaDePagoServicio.ObtenerTodos();
-            MostrarDatosEnGrilla(formaDePagoLista);
+            _listaformaDePago = _formaDePagoServicio.ObtenerTodos();
+            MostrarDatosEnGrilla(_listaformaDePago);
             ManejarBotones(false);
         }
 
@@ -203,8 +180,8 @@ namespace BombonesApp2026.Windows
         {
             try
             {
-                formaDePagoLista = _formaDePagoServicio.ObtenerTodos();
-                MostrarDatosEnGrilla(formaDePagoLista);
+                _listaformaDePago = _formaDePagoServicio.ObtenerTodos();
+                MostrarDatosEnGrilla(_listaformaDePago);
 
             }
             catch (Exception ex)

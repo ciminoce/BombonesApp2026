@@ -1,5 +1,6 @@
 ﻿using Bombones2026.Servicios.DTOs.TipoBombon;
 using Bombones2026.Servicios.Servicios;
+using System.ComponentModel;
 
 namespace BombonesApp2026.Windows
 {
@@ -7,6 +8,7 @@ namespace BombonesApp2026.Windows
     {
         private readonly TipoBombonServicio _tipoServicio;
         private List<TipoBombonListDto>? _listaTipos;
+        private BindingSource _bindingSource = new BindingSource();
         private bool filtroOn = false;
 
         public frmTiposDeBombones()
@@ -22,69 +24,38 @@ namespace BombonesApp2026.Windows
 
         private void frmTiposDeBombones_Load(object sender, EventArgs e)
         {
+            RecargarGrilla();
+        }
+        private void RecargarGrilla()
+        {
             try
             {
                 _listaTipos = _tipoServicio.ObtenerTodos();
-                filtroOn = true;
                 MostrarDatosEnGrilla(_listaTipos);
             }
             catch (Exception ex)
             {
 
-                MessageBox.Show(ex.Message,
-                            "Error", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
         }
 
-        private void MostrarDatosEnGrilla(List<TipoBombonListDto> listaTipos)
+        private void MostrarDatosEnGrilla(List<TipoBombonListDto> lista)
         {
-            dgvDatos.Rows.Clear();
-            foreach (var tipo in listaTipos)
-            {
-                var r = ConstruirFila(dgvDatos);
-                SetearFila(r, tipo);
-                AgregarFila(r, dgvDatos);
-            }
-            lblCantidad.Text = listaTipos.Count.ToString();
+            var bindingList = new BindingList<TipoBombonListDto>(lista);
+            _bindingSource.DataSource = bindingList;
+            dgvDatos.DataSource = _bindingSource;
+
+            lblCantidad.Text = lista.Count.ToString();
         }
 
-        private void SetearFila(DataGridViewRow r, TipoBombonListDto tipo)
-        {
-            r.Cells[0].Value = tipo.TipoBombonId;
-            r.Cells[1].Value = tipo.Nombre;
-            r.Cells[2].Value = tipo.Descripcion;
-            r.Cells[3].Value = tipo.Activo;
-
-            r.Tag = tipo;
-        }
-
-        private void AgregarFila(DataGridViewRow r, DataGridView dgvDatos)
-        {
-            dgvDatos.Rows.Add(r);
-        }
-
-        private DataGridViewRow ConstruirFila(DataGridView dgvDatos)
-        {
-            var r = new DataGridViewRow();
-            r.CreateCells(dgvDatos);
-            return r;
-        }
 
         private void activosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                _listaTipos = _tipoServicio.FiltrarPorActivo(true);
-                MostrarDatosEnGrilla(_listaTipos);
-                ManejarBotones(false);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message,
-                            "Error", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-            }
+            _listaTipos = _tipoServicio.FiltrarPorActivo(true);
+            MostrarDatosEnGrilla(_listaTipos);
+            ManejarBotones(true);
         }
 
         private void ManejarBotones(bool v)
@@ -100,37 +71,17 @@ namespace BombonesApp2026.Windows
 
         private void noActivosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                _listaTipos = _tipoServicio.FiltrarPorActivo(false);
-                MostrarDatosEnGrilla(_listaTipos);
-                ManejarBotones(false);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message,
-                            "Error", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-            }
+            _listaTipos = _tipoServicio.FiltrarPorActivo(false);
+            MostrarDatosEnGrilla(_listaTipos);
+            ManejarBotones(true);
 
         }
 
         private void tsbActualizar_Click(object sender, EventArgs e)
         {
-            try
-            {
-                _listaTipos = _tipoServicio.ObtenerTodos();
-                MostrarDatosEnGrilla(_listaTipos);
-                filtroOn = false;
-                ManejarBotones(true);
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message,
-                            "Error", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-            }
+            RecargarGrilla();
+            filtroOn=false;
+            ManejarBotones(false);
 
         }
 

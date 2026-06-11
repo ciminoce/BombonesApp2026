@@ -22,19 +22,29 @@ namespace BombonesApp2026.Windows
 
         private void frmRoles_Load(object sender, EventArgs e)
         {
-            _listaRoles = _rolServicio.ObtenerTodos();
-            MostrarDatosEnGrilla(_listaRoles);
+            RecargarGrilla();
+        }
+        private void RecargarGrilla()
+        {
+            try
+            {
+                _listaRoles = _rolServicio.ObtenerTodos();
+                MostrarDatosEnGrilla(_listaRoles);
+
+            }
+            catch (Exception ex)
+            {
+
+
+                MessageBox.Show(ex.Message,
+                 "Error",
+                 MessageBoxButtons.OK,
+                 MessageBoxIcon.Error);
+            }
         }
 
         private void MostrarDatosEnGrilla(List<RolListDto> listaRoles)
         {
-            //LimpiarGrilla(dgvDatos);
-            //foreach (var rol in listaRoles)
-            //{
-            //    DataGridViewRow r = ConstruirFila(dgvDatos);
-            //    SetearFila(r, rol);
-            //    AgregarFila(r, dgvDatos);
-            //}
             var bindingList = new BindingList<RolListDto>(listaRoles);
             _bindingSource.DataSource= bindingList;
             dgvDatos.DataSource = _bindingSource;
@@ -79,7 +89,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbBorrar_Click(object sender, EventArgs e)
         {
-            if (dgvDatos.SelectedRows.Count == 0)
+            if (_bindingSource.Current! == null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -116,7 +126,8 @@ namespace BombonesApp2026.Windows
 
         private void tsbEditar_Click(object sender, EventArgs e)
         {
-            if (dgvDatos.SelectedRows.Count == 0)
+            //Este es el control que no me anduvo
+            if (_bindingSource.Current! == null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -124,8 +135,11 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            //var r = dgvDatos.SelectedRows[0];
+            
             RolListDto rolDto =(RolListDto) _bindingSource.Current!;
+
+            int posicion = _bindingSource.Position;//reservo la posición
+
             RolEditDto? rolEditDto = _rolServicio.ObtenerParaEditar(rolDto.RolId);
             if (rolEditDto is null) return;
             using (frmRolesAe frm = new frmRolesAe() { Text = "Editar Rol" })
@@ -140,9 +154,9 @@ namespace BombonesApp2026.Windows
                     _rolServicio.Editar(rolEditDto);
                     _listaRoles = _rolServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaRoles);
-                    var rolEditado = _listaRoles
-                        .FirstOrDefault(r => r.RolId == rolEditDto.RolId);
-                    _bindingSource.Position = _bindingSource.IndexOf(rolEditado);
+                    //var rolEditado = _listaRoles
+                    //    .FirstOrDefault(r => r.RolId == rolEditDto.RolId);
+                    _bindingSource.Position = posicion;
                     MessageBox.Show("Rol editado",
                         "Mensaje",
                         MessageBoxButtons.OK,
@@ -153,9 +167,9 @@ namespace BombonesApp2026.Windows
                 {
 
                     MessageBox.Show(ex.Message,
-     "Error",
-     MessageBoxButtons.OK,
-     MessageBoxIcon.Error);
+                         "Error",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Error);
 
                 }
             }
@@ -187,8 +201,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbActualizar_Click(object sender, EventArgs e)
         {
-            _listaRoles = _rolServicio.ObtenerTodos();
-            MostrarDatosEnGrilla(_listaRoles);
+            RecargarGrilla();
             ManejarBotones(false);
         }
     }

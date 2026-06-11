@@ -1,12 +1,15 @@
 ﻿using Bombones2026.Servicios.DTOs.Provincia;
 using Bombones2026.Servicios.Servicios;
+using System.ComponentModel;
 
 namespace BombonesApp2026.Windows
 {
+    //TODO: Buscar Provincia
     public partial class frmProvincias : Form
     {
         private readonly ProvinciaServicio _provinciaServicio;
         private List<ProvinciaListDto>? _listaProvincias;
+        private BindingSource _bindingSource = new BindingSource();
         public frmProvincias()
         {
             InitializeComponent();
@@ -17,42 +20,13 @@ namespace BombonesApp2026.Windows
         {
             Close();
         }
-        private void MostrarDatosEnGrilla(List<ProvinciaListDto> listaProvincias)
+        private void MostrarDatosEnGrilla(List<ProvinciaListDto> lista)
         {
-            LimpiarGrilla(dgvDatos);
-            foreach (var provincia in listaProvincias)
-            {
-                DataGridViewRow r = ConstruirFila(dgvDatos);
-                SetearFila(r, provincia);
-                AgregarFila(r, dgvDatos);
-            }
-            lblCantidad.Text = listaProvincias.Count.ToString();
-        }
+            var bindingList = new BindingList<ProvinciaListDto>(lista);
+            _bindingSource.DataSource = bindingList;
+            dgvDatos.DataSource = _bindingSource;
 
-        private void AgregarFila(DataGridViewRow r, DataGridView dgv)
-        {
-            dgv.Rows.Add(r);
-        }
-
-        private void SetearFila(DataGridViewRow r, ProvinciaListDto provincia)
-        {
-            r.Cells[0].Value = provincia.ProvinciaId;
-            r.Cells[1].Value = provincia.Nombre;
-
-            r.Tag = provincia;
-        }
-
-        private DataGridViewRow ConstruirFila(DataGridView dgv)
-        {
-            DataGridViewRow r = new DataGridViewRow();
-            r.CreateCells(dgv);
-            return r;
-
-        }
-
-        private void LimpiarGrilla(DataGridView dgv)
-        {
-            dgv.Rows.Clear();
+            lblCantidad.Text = lista.Count.ToString();
         }
 
         private void tsbNuevo_Click(object sender, EventArgs e)
@@ -69,9 +43,12 @@ namespace BombonesApp2026.Windows
                     {
                         Nombre = provinciaEditDto.Nombre,
                     };
-                    _provinciaServicio.Agregar(provinciaCreateDto);
+                    int nuevoId=_provinciaServicio.Agregar(provinciaCreateDto);
                     _listaProvincias = _provinciaServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaProvincias);
+                    var nuevaPcia = _listaProvincias.FirstOrDefault(p => p.ProvinciaId == nuevoId);
+                    if (nuevaPcia is null) return;
+                    _bindingSource.Position = _bindingSource.IndexOf(nuevaPcia);
                     MessageBox.Show("Provincia Agregada",
                         "Mensaje", MessageBoxButtons.OK,
                         MessageBoxIcon.Information);

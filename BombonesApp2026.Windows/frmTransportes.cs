@@ -1,16 +1,10 @@
-﻿using Bombones2026.Servicios.DTOs.Rol;
-using Bombones2026.Servicios.DTOs.Transporte;
+﻿using Bombones2026.Servicios.DTOs.Transporte;
 using Bombones2026.Servicios.Servicios;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace BombonesApp2026.Windows
 {
+    //TODO:Ver filtros
     public partial class frmTransportes : Form
     {
         private readonly TransporteServicio _transporteServicio;
@@ -69,8 +63,8 @@ namespace BombonesApp2026.Windows
                     {
                         NombreEmpresa = transporteEditDto.NombreEmpresa,
                         Telefono = transporteEditDto.Telefono,
-                        Email=transporteEditDto.Email,
-                        ProvinciaId=transporteEditDto.ProvinciaId,
+                        Email = transporteEditDto.Email,
+                        ProvinciaId = transporteEditDto.ProvinciaId,
                     };
                     var nuevoId = _transporteServicio.Agregar(transporteCreateDto);
                     _listaTransporte = _transporteServicio.ObtenerTodos();
