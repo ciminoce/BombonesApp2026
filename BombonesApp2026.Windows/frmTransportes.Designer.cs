@@ -34,6 +34,7 @@
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
+            tsbFiltrar = new ToolStripButton();
             tsbActualizar = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
@@ -47,7 +48,6 @@
             colActivo = new DataGridViewCheckBoxColumn();
             lblCantidad = new Label();
             label1 = new Label();
-            tsbFiltrar = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -85,6 +85,7 @@
             tsbBorrar.Size = new Size(52, 67);
             tsbBorrar.Text = "&Borrar";
             tsbBorrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbBorrar.Click += tsbBorrar_Click;
             // 
             // tsbEditar
             // 
@@ -95,11 +96,22 @@
             tsbEditar.Size = new Size(52, 67);
             tsbEditar.Text = "&Editar";
             tsbEditar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbEditar.Click += tsbEditar_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 70);
+            // 
+            // tsbFiltrar
+            // 
+            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
+            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbFiltrar.ImageTransparentColor = Color.Magenta;
+            tsbFiltrar.Name = "tsbFiltrar";
+            tsbFiltrar.Size = new Size(52, 67);
+            tsbFiltrar.Text = "&Filtrar";
+            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
             // tsbActualizar
             // 
@@ -228,16 +240,6 @@
             label1.Size = new Size(58, 15);
             label1.TabIndex = 0;
             label1.Text = "Cantidad:";
-            // 
-            // tsbFiltrar
-            // 
-            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
-            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbFiltrar.ImageTransparentColor = Color.Magenta;
-            tsbFiltrar.Name = "tsbFiltrar";
-            tsbFiltrar.Size = new Size(52, 67);
-            tsbFiltrar.Text = "&Filtrar";
-            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
             // frmTransportes
             // 

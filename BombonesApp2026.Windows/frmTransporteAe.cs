@@ -113,5 +113,10 @@ namespace BombonesApp2026.Windows
             }
             return valido;
         }
+
+        internal void SetTransporte(TransporteEditDto transporteEditDto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

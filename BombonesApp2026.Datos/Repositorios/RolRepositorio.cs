@@ -50,7 +50,7 @@ namespace BombonesApp2026.Datos.Repositorios
                 Debug.WriteLine($"Estado antes de modificar {context.Entry(rol).State}");
 
                 var rolEnDb = context.Roles.Find(rol.RolId);
-                Debug.WriteLine($"Estado antes de modificar y luego de buscar {context.Entry(rolEnDb).State}");
+                Debug.WriteLine($"Estado antes de modificar y luego de buscar {context.Entry(rolEnDb!).State}");
 
                 if (rolEnDb is null) throw new Exception("Rol no encontrado");
                 rolEnDb.Nombre = rol.Nombre;

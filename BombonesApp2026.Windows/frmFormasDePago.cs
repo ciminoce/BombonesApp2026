@@ -1,5 +1,4 @@
-﻿using Bombones2026.Servicios.DTOs.Ciudad;
-using Bombones2026.Servicios.DTOs.FormaDePago;
+﻿using Bombones2026.Servicios.DTOs.FormaDePago;
 using Bombones2026.Servicios.Servicios;
 using System.ComponentModel;
 
@@ -46,7 +45,7 @@ namespace BombonesApp2026.Windows
                     };
                     int nuevoId = _formaDePagoServicio.Agregar(formaDePagoCreateDto);
 
-                     _listaformaDePago= _formaDePagoServicio.ObtenerTodos();
+                    _listaformaDePago = _formaDePagoServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaformaDePago);
                     var nuevaForma = _listaformaDePago.FirstOrDefault(f => f.FormaDePagoId == nuevoId);
                     if (nuevaForma is null) return;
@@ -66,7 +65,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbBorrar_Click(object sender, EventArgs e)
         {
-            if (dgvDatos.SelectedRows.Count == 0)
+            if (_bindingSource.Current == null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -74,8 +73,8 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvDatos.SelectedRows[0];
-            FormaDePagoListDto formaDePagoDto = (FormaDePagoListDto)r.Tag!;
+
+            FormaDePagoListDto formaDePagoDto = (FormaDePagoListDto)_bindingSource.Current!;
             DialogResult dr = MessageBox.Show($"¿Desea borrar la forma de pago {formaDePagoDto.Nombre}?",
                 "Confirmar",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question,
@@ -104,7 +103,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbEditar_Click(object sender, EventArgs e)
         {
-            if (dgvDatos.SelectedRows.Count == 0)
+            if (_bindingSource.Current == null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -112,8 +111,9 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvDatos.SelectedRows[0];
-            FormaDePagoListDto formaDePagoDto = (FormaDePagoListDto)r.Tag!;
+
+            FormaDePagoListDto formaDePagoDto = (FormaDePagoListDto)_bindingSource.Current!;
+            int posicion = _bindingSource.Position;
             FormaDePagoEditDto? formaDePagoEditDto = _formaDePagoServicio.ObtenerParaEditar(formaDePagoDto.FormaDePagoId);
             if (formaDePagoEditDto is null) return;
             using (frmFormaDePagoAe frm = new frmFormaDePagoAe() { Text = "Editar Forma de Pago       " })
@@ -127,6 +127,7 @@ namespace BombonesApp2026.Windows
                     _formaDePagoServicio.Editar(formaDePagoEditDto);
                     _listaformaDePago = _formaDePagoServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaformaDePago);
+                    _bindingSource.Position = posicion;
                     MessageBox.Show("Forma de Pago editada",
                         "Mensaje",
                         MessageBoxButtons.OK,
@@ -177,6 +178,11 @@ namespace BombonesApp2026.Windows
         }
 
         private void frmFormasDePago_Load(object sender, EventArgs e)
+        {
+            RecargarGrilla();
+        }
+
+        private void RecargarGrilla()
         {
             try
             {

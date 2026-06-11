@@ -100,9 +100,12 @@ namespace BombonesApp2026.Windows
                         Nombre = tipoEditDto.Nombre,
                         Descripcion = tipoEditDto.Descripcion,
                     };
-                    _tipoServicio.Agregar(tipoCreateDto);
+                    int nuevoId=_tipoServicio.Agregar(tipoCreateDto);
                     _listaTipos = _tipoServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaTipos);
+                    var nuevoTipo = _listaTipos.FirstOrDefault(tb => tb.TipoBombonId == nuevoId);
+                    if (nuevoTipo is null) return;
+                    _bindingSource.Position=_bindingSource.IndexOf(nuevoTipo);
                     MessageBox.Show("Tipo de Bombón Agregado",
                         "Mensaje", MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
@@ -119,7 +122,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbBorrar_Click(object sender, EventArgs e)
         {
-            if (dgvDatos.SelectedRows.Count == 0)
+            if (_bindingSource.Current == null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -127,8 +130,7 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvDatos.SelectedRows[0];
-            TipoBombonListDto tipoBombonDto = (TipoBombonListDto)r.Tag!;
+            TipoBombonListDto tipoBombonDto = (TipoBombonListDto)_bindingSource.Current!;
             DialogResult dr = MessageBox.Show($"¿Desea borrar el tipo de bombón {tipoBombonDto.Nombre}?",
                 "Confirmar",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question,
@@ -158,7 +160,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbEditar_Click(object sender, EventArgs e)
         {
-            if (dgvDatos.SelectedRows.Count == 0)
+            if (_bindingSource.Current==null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -166,8 +168,8 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvDatos.SelectedRows[0];
-            TipoBombonListDto tipoBombonDto = (TipoBombonListDto)r.Tag!;
+            TipoBombonListDto tipoBombonDto = (TipoBombonListDto)_bindingSource.Current!;
+            int posicion = _bindingSource.Position;
             TipoBombonEditDto? tipoBombonEditDto = _tipoServicio.ObtenerParaEditar(tipoBombonDto.TipoBombonId);
             if (tipoBombonEditDto is null) return;
             using (frmTipoDeBombonesAe frm = new frmTipoDeBombonesAe() { Text = "Editar Tipo de Bombón " })
@@ -181,6 +183,7 @@ namespace BombonesApp2026.Windows
                     _tipoServicio.Editar(tipoBombonEditDto);
                     _listaTipos = _tipoServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaTipos);
+                    _bindingSource.Position= posicion;
                     MessageBox.Show("Tipo de Bombón editado",
                         "Mensaje",
                         MessageBoxButtons.OK,

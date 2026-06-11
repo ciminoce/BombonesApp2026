@@ -85,7 +85,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbBorrar_Click(object sender, EventArgs e)
         {
-            if (dgvDatos.SelectedRows.Count == 0)
+            if (_bindingSource.Current==null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -93,8 +93,8 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvDatos.SelectedRows[0];
-            CiudadListDto ciudadDto = (CiudadListDto)r.Tag!;
+            
+            CiudadListDto ciudadDto = (CiudadListDto)_bindingSource.Current!;
             DialogResult dr = MessageBox.Show($"¿Desea borrar la ciudad {ciudadDto.Ciudad}?",
                 "Confirmar",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question,
@@ -124,7 +124,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbEditar_Click(object sender, EventArgs e)
         {
-            if (dgvDatos.SelectedRows.Count == 0)
+            if (_bindingSource.Current==null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -132,8 +132,9 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvDatos.SelectedRows[0];
-            CiudadListDto ciudadDto = (CiudadListDto)r.Tag!;
+            
+            CiudadListDto ciudadDto = (CiudadListDto)_bindingSource.Current!;
+            int posicion = _bindingSource.Position;
             CiudadEditDto? ciudadEditDto = _ciudadServicio.ObtenerParaEditar(ciudadDto.CiudadId);
             if (ciudadEditDto is null) return;
             using (frmCiudadAe frm = new frmCiudadAe() { Text = "Editar Ciudad " })
@@ -147,7 +148,8 @@ namespace BombonesApp2026.Windows
                     _ciudadServicio.Editar(ciudadEditDto!);
                     _listaCiudades = _ciudadServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaCiudades);
-                    MessageBox.Show("Ciudd editada",
+                    _bindingSource.Position= posicion;
+                    MessageBox.Show("Ciudad editada",
                         "Mensaje",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information);

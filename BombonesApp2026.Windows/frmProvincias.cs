@@ -64,7 +64,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbBorrar_Click(object sender, EventArgs e)
         {
-            if (dgvDatos.SelectedRows.Count == 0)
+            if (_bindingSource.Current==null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -72,8 +72,7 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvDatos.SelectedRows[0];
-            ProvinciaListDto provinciaDto = (ProvinciaListDto)r.Tag!;
+            ProvinciaListDto provinciaDto = (ProvinciaListDto)_bindingSource.Current!;
             DialogResult dr = MessageBox.Show($"¿Desea borrar la provincia {provinciaDto.Nombre}?",
                 "Confirmar",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question,
@@ -102,7 +101,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbEditar_Click(object sender, EventArgs e)
         {
-            if (dgvDatos.SelectedRows.Count == 0)
+            if (_bindingSource.Current == null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -110,8 +109,8 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            var r = dgvDatos.SelectedRows[0];
-            ProvinciaListDto provinciaDto = (ProvinciaListDto)r.Tag!;
+            ProvinciaListDto provinciaDto = (ProvinciaListDto)_bindingSource.Current!;
+            int posicion = _bindingSource.Position;
             ProvinciaEditDto? provinciaEditDto = _provinciaServicio.ObtenerParaEditar(provinciaDto.ProvinciaId);
             if (provinciaEditDto is null) return;
             using (frmProvinciaAe frm = new frmProvinciaAe() { Text = "Editar Provincia" })
@@ -125,6 +124,7 @@ namespace BombonesApp2026.Windows
                     _provinciaServicio.Editar(provinciaEditDto);
                     _listaProvincias = _provinciaServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaProvincias);
+                    _bindingSource.Position= posicion;
                     MessageBox.Show("Provincia editada",
                         "Mensaje",
                         MessageBoxButtons.OK,

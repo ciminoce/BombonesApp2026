@@ -1,4 +1,6 @@
-﻿using Bombones2026.Servicios.DTOs.Transporte;
+﻿using Bombones2026.Servicios.DTOs.Ciudad;
+using Bombones2026.Servicios.DTOs.TipoBombon;
+using Bombones2026.Servicios.DTOs.Transporte;
 using Bombones2026.Servicios.Servicios;
 using System.ComponentModel;
 
@@ -83,6 +85,92 @@ namespace BombonesApp2026.Windows
                                 MessageBoxIcon.Error);
                 }
             }
+
+        }
+
+        private void tsbBorrar_Click(object sender, EventArgs e)
+        {
+            if (_bindingSource.Current == null)
+            {
+                MessageBox.Show("Debe seleccionar una fila de la grilla",
+                    "Advertencia",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+            TransporteListDto transporteDto = (TransporteListDto)_bindingSource.Current!;
+            DialogResult dr = MessageBox.Show($"¿Desea borrar el transporte {transporteDto.NombreEmpresa}?",
+                "Confirmar",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2);
+            if (dr == DialogResult.No) return;
+            try
+            {
+                _transporteServicio.Borrar(transporteDto.TransporteId);
+                _listaTransporte = _transporteServicio.ObtenerTodos();
+                MostrarDatosEnGrilla(_listaTransporte);
+                MessageBox.Show("Tipo de Bombón eliminado",
+                    "Mensaje",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show(ex.Message,
+                    "Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+
+            }
+
+
+        }
+
+        private void tsbEditar_Click(object sender, EventArgs e)
+        {
+            if (_bindingSource.Current == null)
+            {
+                MessageBox.Show("Debe seleccionar una fila de la grilla",
+                    "Advertencia",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            TransporteListDto transporteDto = (TransporteListDto)_bindingSource.Current!;
+            int posicion = _bindingSource.Position;
+            TransporteEditDto? transporteEditDto = _transporteServicio.ObtenerParaEditar(transporteDto.TransporteId);
+            if (transporteEditDto is null) return;
+            using (frmTransporteAe frm = new frmTransporteAe() { Text = "Editar Transporte " })
+            {
+                frm.SetTransporte(transporteEditDto);
+                DialogResult dr = frm.ShowDialog();
+                if (dr == DialogResult.Cancel) return;
+                transporteEditDto = frm.GetTransporte();
+                try
+                {
+                    _transporteServicio.Editar(transporteEditDto!);
+                    _listaTransporte = _transporteServicio.ObtenerTodos();
+                    MostrarDatosEnGrilla(_listaTransporte);
+                    _bindingSource.Position= posicion;
+                    MessageBox.Show("Transporte editado",
+                        "Mensaje",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show(ex.Message,
+                         "Error",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Error);
+
+                }
+            }
+
 
         }
     }

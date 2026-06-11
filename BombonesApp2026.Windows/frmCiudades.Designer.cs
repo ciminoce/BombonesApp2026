@@ -42,11 +42,11 @@
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvDatos = new DataGridView();
+            lblCantidad = new Label();
+            label1 = new Label();
             colId = new DataGridViewTextBoxColumn();
             colCiudad = new DataGridViewTextBoxColumn();
             colProvincia = new DataGridViewTextBoxColumn();
-            lblCantidad = new Label();
-            label1 = new Label();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -187,27 +187,6 @@
             dgvDatos.Size = new Size(800, 321);
             dgvDatos.TabIndex = 0;
             // 
-            // colId
-            // 
-            colId.HeaderText = "Id";
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            colId.Visible = false;
-            // 
-            // colCiudad
-            // 
-            colCiudad.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colCiudad.HeaderText = "Ciudad";
-            colCiudad.Name = "colCiudad";
-            colCiudad.ReadOnly = true;
-            // 
-            // colProvincia
-            // 
-            colProvincia.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colProvincia.HeaderText = "Provincia";
-            colProvincia.Name = "colProvincia";
-            colProvincia.ReadOnly = true;
-            // 
             // lblCantidad
             // 
             lblCantidad.AutoSize = true;
@@ -226,6 +205,30 @@
             label1.Size = new Size(58, 15);
             label1.TabIndex = 0;
             label1.Text = "Cantidad:";
+            // 
+            // colId
+            // 
+            colId.DataPropertyName = "Ciudadid";
+            colId.HeaderText = "Id";
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            colId.Visible = false;
+            // 
+            // colCiudad
+            // 
+            colCiudad.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colCiudad.DataPropertyName = "Ciudad";
+            colCiudad.HeaderText = "Ciudad";
+            colCiudad.Name = "colCiudad";
+            colCiudad.ReadOnly = true;
+            // 
+            // colProvincia
+            // 
+            colProvincia.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colProvincia.DataPropertyName = "Provincia";
+            colProvincia.HeaderText = "Provincia";
+            colProvincia.Name = "colProvincia";
+            colProvincia.ReadOnly = true;
             // 
             // frmCiudades
             // 

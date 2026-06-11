@@ -14,6 +14,16 @@ namespace BombonesApp2026.Datos.Repositorios
             }
         }
 
+        public void Borrar(int transporteId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Editar(Transporte transporte)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool ExisteTransporte(Transporte transporte)
         {
             using (var context=new BombonesDbContext())
@@ -35,6 +45,11 @@ namespace BombonesApp2026.Datos.Repositorios
             }
         }
 
+        public object ObtenerPorId(int transporteId)
+        {
+            throw new NotImplementedException();
+        }
+
         public List<Transporte> ObtenerTodos()
         {
             using (var context=new BombonesDbContext())
@@ -43,6 +58,11 @@ namespace BombonesApp2026.Datos.Repositorios
                     .Include(t=>t.Provincia)
                     .ToList();
             }
+        }
+
+        public bool TieneRegistrosRelacionados(int transporteId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
