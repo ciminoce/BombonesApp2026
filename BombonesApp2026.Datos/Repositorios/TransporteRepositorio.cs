@@ -16,12 +16,32 @@ namespace BombonesApp2026.Datos.Repositorios
 
         public void Borrar(int transporteId)
         {
-            throw new NotImplementedException();
+            using (var context = new BombonesDbContext())
+            {
+                var transporteEnDb = context.Transportes
+                    .Find(transporteId);
+                if (transporteEnDb is null) throw new Exception("Transporte no encontrado");
+                context.Transportes.Remove(transporteEnDb);
+                context.SaveChanges();
+            }
         }
 
         public void Editar(Transporte transporte)
         {
-            throw new NotImplementedException();
+            using (var context = new BombonesDbContext())
+            {
+
+                var transporteEnDb = context.Transportes.Find(transporte.TransporteId);
+
+                if (transporteEnDb is null) throw new Exception("Transporte no encontrado");
+                transporteEnDb.NombreEmpresa = transporte.NombreEmpresa;
+                transporteEnDb.Telefono = transporte.Telefono;
+                transporteEnDb.Email= transporte.Email;
+                transporteEnDb.Activo = transporte.Activo;
+
+                context.SaveChanges();
+
+            }
         }
 
         public bool ExisteTransporte(Transporte transporte)
@@ -45,9 +65,13 @@ namespace BombonesApp2026.Datos.Repositorios
             }
         }
 
-        public object ObtenerPorId(int transporteId)
+        public Transporte? ObtenerPorId(int transporteId)
         {
-            throw new NotImplementedException();
+            using (var context = new BombonesDbContext())
+            {
+                return context.Transportes.AsNoTracking()
+                    .FirstOrDefault(t => t.TransporteId == transporteId);
+            }
         }
 
         public List<Transporte> ObtenerTodos()
@@ -62,7 +86,7 @@ namespace BombonesApp2026.Datos.Repositorios
 
         public bool TieneRegistrosRelacionados(int transporteId)
         {
-            throw new NotImplementedException();
+            return false;
         }
     }
 }
