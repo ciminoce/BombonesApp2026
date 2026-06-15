@@ -34,16 +34,16 @@
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
+            tsbFiltrar = new ToolStripButton();
             tsbActualizar = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvDatos = new DataGridView();
-            colId = new DataGridViewTextBoxColumn();
-            colProvincia = new DataGridViewTextBoxColumn();
             lblCantidad = new Label();
             label1 = new Label();
-            tsbFiltrar = new ToolStripButton();
+            colId = new DataGridViewTextBoxColumn();
+            colProvincia = new DataGridViewTextBoxColumn();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -98,6 +98,16 @@
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 70);
+            // 
+            // tsbFiltrar
+            // 
+            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
+            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbFiltrar.ImageTransparentColor = Color.Magenta;
+            tsbFiltrar.Name = "tsbFiltrar";
+            tsbFiltrar.Size = new Size(52, 67);
+            tsbFiltrar.Text = "&Filtrar";
+            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
             // tsbActualizar
             // 
@@ -161,20 +171,6 @@
             dgvDatos.Size = new Size(800, 321);
             dgvDatos.TabIndex = 0;
             // 
-            // colId
-            // 
-            colId.HeaderText = "Id";
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            colId.Visible = false;
-            // 
-            // colProvincia
-            // 
-            colProvincia.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colProvincia.HeaderText = "Provincia";
-            colProvincia.Name = "colProvincia";
-            colProvincia.ReadOnly = true;
-            // 
             // lblCantidad
             // 
             lblCantidad.AutoSize = true;
@@ -194,15 +190,21 @@
             label1.TabIndex = 0;
             label1.Text = "Cantidad:";
             // 
-            // tsbFiltrar
+            // colId
             // 
-            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
-            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbFiltrar.ImageTransparentColor = Color.Magenta;
-            tsbFiltrar.Name = "tsbFiltrar";
-            tsbFiltrar.Size = new Size(52, 67);
-            tsbFiltrar.Text = "&Filtrar";
-            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            colId.DataPropertyName = "ProvinciaId";
+            colId.HeaderText = "Id";
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            colId.Visible = false;
+            // 
+            // colProvincia
+            // 
+            colProvincia.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colProvincia.DataPropertyName = "Nombre";
+            colProvincia.HeaderText = "Provincia";
+            colProvincia.Name = "colProvincia";
+            colProvincia.ReadOnly = true;
             // 
             // frmProvincias
             // 
@@ -242,8 +244,8 @@
         private DataGridView dgvDatos;
         private Label lblCantidad;
         private Label label1;
+        private ToolStripButton tsbFiltrar;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colProvincia;
-        private ToolStripButton tsbFiltrar;
     }
 }
