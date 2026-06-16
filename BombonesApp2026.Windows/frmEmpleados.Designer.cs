@@ -34,6 +34,7 @@
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
+            tsbFiltrar = new ToolStripButton();
             tsbActualizar = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
@@ -44,9 +45,14 @@
             colTelefono = new DataGridViewTextBoxColumn();
             colEmail = new DataGridViewTextBoxColumn();
             colActivo = new DataGridViewCheckBoxColumn();
+            lblPaginas = new Label();
+            btnUltimo = new Button();
             lblCantidad = new Label();
+            btnSiguiente = new Button();
+            label2 = new Label();
+            btnAnterior = new Button();
             label1 = new Label();
-            tsbFiltrar = new ToolStripButton();
+            btnPrimero = new Button();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -99,6 +105,16 @@
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 70);
             // 
+            // tsbFiltrar
+            // 
+            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
+            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbFiltrar.ImageTransparentColor = Color.Magenta;
+            tsbFiltrar.Name = "tsbFiltrar";
+            tsbFiltrar.Size = new Size(52, 67);
+            tsbFiltrar.Text = "&Filtrar";
+            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
             // tsbActualizar
             // 
             tsbActualizar.Image = Properties.Resources.restart_48px;
@@ -137,8 +153,14 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(lblCantidad);
+            splitContainer1.Panel2.Controls.Add(lblPaginas);
             splitContainer1.Panel2.Controls.Add(label1);
+            splitContainer1.Panel2.Controls.Add(btnUltimo);
+            splitContainer1.Panel2.Controls.Add(btnPrimero);
+            splitContainer1.Panel2.Controls.Add(lblCantidad);
+            splitContainer1.Panel2.Controls.Add(btnAnterior);
+            splitContainer1.Panel2.Controls.Add(btnSiguiente);
+            splitContainer1.Panel2.Controls.Add(label2);
             splitContainer1.Size = new Size(800, 380);
             splitContainer1.SplitterDistance = 321;
             splitContainer1.TabIndex = 1;
@@ -193,34 +215,79 @@
             colActivo.Name = "colActivo";
             colActivo.ReadOnly = true;
             // 
+            // lblPaginas
+            // 
+            lblPaginas.AutoSize = true;
+            lblPaginas.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblPaginas.Location = new Point(211, 31);
+            lblPaginas.Name = "lblPaginas";
+            lblPaginas.Size = new Size(14, 15);
+            lblPaginas.TabIndex = 12;
+            lblPaginas.Text = "0";
+            // 
+            // btnUltimo
+            // 
+            btnUltimo.Image = Properties.Resources.last_24px;
+            btnUltimo.Location = new Point(656, 10);
+            btnUltimo.Name = "btnUltimo";
+            btnUltimo.Size = new Size(42, 38);
+            btnUltimo.TabIndex = 6;
+            btnUltimo.UseVisualStyleBackColor = true;
+            // 
             // lblCantidad
             // 
             lblCantidad.AutoSize = true;
             lblCantidad.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblCantidad.Location = new Point(93, 18);
+            lblCantidad.Location = new Point(211, 10);
             lblCantidad.Name = "lblCantidad";
             lblCantidad.Size = new Size(14, 15);
-            lblCantidad.TabIndex = 1;
+            lblCantidad.TabIndex = 13;
             lblCantidad.Text = "0";
+            // 
+            // btnSiguiente
+            // 
+            btnSiguiente.Image = Properties.Resources.next_24px;
+            btnSiguiente.Location = new Point(608, 10);
+            btnSiguiente.Name = "btnSiguiente";
+            btnSiguiente.Size = new Size(42, 38);
+            btnSiguiente.TabIndex = 7;
+            btnSiguiente.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(80, 31);
+            label2.Name = "label2";
+            label2.Size = new Size(118, 15);
+            label2.TabIndex = 8;
+            label2.Text = "Cantidad de Páginas:";
+            // 
+            // btnAnterior
+            // 
+            btnAnterior.Image = Properties.Resources.previous_24px;
+            btnAnterior.Location = new Point(560, 10);
+            btnAnterior.Name = "btnAnterior";
+            btnAnterior.Size = new Size(42, 38);
+            btnAnterior.TabIndex = 9;
+            btnAnterior.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(32, 18);
+            label1.Location = new Point(80, 10);
             label1.Name = "label1";
-            label1.Size = new Size(58, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Cantidad:";
+            label1.Size = new Size(125, 15);
+            label1.TabIndex = 11;
+            label1.Text = "Cantidad de Registros:";
             // 
-            // tsbFiltrar
+            // btnPrimero
             // 
-            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
-            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbFiltrar.ImageTransparentColor = Color.Magenta;
-            tsbFiltrar.Name = "tsbFiltrar";
-            tsbFiltrar.Size = new Size(52, 67);
-            tsbFiltrar.Text = "&Filtrar";
-            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnPrimero.Image = Properties.Resources.first_24px;
+            btnPrimero.Location = new Point(512, 10);
+            btnPrimero.Name = "btnPrimero";
+            btnPrimero.Size = new Size(42, 38);
+            btnPrimero.TabIndex = 10;
+            btnPrimero.UseVisualStyleBackColor = true;
             // 
             // frmEmpleados
             // 
@@ -255,8 +322,6 @@
         private ToolStripButton tsbCerrar;
         private SplitContainer splitContainer1;
         private DataGridView dgvDatos;
-        private Label lblCantidad;
-        private Label label1;
         private ToolStripSeparator toolStripSeparator1;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colEmpleado;
@@ -264,5 +329,13 @@
         private DataGridViewTextBoxColumn colEmail;
         private DataGridViewCheckBoxColumn colActivo;
         private ToolStripButton tsbFiltrar;
+        private Label lblPaginas;
+        private Label label1;
+        private Button btnUltimo;
+        private Button btnPrimero;
+        private Label lblCantidad;
+        private Button btnAnterior;
+        private Button btnSiguiente;
+        private Label label2;
     }
 }

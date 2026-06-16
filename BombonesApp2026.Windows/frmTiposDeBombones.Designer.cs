@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
@@ -42,12 +42,18 @@
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvDatos = new DataGridView();
-            lblCantidad = new Label();
-            label1 = new Label();
             colId = new DataGridViewTextBoxColumn();
             colNombre = new DataGridViewTextBoxColumn();
             colDescripcion = new DataGridViewTextBoxColumn();
             colActivo = new DataGridViewCheckBoxColumn();
+            btnPrimero = new Button();
+            btnAnterior = new Button();
+            btnSiguiente = new Button();
+            btnUltimo = new Button();
+            lblPaginas = new Label();
+            lblCantidad = new Label();
+            label2 = new Label();
+            label1 = new Label();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -168,8 +174,14 @@
             // 
             // splitContainer1.Panel2
             // 
+            splitContainer1.Panel2.Controls.Add(lblPaginas);
+            splitContainer1.Panel2.Controls.Add(btnUltimo);
             splitContainer1.Panel2.Controls.Add(lblCantidad);
+            splitContainer1.Panel2.Controls.Add(btnSiguiente);
+            splitContainer1.Panel2.Controls.Add(label2);
+            splitContainer1.Panel2.Controls.Add(btnAnterior);
             splitContainer1.Panel2.Controls.Add(label1);
+            splitContainer1.Panel2.Controls.Add(btnPrimero);
             splitContainer1.Size = new Size(800, 380);
             splitContainer1.SplitterDistance = 321;
             splitContainer1.TabIndex = 1;
@@ -178,8 +190,8 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colNombre, colDescripcion, colActivo });
             dgvDatos.Dock = DockStyle.Fill;
@@ -190,25 +202,6 @@
             dgvDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvDatos.Size = new Size(800, 321);
             dgvDatos.TabIndex = 0;
-            // 
-            // lblCantidad
-            // 
-            lblCantidad.AutoSize = true;
-            lblCantidad.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblCantidad.Location = new Point(93, 18);
-            lblCantidad.Name = "lblCantidad";
-            lblCantidad.Size = new Size(14, 15);
-            lblCantidad.TabIndex = 1;
-            lblCantidad.Text = "0";
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(32, 18);
-            label1.Name = "label1";
-            label1.Size = new Size(58, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Cantidad:";
             // 
             // colId
             // 
@@ -240,6 +233,80 @@
             colActivo.HeaderText = "Activo";
             colActivo.Name = "colActivo";
             colActivo.ReadOnly = true;
+            // 
+            // btnPrimero
+            // 
+            btnPrimero.Image = Properties.Resources.first_24px;
+            btnPrimero.Location = new Point(474, 9);
+            btnPrimero.Name = "btnPrimero";
+            btnPrimero.Size = new Size(42, 38);
+            btnPrimero.TabIndex = 2;
+            btnPrimero.UseVisualStyleBackColor = true;
+            // 
+            // btnAnterior
+            // 
+            btnAnterior.Image = Properties.Resources.previous_24px;
+            btnAnterior.Location = new Point(522, 9);
+            btnAnterior.Name = "btnAnterior";
+            btnAnterior.Size = new Size(42, 38);
+            btnAnterior.TabIndex = 2;
+            btnAnterior.UseVisualStyleBackColor = true;
+            // 
+            // btnSiguiente
+            // 
+            btnSiguiente.Image = Properties.Resources.next_24px;
+            btnSiguiente.Location = new Point(570, 9);
+            btnSiguiente.Name = "btnSiguiente";
+            btnSiguiente.Size = new Size(42, 38);
+            btnSiguiente.TabIndex = 2;
+            btnSiguiente.UseVisualStyleBackColor = true;
+            // 
+            // btnUltimo
+            // 
+            btnUltimo.Image = Properties.Resources.last_24px;
+            btnUltimo.Location = new Point(618, 9);
+            btnUltimo.Name = "btnUltimo";
+            btnUltimo.Size = new Size(42, 38);
+            btnUltimo.TabIndex = 2;
+            btnUltimo.UseVisualStyleBackColor = true;
+            // 
+            // lblPaginas
+            // 
+            lblPaginas.AutoSize = true;
+            lblPaginas.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblPaginas.Location = new Point(173, 30);
+            lblPaginas.Name = "lblPaginas";
+            lblPaginas.Size = new Size(14, 15);
+            lblPaginas.TabIndex = 4;
+            lblPaginas.Text = "0";
+            // 
+            // lblCantidad
+            // 
+            lblCantidad.AutoSize = true;
+            lblCantidad.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblCantidad.Location = new Point(173, 9);
+            lblCantidad.Name = "lblCantidad";
+            lblCantidad.Size = new Size(14, 15);
+            lblCantidad.TabIndex = 5;
+            lblCantidad.Text = "0";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(42, 30);
+            label2.Name = "label2";
+            label2.Size = new Size(118, 15);
+            label2.TabIndex = 2;
+            label2.Text = "Cantidad de Páginas:";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(42, 9);
+            label1.Name = "label1";
+            label1.Size = new Size(125, 15);
+            label1.TabIndex = 3;
+            label1.Text = "Cantidad de Registros:";
             // 
             // frmTiposDeBombones
             // 
@@ -275,8 +342,6 @@
         private ToolStripButton tsbCerrar;
         private SplitContainer splitContainer1;
         private DataGridView dgvDatos;
-        private Label lblCantidad;
-        private Label label1;
         private ToolStripDropDownButton tsbFiltrar;
         private ToolStripMenuItem activosToolStripMenuItem;
         private ToolStripMenuItem noActivosToolStripMenuItem;
@@ -285,5 +350,13 @@
         private DataGridViewTextBoxColumn colNombre;
         private DataGridViewTextBoxColumn colDescripcion;
         private DataGridViewCheckBoxColumn colActivo;
+        private Button btnUltimo;
+        private Button btnSiguiente;
+        private Button btnAnterior;
+        private Button btnPrimero;
+        private Label lblPaginas;
+        private Label lblCantidad;
+        private Label label2;
+        private Label label1;
     }
 }
