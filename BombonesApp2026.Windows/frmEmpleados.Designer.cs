@@ -33,22 +33,20 @@
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
-            tsbFiltrar = new ToolStripDropDownButton();
-            activosToolStripMenuItem = new ToolStripMenuItem();
-            noActivosToolStripMenuItem = new ToolStripMenuItem();
+            toolStripSeparator1 = new ToolStripSeparator();
             tsbActualizar = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvDatos = new DataGridView();
-            lblCantidad = new Label();
-            label1 = new Label();
-            toolStripSeparator1 = new ToolStripSeparator();
             colId = new DataGridViewTextBoxColumn();
             colEmpleado = new DataGridViewTextBoxColumn();
             colTelefono = new DataGridViewTextBoxColumn();
             colEmail = new DataGridViewTextBoxColumn();
             colActivo = new DataGridViewCheckBoxColumn();
+            lblCantidad = new Label();
+            label1 = new Label();
+            tsbFiltrar = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -96,28 +94,10 @@
             tsbEditar.Text = "&Editar";
             tsbEditar.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
-            // tsbFiltrar
+            // toolStripSeparator1
             // 
-            tsbFiltrar.DropDownItems.AddRange(new ToolStripItem[] { activosToolStripMenuItem, noActivosToolStripMenuItem });
-            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
-            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbFiltrar.ImageTransparentColor = Color.Magenta;
-            tsbFiltrar.Name = "tsbFiltrar";
-            tsbFiltrar.Size = new Size(61, 67);
-            tsbFiltrar.Text = "&Filtrar";
-            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
-            // 
-            // activosToolStripMenuItem
-            // 
-            activosToolStripMenuItem.Name = "activosToolStripMenuItem";
-            activosToolStripMenuItem.Size = new Size(180, 22);
-            activosToolStripMenuItem.Text = "Activos";
-            // 
-            // noActivosToolStripMenuItem
-            // 
-            noActivosToolStripMenuItem.Name = "noActivosToolStripMenuItem";
-            noActivosToolStripMenuItem.Size = new Size(180, 22);
-            noActivosToolStripMenuItem.Text = "No Activos";
+            toolStripSeparator1.Name = "toolStripSeparator1";
+            toolStripSeparator1.Size = new Size(6, 70);
             // 
             // tsbActualizar
             // 
@@ -180,30 +160,6 @@
             dgvDatos.Size = new Size(800, 321);
             dgvDatos.TabIndex = 0;
             // 
-            // lblCantidad
-            // 
-            lblCantidad.AutoSize = true;
-            lblCantidad.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblCantidad.Location = new Point(93, 18);
-            lblCantidad.Name = "lblCantidad";
-            lblCantidad.Size = new Size(14, 15);
-            lblCantidad.TabIndex = 1;
-            lblCantidad.Text = "0";
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(32, 18);
-            label1.Name = "label1";
-            label1.Size = new Size(58, 15);
-            label1.TabIndex = 0;
-            label1.Text = "Cantidad:";
-            // 
-            // toolStripSeparator1
-            // 
-            toolStripSeparator1.Name = "toolStripSeparator1";
-            toolStripSeparator1.Size = new Size(6, 70);
-            // 
             // colId
             // 
             colId.HeaderText = "Id";
@@ -236,6 +192,35 @@
             colActivo.HeaderText = "Activo";
             colActivo.Name = "colActivo";
             colActivo.ReadOnly = true;
+            // 
+            // lblCantidad
+            // 
+            lblCantidad.AutoSize = true;
+            lblCantidad.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblCantidad.Location = new Point(93, 18);
+            lblCantidad.Name = "lblCantidad";
+            lblCantidad.Size = new Size(14, 15);
+            lblCantidad.TabIndex = 1;
+            lblCantidad.Text = "0";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(32, 18);
+            label1.Name = "label1";
+            label1.Size = new Size(58, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Cantidad:";
+            // 
+            // tsbFiltrar
+            // 
+            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
+            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbFiltrar.ImageTransparentColor = Color.Magenta;
+            tsbFiltrar.Name = "tsbFiltrar";
+            tsbFiltrar.Size = new Size(52, 67);
+            tsbFiltrar.Text = "&Filtrar";
+            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
             // frmEmpleados
             // 
@@ -272,14 +257,12 @@
         private DataGridView dgvDatos;
         private Label lblCantidad;
         private Label label1;
-        private ToolStripDropDownButton tsbFiltrar;
-        private ToolStripMenuItem activosToolStripMenuItem;
-        private ToolStripMenuItem noActivosToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator1;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colEmpleado;
         private DataGridViewTextBoxColumn colTelefono;
         private DataGridViewTextBoxColumn colEmail;
         private DataGridViewCheckBoxColumn colActivo;
+        private ToolStripButton tsbFiltrar;
     }
 }

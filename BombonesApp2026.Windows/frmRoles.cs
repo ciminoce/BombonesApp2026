@@ -4,6 +4,7 @@ using System.ComponentModel;
 
 namespace BombonesApp2026.Windows
 {
+    //TODO:Ver detalles de los roles
     public partial class frmRoles : Form
     {
         private readonly RolServicio _rolServicio;
