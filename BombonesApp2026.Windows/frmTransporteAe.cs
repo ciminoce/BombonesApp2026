@@ -1,19 +1,12 @@
 ﻿using Bombones2026.Servicios.DTOs.Provincia;
 using Bombones2026.Servicios.DTOs.Transporte;
 using Bombones2026.Servicios.Servicios;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmTransporteAe : Form
     {
-        private TransporteEditDto? transporteDto;
+        private TransporteEditDto? _transporteDto;
         private readonly ProvinciaServicio _provinciaServicio;
         public frmTransporteAe()
         {
@@ -24,18 +17,18 @@ namespace BombonesApp2026.Windows
         {
             base.OnLoad(e);
             CargarDatosEnCombo(ref cboProvincias);
-            if(transporteDto is null)
+            if (_transporteDto is null)
             {
                 chkActivo.Checked = true;
                 chkActivo.Enabled = false;
             }
             else
             {
-                txtTransporte.Text = transporteDto.NombreEmpresa;
-                txtTelefono.Text = transporteDto.Telefono;
-                txtEmail.Text = transporteDto.Email;
-                cboProvincias.SelectedValue = transporteDto.ProvinciaId;
-                chkActivo.Checked = transporteDto.Activo;
+                txtTransporte.Text = _transporteDto.NombreEmpresa;
+                txtTelefono.Text = _transporteDto.Telefono;
+                txtEmail.Text = _transporteDto.Email;
+                cboProvincias.SelectedValue = _transporteDto.ProvinciaId;
+                chkActivo.Checked = _transporteDto.Activo;
             }
 
         }
@@ -49,7 +42,7 @@ namespace BombonesApp2026.Windows
                 Nombre = "Seleccione Provincia"
             };
             listaProvincias.Insert(0, defaultProvincia);
-            cboProvincias.DataSource= listaProvincias;
+            cboProvincias.DataSource = listaProvincias;
             cboProvincias.DisplayMember = "Nombre";
             cboProvincias.ValueMember = "ProvinciaId";
             cboProvincias.SelectedIndex = 0;
@@ -57,7 +50,7 @@ namespace BombonesApp2026.Windows
 
         public TransporteEditDto? GetTransporte()
         {
-            return transporteDto;
+            return _transporteDto;
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)
@@ -74,15 +67,15 @@ namespace BombonesApp2026.Windows
         {
             if (ValidarDatos())
             {
-                if(transporteDto is null)
+                if (_transporteDto is null)
                 {
-                    transporteDto = new TransporteEditDto();
+                    _transporteDto = new TransporteEditDto();
                 }
-                transporteDto.NombreEmpresa = txtTransporte.Text;
-                transporteDto.Telefono = txtTelefono.Text;
-                transporteDto.Email = txtEmail.Text;
-                transporteDto.ProvinciaId =(int) cboProvincias.SelectedValue!;
-
+                _transporteDto.NombreEmpresa = txtTransporte.Text;
+                _transporteDto.Telefono = txtTelefono.Text;
+                _transporteDto.Email = txtEmail.Text;
+                _transporteDto.ProvinciaId = (int)cboProvincias.SelectedValue!;
+                _transporteDto.Activo = chkActivo.Checked;
                 DialogResult = DialogResult.OK;
             }
         }
@@ -114,9 +107,9 @@ namespace BombonesApp2026.Windows
             return valido;
         }
 
-        internal void SetTransporte(TransporteEditDto transporteEditDto)
+        public void SetTransporte(TransporteEditDto transporteEditDto)
         {
-            throw new NotImplementedException();
+            _transporteDto = transporteEditDto;
         }
     }
 }

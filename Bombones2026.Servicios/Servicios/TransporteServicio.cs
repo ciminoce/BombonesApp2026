@@ -79,7 +79,7 @@ namespace Bombones2026.Servicios.Servicios
             {
 
                 throw new Exception($"Error al intentar borrar un transporte: {ex.Message}");
-            } 
+            }
         }
 
         public void Editar(TransporteEditDto? transporteDto)
@@ -102,6 +102,7 @@ namespace Bombones2026.Servicios.Servicios
             }
             Transporte transporte = new Transporte()
             {
+                TransporteId = transporteDto.TransporteId,
                 NombreEmpresa = transporteDto.NombreEmpresa,
                 Telefono = transporteDto.Telefono,
                 Email = transporteDto.Email,
@@ -125,7 +126,32 @@ namespace Bombones2026.Servicios.Servicios
 
         public TransporteEditDto? ObtenerParaEditar(int transporteId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // AJUSTE: Validación defensiva del ID antes de operar
+                if (transporteId <= 0)
+                    throw new ArgumentException("El ID del transporte debe ser un entero mayor a cero.", nameof(transporteId));
+
+
+                Transporte? transporte = _transporteRepositorio.ObtenerPorId(transporteId);
+                if (transporte is null) throw new ArgumentException(nameof(transporteId), $"Id {transporteId} no encontrado");
+                TransporteEditDto transporteDto = new TransporteEditDto
+                {
+                    TransporteId = transporte.TransporteId,
+                    NombreEmpresa = transporte.NombreEmpresa,
+                    Telefono = transporte.Telefono,
+                    Email = transporte.Email,
+                    ProvinciaId = transporte.ProvinciaId,
+                    Activo= transporte.Activo
+                };
+                return transporteDto;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception($"Error al intentar obtener un transporte: {ex.Message}");
+            }
         }
 
         public List<TransporteListDto> ObtenerTodos()
@@ -135,10 +161,10 @@ namespace Bombones2026.Servicios.Servicios
                 {
                     TransporteId = t.TransporteId,
                     NombreEmpresa = t.NombreEmpresa,
-                    Provincia = t.Provincia is not null?t.Provincia.NombreProvincia:"Sin Provincia",
+                    Provincia = t.Provincia is not null ? t.Provincia.NombreProvincia : "Sin Provincia",
                     Telefono = t.Telefono,
                     Email = t.Email,
-                    Activo=t.Activo
+                    Activo = t.Activo
 
                 }).ToList();
         }

@@ -160,7 +160,10 @@
             Controls.Add(textBox1);
             Controls.Add(txtUsuario);
             Controls.Add(label1);
+            MaximumSize = new Size(545, 339);
+            MinimumSize = new Size(545, 339);
             Name = "frmUsuarioAe";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "frmUsuarioAe";
             ResumeLayout(false);
             PerformLayout();

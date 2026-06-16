@@ -172,6 +172,7 @@
             // 
             // cboLocalidad
             // 
+            cboLocalidad.DropDownStyle = ComboBoxStyle.DropDownList;
             cboLocalidad.FormattingEnabled = true;
             cboLocalidad.Location = new Point(99, 156);
             cboLocalidad.Name = "cboLocalidad";
@@ -180,6 +181,7 @@
             // 
             // cboProvincia
             // 
+            cboProvincia.DropDownStyle = ComboBoxStyle.DropDownList;
             cboProvincia.FormattingEnabled = true;
             cboProvincia.Location = new Point(99, 125);
             cboProvincia.Name = "cboProvincia";
@@ -204,10 +206,10 @@
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(96, 82);
+            textBox1.Location = new Point(99, 82);
             textBox1.MaxLength = 20;
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(402, 23);
+            textBox1.Size = new Size(399, 23);
             textBox1.TabIndex = 1;
             // 
             // label9
@@ -221,10 +223,10 @@
             // 
             // txtEmail
             // 
-            txtEmail.Location = new Point(96, 50);
+            txtEmail.Location = new Point(99, 50);
             txtEmail.MaxLength = 50;
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(402, 23);
+            txtEmail.Size = new Size(399, 23);
             txtEmail.TabIndex = 1;
             // 
             // label8
@@ -274,10 +276,10 @@
             // 
             // txtTelefono
             // 
-            txtTelefono.Location = new Point(96, 21);
+            txtTelefono.Location = new Point(99, 21);
             txtTelefono.MaxLength = 20;
             txtTelefono.Name = "txtTelefono";
-            txtTelefono.Size = new Size(402, 23);
+            txtTelefono.Size = new Size(399, 23);
             txtTelefono.TabIndex = 1;
             // 
             // label6
@@ -302,7 +304,10 @@
             Controls.Add(groupBox2);
             Controls.Add(btnCancelar);
             Controls.Add(btnOK);
+            MaximumSize = new Size(906, 566);
+            MinimumSize = new Size(906, 566);
             Name = "frmEmpleadoAe";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "frmClienteAe";
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();

@@ -39,6 +39,8 @@
             txtNombre = new TextBox();
             label1 = new Label();
             groupBox1 = new GroupBox();
+            cboLocalidad = new ComboBox();
+            cboProvincia = new ComboBox();
             textBox2 = new TextBox();
             textBox3 = new TextBox();
             textBox1 = new TextBox();
@@ -52,8 +54,6 @@
             txtTelefono = new TextBox();
             label6 = new Label();
             errorProvider1 = new ErrorProvider(components);
-            cboProvincia = new ComboBox();
-            cboLocalidad = new ComboBox();
             groupBox2.SuspendLayout();
             groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -170,6 +170,24 @@
             groupBox1.TabStop = false;
             groupBox1.Text = " Datos Optativos del Cliente";
             // 
+            // cboLocalidad
+            // 
+            cboLocalidad.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboLocalidad.FormattingEnabled = true;
+            cboLocalidad.Location = new Point(99, 156);
+            cboLocalidad.Name = "cboLocalidad";
+            cboLocalidad.Size = new Size(399, 23);
+            cboLocalidad.TabIndex = 2;
+            // 
+            // cboProvincia
+            // 
+            cboProvincia.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboProvincia.FormattingEnabled = true;
+            cboProvincia.Location = new Point(99, 125);
+            cboProvincia.Name = "cboProvincia";
+            cboProvincia.Size = new Size(399, 23);
+            cboProvincia.TabIndex = 2;
+            // 
             // textBox2
             // 
             textBox2.Location = new Point(602, 82);
@@ -188,10 +206,10 @@
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(96, 82);
+            textBox1.Location = new Point(99, 82);
             textBox1.MaxLength = 20;
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(402, 23);
+            textBox1.Size = new Size(399, 23);
             textBox1.TabIndex = 1;
             // 
             // label9
@@ -205,10 +223,10 @@
             // 
             // txtEmail
             // 
-            txtEmail.Location = new Point(96, 50);
+            txtEmail.Location = new Point(99, 50);
             txtEmail.MaxLength = 50;
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(402, 23);
+            txtEmail.Size = new Size(399, 23);
             txtEmail.TabIndex = 1;
             // 
             // label8
@@ -258,10 +276,10 @@
             // 
             // txtTelefono
             // 
-            txtTelefono.Location = new Point(96, 21);
+            txtTelefono.Location = new Point(99, 21);
             txtTelefono.MaxLength = 20;
             txtTelefono.Name = "txtTelefono";
-            txtTelefono.Size = new Size(402, 23);
+            txtTelefono.Size = new Size(399, 23);
             txtTelefono.TabIndex = 1;
             // 
             // label6
@@ -276,22 +294,6 @@
             // errorProvider1
             // 
             errorProvider1.ContainerControl = this;
-            // 
-            // cboProvincia
-            // 
-            cboProvincia.FormattingEnabled = true;
-            cboProvincia.Location = new Point(99, 125);
-            cboProvincia.Name = "cboProvincia";
-            cboProvincia.Size = new Size(399, 23);
-            cboProvincia.TabIndex = 2;
-            // 
-            // cboLocalidad
-            // 
-            cboLocalidad.FormattingEnabled = true;
-            cboLocalidad.Location = new Point(99, 156);
-            cboLocalidad.Name = "cboLocalidad";
-            cboLocalidad.Size = new Size(399, 23);
-            cboLocalidad.TabIndex = 2;
             // 
             // frmClienteAe
             // 
