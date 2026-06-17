@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
@@ -46,14 +46,14 @@
             colNombre = new DataGridViewTextBoxColumn();
             colDescripcion = new DataGridViewTextBoxColumn();
             colActivo = new DataGridViewCheckBoxColumn();
-            btnPrimero = new Button();
-            btnAnterior = new Button();
-            btnSiguiente = new Button();
-            btnUltimo = new Button();
             lblPaginas = new Label();
+            btnUltimo = new Button();
             lblCantidad = new Label();
+            btnSiguiente = new Button();
             label2 = new Label();
+            btnAnterior = new Button();
             label1 = new Label();
+            btnPrimero = new Button();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -190,8 +190,8 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle2.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colNombre, colDescripcion, colActivo });
             dgvDatos.Dock = DockStyle.Fill;
@@ -234,42 +234,6 @@
             colActivo.Name = "colActivo";
             colActivo.ReadOnly = true;
             // 
-            // btnPrimero
-            // 
-            btnPrimero.Image = Properties.Resources.first_24px;
-            btnPrimero.Location = new Point(474, 9);
-            btnPrimero.Name = "btnPrimero";
-            btnPrimero.Size = new Size(42, 38);
-            btnPrimero.TabIndex = 2;
-            btnPrimero.UseVisualStyleBackColor = true;
-            // 
-            // btnAnterior
-            // 
-            btnAnterior.Image = Properties.Resources.previous_24px;
-            btnAnterior.Location = new Point(522, 9);
-            btnAnterior.Name = "btnAnterior";
-            btnAnterior.Size = new Size(42, 38);
-            btnAnterior.TabIndex = 2;
-            btnAnterior.UseVisualStyleBackColor = true;
-            // 
-            // btnSiguiente
-            // 
-            btnSiguiente.Image = Properties.Resources.next_24px;
-            btnSiguiente.Location = new Point(570, 9);
-            btnSiguiente.Name = "btnSiguiente";
-            btnSiguiente.Size = new Size(42, 38);
-            btnSiguiente.TabIndex = 2;
-            btnSiguiente.UseVisualStyleBackColor = true;
-            // 
-            // btnUltimo
-            // 
-            btnUltimo.Image = Properties.Resources.last_24px;
-            btnUltimo.Location = new Point(618, 9);
-            btnUltimo.Name = "btnUltimo";
-            btnUltimo.Size = new Size(42, 38);
-            btnUltimo.TabIndex = 2;
-            btnUltimo.UseVisualStyleBackColor = true;
-            // 
             // lblPaginas
             // 
             lblPaginas.AutoSize = true;
@@ -279,6 +243,16 @@
             lblPaginas.Size = new Size(14, 15);
             lblPaginas.TabIndex = 4;
             lblPaginas.Text = "0";
+            // 
+            // btnUltimo
+            // 
+            btnUltimo.Image = Properties.Resources.last_24px;
+            btnUltimo.Location = new Point(618, 9);
+            btnUltimo.Name = "btnUltimo";
+            btnUltimo.Size = new Size(42, 38);
+            btnUltimo.TabIndex = 2;
+            btnUltimo.UseVisualStyleBackColor = true;
+            btnUltimo.Click += btnUltimo_Click;
             // 
             // lblCantidad
             // 
@@ -290,6 +264,16 @@
             lblCantidad.TabIndex = 5;
             lblCantidad.Text = "0";
             // 
+            // btnSiguiente
+            // 
+            btnSiguiente.Image = Properties.Resources.next_24px;
+            btnSiguiente.Location = new Point(570, 9);
+            btnSiguiente.Name = "btnSiguiente";
+            btnSiguiente.Size = new Size(42, 38);
+            btnSiguiente.TabIndex = 2;
+            btnSiguiente.UseVisualStyleBackColor = true;
+            btnSiguiente.Click += btnSiguiente_Click;
+            // 
             // label2
             // 
             label2.AutoSize = true;
@@ -299,6 +283,16 @@
             label2.TabIndex = 2;
             label2.Text = "Cantidad de Páginas:";
             // 
+            // btnAnterior
+            // 
+            btnAnterior.Image = Properties.Resources.previous_24px;
+            btnAnterior.Location = new Point(522, 9);
+            btnAnterior.Name = "btnAnterior";
+            btnAnterior.Size = new Size(42, 38);
+            btnAnterior.TabIndex = 2;
+            btnAnterior.UseVisualStyleBackColor = true;
+            btnAnterior.Click += btnAnterior_Click;
+            // 
             // label1
             // 
             label1.AutoSize = true;
@@ -307,6 +301,16 @@
             label1.Size = new Size(125, 15);
             label1.TabIndex = 3;
             label1.Text = "Cantidad de Registros:";
+            // 
+            // btnPrimero
+            // 
+            btnPrimero.Image = Properties.Resources.first_24px;
+            btnPrimero.Location = new Point(474, 9);
+            btnPrimero.Name = "btnPrimero";
+            btnPrimero.Size = new Size(42, 38);
+            btnPrimero.TabIndex = 2;
+            btnPrimero.UseVisualStyleBackColor = true;
+            btnPrimero.Click += btnPrimero_Click;
             // 
             // frmTiposDeBombones
             // 

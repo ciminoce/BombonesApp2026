@@ -1,4 +1,5 @@
-﻿using Bombones2026.Servicios.DTOs.TipoBombon;
+﻿using Bombones2026.Servicios.DTOs.Paginacion;
+using Bombones2026.Servicios.DTOs.TipoBombon;
 using Bombones2026.Servicios.Servicios;
 using System.ComponentModel;
 
@@ -11,6 +12,11 @@ namespace BombonesApp2026.Windows
         private BindingSource _bindingSource = new BindingSource();
         private bool filtroOn = false;
 
+        //para paginar
+        private int paginaActual = 1;
+        private int cantidadPorPagina = 10;
+        private int totalRegistros = 0;
+        private int totalPaginas = 0;
         public frmTiposDeBombones()
         {
             InitializeComponent();
@@ -30,8 +36,8 @@ namespace BombonesApp2026.Windows
         {
             try
             {
-                _listaTipos = _tipoServicio.ObtenerTodos();
-                MostrarDatosEnGrilla(_listaTipos);
+                var resultado = _tipoServicio.ObtenerPagina(paginaActual, cantidadPorPagina);
+                MostrarDatosEnGrilla(resultado);
             }
             catch (Exception ex)
             {
@@ -41,21 +47,22 @@ namespace BombonesApp2026.Windows
             }
         }
 
-        private void MostrarDatosEnGrilla(List<TipoBombonListDto> lista)
+        private void MostrarDatosEnGrilla(ResultadoPaginacionTipoBombonDto resultado)
         {
-            var bindingList = new BindingList<TipoBombonListDto>(lista);
+            totalPaginas = resultado.TotalPaginas;
+            var bindingList = new BindingList<TipoBombonListDto>(resultado.Items);
             _bindingSource.DataSource = bindingList;
             dgvDatos.DataSource = _bindingSource;
 
-            lblCantidad.Text = lista.Count.ToString();
+            lblCantidad.Text = resultado.TotalRegistros.ToString();
         }
 
 
         private void activosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _listaTipos = _tipoServicio.FiltrarPorActivo(true);
-            MostrarDatosEnGrilla(_listaTipos);
-            ManejarBotones(true);
+            //_listaTipos = _tipoServicio.FiltrarPorActivo(true);
+            //MostrarDatosEnGrilla(_listaTipos);
+            //ManejarBotones(true);
         }
 
         private void ManejarBotones(bool v)
@@ -71,16 +78,16 @@ namespace BombonesApp2026.Windows
 
         private void noActivosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _listaTipos = _tipoServicio.FiltrarPorActivo(false);
-            MostrarDatosEnGrilla(_listaTipos);
-            ManejarBotones(true);
+            //_listaTipos = _tipoServicio.FiltrarPorActivo(false);
+            //MostrarDatosEnGrilla(_listaTipos);
+            //ManejarBotones(true);
 
         }
 
         private void tsbActualizar_Click(object sender, EventArgs e)
         {
             RecargarGrilla();
-            filtroOn=false;
+            filtroOn = false;
             ManejarBotones(false);
 
         }
@@ -100,12 +107,12 @@ namespace BombonesApp2026.Windows
                         Nombre = tipoEditDto.Nombre,
                         Descripcion = tipoEditDto.Descripcion,
                     };
-                    int nuevoId=_tipoServicio.Agregar(tipoCreateDto);
+                    int nuevoId = _tipoServicio.Agregar(tipoCreateDto);
                     _listaTipos = _tipoServicio.ObtenerTodos();
-                    MostrarDatosEnGrilla(_listaTipos);
+                    RecargarGrilla();
                     var nuevoTipo = _listaTipos.FirstOrDefault(tb => tb.TipoBombonId == nuevoId);
                     if (nuevoTipo is null) return;
-                    _bindingSource.Position=_bindingSource.IndexOf(nuevoTipo);
+                    _bindingSource.Position = _bindingSource.IndexOf(nuevoTipo);
                     MessageBox.Show("Tipo de Bombón Agregado",
                         "Mensaje", MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
@@ -140,7 +147,7 @@ namespace BombonesApp2026.Windows
             {
                 _tipoServicio.Borrar(tipoBombonDto.TipoBombonId);
                 _listaTipos = _tipoServicio.ObtenerTodos();
-                MostrarDatosEnGrilla(_listaTipos);
+                RecargarGrilla();
                 MessageBox.Show("Tipo de Bombón eliminado",
                     "Mensaje",
                     MessageBoxButtons.OK,
@@ -160,7 +167,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbEditar_Click(object sender, EventArgs e)
         {
-            if (_bindingSource.Current==null)
+            if (_bindingSource.Current == null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -182,8 +189,8 @@ namespace BombonesApp2026.Windows
                 {
                     _tipoServicio.Editar(tipoBombonEditDto);
                     _listaTipos = _tipoServicio.ObtenerTodos();
-                    MostrarDatosEnGrilla(_listaTipos);
-                    _bindingSource.Position= posicion;
+                    RecargarGrilla();
+                    _bindingSource.Position = posicion;
                     MessageBox.Show("Tipo de Bombón editado",
                         "Mensaje",
                         MessageBoxButtons.OK,
@@ -201,6 +208,38 @@ namespace BombonesApp2026.Windows
                 }
             }
 
+        }
+
+        private void btnPrimero_Click(object sender, EventArgs e)
+        {
+            paginaActual = 1;
+            RecargarGrilla();
+        }
+
+        private void btnSiguiente_Click(object sender, EventArgs e)
+        {
+            paginaActual++;
+            if (paginaActual > totalPaginas)
+            {
+                paginaActual = totalPaginas;
+            }
+            RecargarGrilla();
+        }
+
+        private void btnAnterior_Click(object sender, EventArgs e)
+        {
+            paginaActual--;
+            if (paginaActual <= 0)
+            {
+                paginaActual = 1;
+            }
+            RecargarGrilla();
+        }
+
+        private void btnUltimo_Click(object sender, EventArgs e)
+        {
+            paginaActual = totalPaginas;
+            RecargarGrilla();
         }
     }
 }

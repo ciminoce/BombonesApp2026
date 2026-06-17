@@ -1,4 +1,5 @@
-﻿using Bombones2026.Servicios.DTOs.TipoBombon;
+﻿using Bombones2026.Servicios.DTOs.Paginacion;
+using Bombones2026.Servicios.DTOs.TipoBombon;
 using BombonesApp2026.Datos.Repositorios;
 using BombonesApp2026.Entidades.Entidades;
 
@@ -10,6 +11,34 @@ namespace Bombones2026.Servicios.Servicios
         public TipoBombonServicio()
         {
             _tipoBombonRepositorio = new TipoBombonRepositorio();
+        }
+        public ResultadoPaginacionTipoBombonDto ObtenerPagina(int paginaActual,
+            int cantidadPorPagina)
+        {
+            try
+            {
+                var resultado = _tipoBombonRepositorio.ObtenerPagina(paginaActual,
+                    cantidadPorPagina);
+                var listaDto = resultado.lista
+                    .Select(tb => new TipoBombonListDto
+                        {
+                            TipoBombonId = tb.TipoBombonId,
+                            Nombre = tb.Nombre,
+                            Descripcion = tb.Descripcion,
+                            Activo = tb.Activo
+                        }).ToList();
+                return new ResultadoPaginacionTipoBombonDto
+                {
+                    Items = listaDto,
+                    TotalRegistros = resultado.cantidadRegistros,
+                    CantidadPorPagina=cantidadPorPagina
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         public List<TipoBombonListDto> ObtenerTodos()
         {

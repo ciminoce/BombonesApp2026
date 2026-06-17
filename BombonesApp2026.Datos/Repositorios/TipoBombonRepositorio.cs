@@ -14,6 +14,20 @@ namespace BombonesApp2026.Datos.Repositorios
                     .ToList();
             }
         }
+        public (List<TipoBombon> lista, int cantidadRegistros) ObtenerPagina(int paginaActual, int cantidadPorPagina)
+        {
+            using(var context=new BombonesDbContext() )
+	        {
+                var cantidad = context.TipoBombones.Count();
+                var lista = context.TipoBombones
+                    .AsNoTracking()
+                    .OrderBy(tb => tb.Nombre)
+                    .Skip(cantidadPorPagina*(paginaActual-1))
+                    .Take(cantidadPorPagina)
+                    .ToList();
+                return (lista, cantidad);
+	        }
+        }
         public List<TipoBombon> FiltrarPorActivo(bool activo)
         {
             using (var context = new BombonesDbContext())
