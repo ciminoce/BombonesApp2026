@@ -57,12 +57,6 @@ namespace BombonesApp2026.Windows
             {
                 txtProvincia.Text = _provinciaEditDto.Nombre;
             }
-            else
-            {
-                chkActivo.Checked = true;
-                chkActivo.Enabled = false;
-
-            }
         }
 
     }
