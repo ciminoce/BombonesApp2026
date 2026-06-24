@@ -50,11 +50,19 @@ namespace BombonesApp2026.Windows
         private void MostrarDatosEnGrilla(ResultadoPaginacionTipoBombonDto resultado)
         {
             totalPaginas = resultado.TotalPaginas;
+            totalRegistros = resultado.TotalRegistros;
+            int desde = 1+(paginaActual-1)*cantidadPorPagina;
+            int hasta = desde + cantidadPorPagina;
+            if (hasta > totalRegistros)
+            {
+                hasta = totalRegistros;
+            }
             var bindingList = new BindingList<TipoBombonListDto>(resultado.Items);
             _bindingSource.DataSource = bindingList;
             dgvDatos.DataSource = _bindingSource;
 
-            lblCantidad.Text = resultado.TotalRegistros.ToString();
+            lblCantidad.Text = $"{desde} a {hasta} de {totalRegistros}";
+            lblPaginas.Text = $"{paginaActual} de {totalPaginas}";
         }
 
 
