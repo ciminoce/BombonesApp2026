@@ -7,6 +7,9 @@ namespace Bombones2026.Servicios.DTOs.Paginacion
         public List<TipoBombonListDto> Items { get; set; } = new List<TipoBombonListDto>();
         public int TotalRegistros { get; set; }
         public int CantidadPorPagina { get; set; }
+        public int PaginaActual { get; set; }
         public int TotalPaginas => (int)Math.Ceiling((double)TotalRegistros / CantidadPorPagina);
+        public bool TieneRegistrosAnteriores => PaginaActual > 1;
+        public bool TieneRegistrosSiguientes => PaginaActual < TotalPaginas;
     }
 }

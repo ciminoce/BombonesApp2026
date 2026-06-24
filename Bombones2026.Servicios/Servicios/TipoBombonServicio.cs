@@ -31,7 +31,8 @@ namespace Bombones2026.Servicios.Servicios
                 {
                     Items = listaDto,
                     TotalRegistros = resultado.cantidadRegistros,
-                    CantidadPorPagina=cantidadPorPagina
+                    CantidadPorPagina=cantidadPorPagina,
+                    PaginaActual= paginaActual
                 };
             }
             catch (Exception)

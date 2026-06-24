@@ -63,6 +63,12 @@ namespace BombonesApp2026.Windows
 
             lblCantidad.Text = $"{desde} a {hasta} de {totalRegistros}";
             lblPaginas.Text = $"{paginaActual} de {totalPaginas}";
+
+            btnPrimero.Enabled = resultado.TieneRegistrosAnteriores;
+            btnAnterior.Enabled = resultado.TieneRegistrosAnteriores;
+            btnSiguiente.Enabled = resultado.TieneRegistrosSiguientes;
+            btnUltimo.Enabled = resultado.TieneRegistrosSiguientes;
+
         }
 
 
