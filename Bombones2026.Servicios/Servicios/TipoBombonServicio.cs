@@ -151,5 +151,11 @@ namespace Bombones2026.Servicios.Servicios
             return tipoDto;
         }
 
+        public int ObtenerPaginaRegistro(string nombre, int cantidadPorPagina)
+        {
+            int posicion = _tipoBombonRepositorio
+                .ObtenerPosicionAlfabetica(nombre);
+            return (int)Math.Ceiling((double)posicion / cantidadPorPagina);
+        }
     }
 }

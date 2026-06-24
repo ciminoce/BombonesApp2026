@@ -8,7 +8,7 @@ namespace BombonesApp2026.Windows
     public partial class frmTiposDeBombones : Form
     {
         private readonly TipoBombonServicio _tipoServicio;
-        private List<TipoBombonListDto>? _listaTipos;
+        //private List<TipoBombonListDto>? _listaTipos;
         private BindingSource _bindingSource = new BindingSource();
         private bool filtroOn = false;
 
@@ -122,9 +122,12 @@ namespace BombonesApp2026.Windows
                         Descripcion = tipoEditDto.Descripcion,
                     };
                     int nuevoId = _tipoServicio.Agregar(tipoCreateDto);
-                    _listaTipos = _tipoServicio.ObtenerTodos();
+                    paginaActual = _tipoServicio
+                        .ObtenerPaginaRegistro(tipoCreateDto.Nombre, cantidadPorPagina);
                     RecargarGrilla();
-                    var nuevoTipo = _listaTipos.FirstOrDefault(tb => tb.TipoBombonId == nuevoId);
+                    var nuevoTipo = _bindingSource.List
+                        .Cast<TipoBombonListDto>()
+                        .FirstOrDefault(tb => tb.TipoBombonId == nuevoId);
                     if (nuevoTipo is null) return;
                     _bindingSource.Position = _bindingSource.IndexOf(nuevoTipo);
                     MessageBox.Show("Tipo de Bombón Agregado",
@@ -160,7 +163,6 @@ namespace BombonesApp2026.Windows
             try
             {
                 _tipoServicio.Borrar(tipoBombonDto.TipoBombonId);
-                _listaTipos = _tipoServicio.ObtenerTodos();
                 RecargarGrilla();
                 MessageBox.Show("Tipo de Bombón eliminado",
                     "Mensaje",
@@ -202,7 +204,6 @@ namespace BombonesApp2026.Windows
                 try
                 {
                     _tipoServicio.Editar(tipoBombonEditDto);
-                    _listaTipos = _tipoServicio.ObtenerTodos();
                     RecargarGrilla();
                     _bindingSource.Position = posicion;
                     MessageBox.Show("Tipo de Bombón editado",

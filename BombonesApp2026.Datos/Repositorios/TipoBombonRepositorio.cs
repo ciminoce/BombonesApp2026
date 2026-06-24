@@ -105,5 +105,14 @@ namespace BombonesApp2026.Datos.Repositorios
             return false;
         }
 
+        public int ObtenerPosicionAlfabetica(string nombre)
+        {
+            using (var context=new BombonesDbContext())
+            {
+                return context.TipoBombones
+                    .Count(tb => string
+                        .Compare(tb.Nombre, nombre) <= 0);
+            }
+        }
     }
 }
