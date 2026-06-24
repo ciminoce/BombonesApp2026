@@ -192,7 +192,6 @@ namespace BombonesApp2026.Windows
                 return;
             }
             TipoBombonListDto tipoBombonDto = (TipoBombonListDto)_bindingSource.Current!;
-            int posicion = _bindingSource.Position;
             TipoBombonEditDto? tipoBombonEditDto = _tipoServicio.ObtenerParaEditar(tipoBombonDto.TipoBombonId);
             if (tipoBombonEditDto is null) return;
             using (frmTipoDeBombonesAe frm = new frmTipoDeBombonesAe() { Text = "Editar Tipo de Bombón " })
@@ -201,11 +200,19 @@ namespace BombonesApp2026.Windows
                 DialogResult dr = frm.ShowDialog();
                 if (dr == DialogResult.Cancel) return;
                 tipoBombonEditDto = frm.GetTipo();
+                if (tipoBombonEditDto is null) return;
                 try
                 {
                     _tipoServicio.Editar(tipoBombonEditDto);
+                    int editadoId = tipoBombonEditDto.TipoBombonId;
+                    paginaActual = _tipoServicio.ObtenerPaginaRegistro(tipoBombonEditDto.Nombre,
+                        cantidadPorPagina);
                     RecargarGrilla();
-                    _bindingSource.Position = posicion;
+                    var editadoTipo=_bindingSource.List
+                        .Cast<TipoBombonListDto>()
+                        .FirstOrDefault(tb=>tb.TipoBombonId == editadoId);
+
+                    _bindingSource.Position = _bindingSource.IndexOf(editadoTipo);
                     MessageBox.Show("Tipo de Bombón editado",
                         "Mensaje",
                         MessageBoxButtons.OK,
