@@ -2,9 +2,9 @@
 
 namespace Bombones2026.Servicios.DTOs.Paginacion
 {
-    public class ResultadoPaginacionTipoBombonDto
+    public class ResultadoPaginacionDto<T> where T : class
     {
-        public List<TipoBombonListDto> Items { get; set; } = new List<TipoBombonListDto>();
+        public List<T> Items { get; set; } = new List<T>();
         public int TotalRegistros { get; set; }
         public int CantidadPorPagina { get; set; }
         public int PaginaActual { get; set; }

@@ -12,7 +12,7 @@ namespace Bombones2026.Servicios.Servicios
         {
             _tipoBombonRepositorio = new TipoBombonRepositorio();
         }
-        public ResultadoPaginacionTipoBombonDto ObtenerPagina(int paginaActual,
+        public ResultadoPaginacionDto<TipoBombonListDto> ObtenerPagina(int paginaActual,
             int cantidadPorPagina)
         {
             try
@@ -27,7 +27,7 @@ namespace Bombones2026.Servicios.Servicios
                             Descripcion = tb.Descripcion,
                             Activo = tb.Activo
                         }).ToList();
-                return new ResultadoPaginacionTipoBombonDto
+                return new ResultadoPaginacionDto<TipoBombonListDto>
                 {
                     Items = listaDto,
                     TotalRegistros = resultado.cantidadRegistros,

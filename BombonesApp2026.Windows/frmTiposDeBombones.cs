@@ -47,7 +47,7 @@ namespace BombonesApp2026.Windows
             }
         }
 
-        private void MostrarDatosEnGrilla(ResultadoPaginacionTipoBombonDto resultado)
+        private void MostrarDatosEnGrilla(ResultadoPaginacionDto<TipoBombonListDto> resultado)
         {
             totalPaginas = resultado.TotalPaginas;
             totalRegistros = resultado.TotalRegistros;
