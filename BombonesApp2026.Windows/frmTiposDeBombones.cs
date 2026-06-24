@@ -163,6 +163,10 @@ namespace BombonesApp2026.Windows
             try
             {
                 _tipoServicio.Borrar(tipoBombonDto.TipoBombonId);
+                if (dgvDatos.Rows.Count==1 && paginaActual>1)
+                {
+                    paginaActual--;
+                }
                 RecargarGrilla();
                 MessageBox.Show("Tipo de Bombón eliminado",
                     "Mensaje",
