@@ -308,7 +308,7 @@
             MinimumSize = new Size(906, 566);
             Name = "frmEmpleadoAe";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "frmClienteAe";
+            Text = "frmEmpleadoAe";
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             groupBox1.ResumeLayout(false);

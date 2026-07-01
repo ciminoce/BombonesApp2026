@@ -46,13 +46,13 @@
             colEmail = new DataGridViewTextBoxColumn();
             colActivo = new DataGridViewCheckBoxColumn();
             lblPaginas = new Label();
+            label1 = new Label();
             btnUltimo = new Button();
+            btnPrimero = new Button();
             lblCantidad = new Label();
+            btnAnterior = new Button();
             btnSiguiente = new Button();
             label2 = new Label();
-            btnAnterior = new Button();
-            label1 = new Label();
-            btnPrimero = new Button();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -225,6 +225,15 @@
             lblPaginas.TabIndex = 12;
             lblPaginas.Text = "0";
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(80, 10);
+            label1.Name = "label1";
+            label1.Size = new Size(125, 15);
+            label1.TabIndex = 11;
+            label1.Text = "Cantidad de Registros:";
+            // 
             // btnUltimo
             // 
             btnUltimo.Image = Properties.Resources.last_24px;
@@ -233,6 +242,15 @@
             btnUltimo.Size = new Size(42, 38);
             btnUltimo.TabIndex = 6;
             btnUltimo.UseVisualStyleBackColor = true;
+            // 
+            // btnPrimero
+            // 
+            btnPrimero.Image = Properties.Resources.first_24px;
+            btnPrimero.Location = new Point(512, 10);
+            btnPrimero.Name = "btnPrimero";
+            btnPrimero.Size = new Size(42, 38);
+            btnPrimero.TabIndex = 10;
+            btnPrimero.UseVisualStyleBackColor = true;
             // 
             // lblCantidad
             // 
@@ -243,6 +261,15 @@
             lblCantidad.Size = new Size(14, 15);
             lblCantidad.TabIndex = 13;
             lblCantidad.Text = "0";
+            // 
+            // btnAnterior
+            // 
+            btnAnterior.Image = Properties.Resources.previous_24px;
+            btnAnterior.Location = new Point(560, 10);
+            btnAnterior.Name = "btnAnterior";
+            btnAnterior.Size = new Size(42, 38);
+            btnAnterior.TabIndex = 9;
+            btnAnterior.UseVisualStyleBackColor = true;
             // 
             // btnSiguiente
             // 
@@ -262,33 +289,6 @@
             label2.TabIndex = 8;
             label2.Text = "Cantidad de Páginas:";
             // 
-            // btnAnterior
-            // 
-            btnAnterior.Image = Properties.Resources.previous_24px;
-            btnAnterior.Location = new Point(560, 10);
-            btnAnterior.Name = "btnAnterior";
-            btnAnterior.Size = new Size(42, 38);
-            btnAnterior.TabIndex = 9;
-            btnAnterior.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(80, 10);
-            label1.Name = "label1";
-            label1.Size = new Size(125, 15);
-            label1.TabIndex = 11;
-            label1.Text = "Cantidad de Registros:";
-            // 
-            // btnPrimero
-            // 
-            btnPrimero.Image = Properties.Resources.first_24px;
-            btnPrimero.Location = new Point(512, 10);
-            btnPrimero.Name = "btnPrimero";
-            btnPrimero.Size = new Size(42, 38);
-            btnPrimero.TabIndex = 10;
-            btnPrimero.UseVisualStyleBackColor = true;
-            // 
             // frmEmpleados
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -298,7 +298,7 @@
             Controls.Add(toolStrip1);
             Name = "frmEmpleados";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "frmRoles";
+            Text = "frmEmpleados";
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
