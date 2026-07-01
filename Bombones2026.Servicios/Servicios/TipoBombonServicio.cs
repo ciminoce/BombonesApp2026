@@ -13,12 +13,12 @@ namespace Bombones2026.Servicios.Servicios
             _tipoBombonRepositorio = new TipoBombonRepositorio();
         }
         public ResultadoPaginacionDto<TipoBombonListDto> ObtenerPagina(int paginaActual,
-            int cantidadPorPagina)
+            int cantidadPorPagina, bool? filtroActivo=null)
         {
             try
             {
                 var resultado = _tipoBombonRepositorio.ObtenerPagina(paginaActual,
-                    cantidadPorPagina);
+                    cantidadPorPagina, filtroActivo);
                 var listaDto = resultado.lista
                     .Select(tb => new TipoBombonListDto
                         {
@@ -151,10 +151,11 @@ namespace Bombones2026.Servicios.Servicios
             return tipoDto;
         }
 
-        public int ObtenerPaginaRegistro(string nombre, int cantidadPorPagina)
+        public int ObtenerPaginaRegistro(string nombre, int cantidadPorPagina,
+            bool? filtroActivo=null)
         {
             int posicion = _tipoBombonRepositorio
-                .ObtenerPosicionAlfabetica(nombre);
+                .ObtenerPosicionAlfabetica(nombre, filtroActivo);
             return (int)Math.Ceiling((double)posicion / cantidadPorPagina);
         }
     }

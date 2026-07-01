@@ -14,13 +14,19 @@ namespace BombonesApp2026.Datos.Repositorios
                     .ToList();
             }
         }
-        public (List<TipoBombon> lista, int cantidadRegistros) ObtenerPagina(int paginaActual, int cantidadPorPagina)
+        public (List<TipoBombon> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
+            int cantidadPorPagina, bool? filtroActivo=null)
         {
             using(var context=new BombonesDbContext() )
 	        {
-                var cantidad = context.TipoBombones.Count();
-                var lista = context.TipoBombones
-                    .AsNoTracking()
+                IQueryable<TipoBombon> query = context
+                    .TipoBombones.AsNoTracking();
+                if(filtroActivo is not null)
+                {
+                    query = query.Where(tb => tb.Activo == filtroActivo);
+                }
+                var cantidad = query.Count();
+                var lista = query
                     .OrderBy(tb => tb.Nombre)
                     .Skip(cantidadPorPagina*(paginaActual-1))
                     .Take(cantidadPorPagina)
@@ -105,11 +111,16 @@ namespace BombonesApp2026.Datos.Repositorios
             return false;
         }
 
-        public int ObtenerPosicionAlfabetica(string nombre)
+        public int ObtenerPosicionAlfabetica(string nombre, bool? filtroActivo=null)
         {
             using (var context=new BombonesDbContext())
             {
-                return context.TipoBombones
+                IQueryable<TipoBombon> query = context.TipoBombones.AsNoTracking();
+                if (filtroActivo.HasValue)
+                {
+                    query=query.Where(tb=>tb.Activo == filtroActivo.Value);
+                }
+                return query
                     .Count(tb => string
                         .Compare(tb.Nombre, nombre) <= 0);
             }

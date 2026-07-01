@@ -1,7 +1,6 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
 using Bombones2026.Servicios.DTOs.TipoBombon;
 using Bombones2026.Servicios.Servicios;
-using System.ComponentModel;
 
 namespace BombonesApp2026.Windows
 {
@@ -10,7 +9,8 @@ namespace BombonesApp2026.Windows
         private readonly TipoBombonServicio _tipoServicio;
         //private List<TipoBombonListDto>? _listaTipos;
         private BindingSource _bindingSource = new BindingSource();
-        private bool filtroOn = false;
+        //para filtrar
+        private bool? filtroActivo = null;
 
         //para paginar
         private int paginaActual = 1;
@@ -36,7 +36,9 @@ namespace BombonesApp2026.Windows
         {
             try
             {
-                var resultado = _tipoServicio.ObtenerPagina(paginaActual, cantidadPorPagina);
+                var resultado = _tipoServicio.ObtenerPagina(paginaActual,
+                    cantidadPorPagina,
+                    filtroActivo);
                 MostrarDatosEnGrilla(resultado);
             }
             catch (Exception ex)
@@ -51,14 +53,13 @@ namespace BombonesApp2026.Windows
         {
             totalPaginas = resultado.TotalPaginas;
             totalRegistros = resultado.TotalRegistros;
-            int desde = 1+(paginaActual-1)*cantidadPorPagina;
+            int desde = 1 + (paginaActual - 1) * cantidadPorPagina;
             int hasta = desde + cantidadPorPagina;
             if (hasta > totalRegistros)
             {
                 hasta = totalRegistros;
             }
-            var bindingList = new BindingList<TipoBombonListDto>(resultado.Items);
-            _bindingSource.DataSource = bindingList;
+            _bindingSource.DataSource = resultado.Items;
             dgvDatos.DataSource = _bindingSource;
 
             lblCantidad.Text = $"{desde} a {hasta} de {totalRegistros}";
@@ -74,35 +75,28 @@ namespace BombonesApp2026.Windows
 
         private void activosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //_listaTipos = _tipoServicio.FiltrarPorActivo(true);
-            //MostrarDatosEnGrilla(_listaTipos);
-            //ManejarBotones(true);
+            filtroActivo = true;
+            tsbFiltrar.BackColor = Color.Orange;
+            paginaActual = 1;
+            RecargarGrilla();
         }
 
-        private void ManejarBotones(bool v)
-        {
-            tsbNuevo.Enabled = v;
-            tsbEditar.Enabled = v;
-            tsbBorrar.Enabled = v;
-
-            tsbFiltrar.BackColor = filtroOn ? Color.Orange : SystemColors.Control;
-
-
-        }
 
         private void noActivosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //_listaTipos = _tipoServicio.FiltrarPorActivo(false);
-            //MostrarDatosEnGrilla(_listaTipos);
-            //ManejarBotones(true);
+            filtroActivo = false;
+            tsbFiltrar.BackColor = Color.Orange;
+            paginaActual = 1;
+            RecargarGrilla();
 
         }
 
         private void tsbActualizar_Click(object sender, EventArgs e)
         {
+            filtroActivo = null;
+            tsbFiltrar.BackColor = SystemColors.Control;
+            paginaActual = 1;
             RecargarGrilla();
-            filtroOn = false;
-            ManejarBotones(false);
 
         }
 
@@ -122,17 +116,32 @@ namespace BombonesApp2026.Windows
                         Descripcion = tipoEditDto.Descripcion,
                     };
                     int nuevoId = _tipoServicio.Agregar(tipoCreateDto);
-                    paginaActual = _tipoServicio
-                        .ObtenerPaginaRegistro(tipoCreateDto.Nombre, cantidadPorPagina);
+                    if (filtroActivo is null || filtroActivo == true)
+                    {
+                        paginaActual = _tipoServicio
+                            .ObtenerPaginaRegistro(tipoCreateDto.Nombre, cantidadPorPagina,
+                            filtroActivo);
+
+                    }
                     RecargarGrilla();
-                    var nuevoTipo = _bindingSource.List
-                        .Cast<TipoBombonListDto>()
-                        .FirstOrDefault(tb => tb.TipoBombonId == nuevoId);
-                    if (nuevoTipo is null) return;
-                    _bindingSource.Position = _bindingSource.IndexOf(nuevoTipo);
-                    MessageBox.Show("Tipo de Bombón Agregado",
-                        "Mensaje", MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    if (filtroActivo is null || filtroActivo == true)
+                    {
+                        var nuevoTipo = _bindingSource.List
+                    .Cast<TipoBombonListDto>()
+                    .FirstOrDefault(tb => tb.TipoBombonId == nuevoId);
+                        if (nuevoTipo is null) return;
+                        _bindingSource.Position = _bindingSource.IndexOf(nuevoTipo);
+                        MessageBox.Show("Tipo de Bombón Agregado",
+                            "Mensaje", MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Tipo de Bombón {tipoEditDto.Nombre} agregado.\nNo se muestra por condición de filtrado",
+                            "Confirmación", MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -163,7 +172,7 @@ namespace BombonesApp2026.Windows
             try
             {
                 _tipoServicio.Borrar(tipoBombonDto.TipoBombonId);
-                if (dgvDatos.Rows.Count==1 && paginaActual>1)
+                if (dgvDatos.Rows.Count == 1 && paginaActual > 1)
                 {
                     paginaActual--;
                 }
@@ -209,18 +218,31 @@ namespace BombonesApp2026.Windows
                 {
                     _tipoServicio.Editar(tipoBombonEditDto);
                     int editadoId = tipoBombonEditDto.TipoBombonId;
-                    paginaActual = _tipoServicio.ObtenerPaginaRegistro(tipoBombonEditDto.Nombre,
-                        cantidadPorPagina);
+                    if (filtroActivo is null || filtroActivo == tipoBombonEditDto.Activo)
+                    {
+                        paginaActual = _tipoServicio.ObtenerPaginaRegistro(tipoBombonEditDto.Nombre,
+                            cantidadPorPagina);
+                    }
                     RecargarGrilla();
-                    var editadoTipo=_bindingSource.List
-                        .Cast<TipoBombonListDto>()
-                        .FirstOrDefault(tb=>tb.TipoBombonId == editadoId);
+                    if (filtroActivo is null || filtroActivo == tipoBombonEditDto.Activo)
+                    {
 
-                    _bindingSource.Position = _bindingSource.IndexOf(editadoTipo);
-                    MessageBox.Show("Tipo de Bombón editado",
-                        "Mensaje",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                        var editadoTipo = _bindingSource.List
+                            .Cast<TipoBombonListDto>()
+                            .FirstOrDefault(tb => tb.TipoBombonId == editadoId);
+
+                        _bindingSource.Position = _bindingSource.IndexOf(editadoTipo);
+                        MessageBox.Show("Tipo de Bombón editado",
+                            "Mensaje",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Tipo de Bombón {tipoBombonEditDto.Nombre} editado.\nNo se muestra por condición de filtrado",
+                            "Confirmación",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
 
                 }
                 catch (Exception ex)
