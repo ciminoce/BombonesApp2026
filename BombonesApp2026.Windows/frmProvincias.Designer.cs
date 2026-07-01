@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
@@ -43,13 +43,13 @@
             colId = new DataGridViewTextBoxColumn();
             colProvincia = new DataGridViewTextBoxColumn();
             lblPaginas = new Label();
+            label1 = new Label();
             btnUltimo = new Button();
+            btnPrimero = new Button();
             lblCantidad = new Label();
+            btnAnterior = new Button();
             btnSiguiente = new Button();
             label2 = new Label();
-            btnAnterior = new Button();
-            label1 = new Label();
-            btnPrimero = new Button();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -170,8 +170,8 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colProvincia });
             dgvDatos.Dock = DockStyle.Fill;
@@ -209,6 +209,15 @@
             lblPaginas.TabIndex = 12;
             lblPaginas.Text = "0";
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(65, 10);
+            label1.Name = "label1";
+            label1.Size = new Size(125, 15);
+            label1.TabIndex = 11;
+            label1.Text = "Cantidad de Registros:";
+            // 
             // btnUltimo
             // 
             btnUltimo.Image = Properties.Resources.last_24px;
@@ -217,6 +226,15 @@
             btnUltimo.Size = new Size(42, 38);
             btnUltimo.TabIndex = 6;
             btnUltimo.UseVisualStyleBackColor = true;
+            // 
+            // btnPrimero
+            // 
+            btnPrimero.Image = Properties.Resources.first_24px;
+            btnPrimero.Location = new Point(497, 10);
+            btnPrimero.Name = "btnPrimero";
+            btnPrimero.Size = new Size(42, 38);
+            btnPrimero.TabIndex = 10;
+            btnPrimero.UseVisualStyleBackColor = true;
             // 
             // lblCantidad
             // 
@@ -227,6 +245,15 @@
             lblCantidad.Size = new Size(14, 15);
             lblCantidad.TabIndex = 13;
             lblCantidad.Text = "0";
+            // 
+            // btnAnterior
+            // 
+            btnAnterior.Image = Properties.Resources.previous_24px;
+            btnAnterior.Location = new Point(545, 10);
+            btnAnterior.Name = "btnAnterior";
+            btnAnterior.Size = new Size(42, 38);
+            btnAnterior.TabIndex = 9;
+            btnAnterior.UseVisualStyleBackColor = true;
             // 
             // btnSiguiente
             // 
@@ -245,33 +272,6 @@
             label2.Size = new Size(118, 15);
             label2.TabIndex = 8;
             label2.Text = "Cantidad de Páginas:";
-            // 
-            // btnAnterior
-            // 
-            btnAnterior.Image = Properties.Resources.previous_24px;
-            btnAnterior.Location = new Point(545, 10);
-            btnAnterior.Name = "btnAnterior";
-            btnAnterior.Size = new Size(42, 38);
-            btnAnterior.TabIndex = 9;
-            btnAnterior.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(65, 10);
-            label1.Name = "label1";
-            label1.Size = new Size(125, 15);
-            label1.TabIndex = 11;
-            label1.Text = "Cantidad de Registros:";
-            // 
-            // btnPrimero
-            // 
-            btnPrimero.Image = Properties.Resources.first_24px;
-            btnPrimero.Location = new Point(497, 10);
-            btnPrimero.Name = "btnPrimero";
-            btnPrimero.Size = new Size(42, 38);
-            btnPrimero.TabIndex = 10;
-            btnPrimero.UseVisualStyleBackColor = true;
             // 
             // frmProvincias
             // 

@@ -28,12 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
+            tsbFiltrar = new ToolStripDropDownButton();
+            activoToolStripMenuItem = new ToolStripMenuItem();
+            noActivoToolStripMenuItem = new ToolStripMenuItem();
+            toolStripLabel1 = new ToolStripLabel();
+            txtBuscar = new ToolStripTextBox();
+            tsbBuscar = new ToolStripButton();
             tsbActualizar = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
@@ -53,12 +59,6 @@
             btnAnterior = new Button();
             btnSiguiente = new Button();
             label2 = new Label();
-            tsbFiltrar = new ToolStripDropDownButton();
-            activoToolStripMenuItem = new ToolStripMenuItem();
-            noActivoToolStripMenuItem = new ToolStripMenuItem();
-            toolStripLabel1 = new ToolStripLabel();
-            txtBuscar = new ToolStripTextBox();
-            tsbBuscar = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -113,6 +113,50 @@
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 70);
+            // 
+            // tsbFiltrar
+            // 
+            tsbFiltrar.DropDownItems.AddRange(new ToolStripItem[] { activoToolStripMenuItem, noActivoToolStripMenuItem });
+            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
+            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbFiltrar.ImageTransparentColor = Color.Magenta;
+            tsbFiltrar.Name = "tsbFiltrar";
+            tsbFiltrar.Size = new Size(61, 67);
+            tsbFiltrar.Text = "&Filtrar";
+            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
+            // activoToolStripMenuItem
+            // 
+            activoToolStripMenuItem.Name = "activoToolStripMenuItem";
+            activoToolStripMenuItem.Size = new Size(127, 22);
+            activoToolStripMenuItem.Text = "Activo";
+            // 
+            // noActivoToolStripMenuItem
+            // 
+            noActivoToolStripMenuItem.Name = "noActivoToolStripMenuItem";
+            noActivoToolStripMenuItem.Size = new Size(127, 22);
+            noActivoToolStripMenuItem.Text = "No Activo";
+            // 
+            // toolStripLabel1
+            // 
+            toolStripLabel1.Name = "toolStripLabel1";
+            toolStripLabel1.Size = new Size(45, 67);
+            toolStripLabel1.Text = "Buscar:";
+            // 
+            // txtBuscar
+            // 
+            txtBuscar.Name = "txtBuscar";
+            txtBuscar.Size = new Size(150, 70);
+            // 
+            // tsbBuscar
+            // 
+            tsbBuscar.Image = Properties.Resources.search_property_48px;
+            tsbBuscar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbBuscar.ImageTransparentColor = Color.Magenta;
+            tsbBuscar.Name = "tsbBuscar";
+            tsbBuscar.Size = new Size(52, 67);
+            tsbBuscar.Text = "B&uscar";
+            tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
             // tsbActualizar
             // 
@@ -169,8 +213,8 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle3.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colTransporte, colProvincia, colTelefono, colEmail, colActivo });
             dgvDatos.Dock = DockStyle.Fill;
@@ -302,50 +346,6 @@
             label2.Size = new Size(118, 15);
             label2.TabIndex = 16;
             label2.Text = "Cantidad de Páginas:";
-            // 
-            // tsbFiltrar
-            // 
-            tsbFiltrar.DropDownItems.AddRange(new ToolStripItem[] { activoToolStripMenuItem, noActivoToolStripMenuItem });
-            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
-            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbFiltrar.ImageTransparentColor = Color.Magenta;
-            tsbFiltrar.Name = "tsbFiltrar";
-            tsbFiltrar.Size = new Size(61, 67);
-            tsbFiltrar.Text = "&Filtrar";
-            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
-            // 
-            // activoToolStripMenuItem
-            // 
-            activoToolStripMenuItem.Name = "activoToolStripMenuItem";
-            activoToolStripMenuItem.Size = new Size(180, 22);
-            activoToolStripMenuItem.Text = "Activo";
-            // 
-            // noActivoToolStripMenuItem
-            // 
-            noActivoToolStripMenuItem.Name = "noActivoToolStripMenuItem";
-            noActivoToolStripMenuItem.Size = new Size(180, 22);
-            noActivoToolStripMenuItem.Text = "No Activo";
-            // 
-            // toolStripLabel1
-            // 
-            toolStripLabel1.Name = "toolStripLabel1";
-            toolStripLabel1.Size = new Size(45, 67);
-            toolStripLabel1.Text = "Buscar:";
-            // 
-            // txtBuscar
-            // 
-            txtBuscar.Name = "txtBuscar";
-            txtBuscar.Size = new Size(150, 70);
-            // 
-            // tsbBuscar
-            // 
-            tsbBuscar.Image = Properties.Resources.search_property_48px;
-            tsbBuscar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbBuscar.ImageTransparentColor = Color.Magenta;
-            tsbBuscar.Name = "tsbBuscar";
-            tsbBuscar.Size = new Size(52, 67);
-            tsbBuscar.Text = "B&uscar";
-            tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
             // frmTransportes
             // 

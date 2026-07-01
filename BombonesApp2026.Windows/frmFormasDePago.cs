@@ -22,8 +22,8 @@ namespace BombonesApp2026.Windows
 
         private void MostrarDatosEnGrilla(List<FormaDePagoListDto> lista)
         {
-            var bindingList = new BindingList<FormaDePagoListDto>(lista);
-            _bindingSource.DataSource = bindingList;
+            
+            _bindingSource.DataSource = lista;
             dgvDatos.DataSource = _bindingSource;
 
             lblCantidad.Text = lista.Count.ToString();

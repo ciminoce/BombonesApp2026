@@ -22,8 +22,7 @@ namespace BombonesApp2026.Windows
         }
         private void MostrarDatosEnGrilla(List<ProvinciaListDto> lista)
         {
-            var bindingList = new BindingList<ProvinciaListDto>(lista);
-            _bindingSource.DataSource = bindingList;
+            _bindingSource.DataSource = lista;
             dgvDatos.DataSource = _bindingSource;
 
             lblCantidad.Text = lista.Count.ToString();
@@ -43,7 +42,7 @@ namespace BombonesApp2026.Windows
                     {
                         Nombre = provinciaEditDto.Nombre,
                     };
-                    int nuevoId=_provinciaServicio.Agregar(provinciaCreateDto);
+                    int nuevoId = _provinciaServicio.Agregar(provinciaCreateDto);
                     _listaProvincias = _provinciaServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaProvincias);
                     var nuevaPcia = _listaProvincias.FirstOrDefault(p => p.ProvinciaId == nuevoId);
@@ -64,7 +63,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbBorrar_Click(object sender, EventArgs e)
         {
-            if (_bindingSource.Current==null)
+            if (_bindingSource.Current == null)
             {
                 MessageBox.Show("Debe seleccionar una fila de la grilla",
                     "Advertencia",
@@ -124,7 +123,7 @@ namespace BombonesApp2026.Windows
                     _provinciaServicio.Editar(provinciaEditDto);
                     _listaProvincias = _provinciaServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaProvincias);
-                    _bindingSource.Position= posicion;
+                    _bindingSource.Position = posicion;
                     MessageBox.Show("Provincia editada",
                         "Mensaje",
                         MessageBoxButtons.OK,

@@ -37,8 +37,7 @@ namespace BombonesApp2026.Windows
 
         private void MostrarDatosEnGrilla(List<CiudadListDto> lista)
         {
-            var bindingList = new BindingList<CiudadListDto>(lista);
-            _bindingSource.DataSource = bindingList;
+            _bindingSource.DataSource = lista;
             dgvDatos.DataSource = _bindingSource;
 
             lblCantidad.Text = lista.Count.ToString();

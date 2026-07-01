@@ -1,6 +1,4 @@
-﻿using Bombones2026.Servicios.DTOs.Ciudad;
-using Bombones2026.Servicios.DTOs.TipoBombon;
-using Bombones2026.Servicios.DTOs.Transporte;
+﻿using Bombones2026.Servicios.DTOs.Transporte;
 using Bombones2026.Servicios.Servicios;
 using System.ComponentModel;
 
@@ -44,8 +42,7 @@ namespace BombonesApp2026.Windows
 
         private void MostrarDatosEnGrilla(List<TransporteListDto> listaTransporte)
         {
-            var bindingList = new BindingList<TransporteListDto>(listaTransporte);
-            _bindingSource.DataSource = bindingList;
+            _bindingSource.DataSource = listaTransporte;
             dgvDatos.DataSource = _bindingSource;
 
             lblCantidad.Text = listaTransporte.Count.ToString();
@@ -153,7 +150,7 @@ namespace BombonesApp2026.Windows
                     _transporteServicio.Editar(transporteEditDto!);
                     _listaTransporte = _transporteServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaTransporte);
-                    _bindingSource.Position= posicion;
+                    _bindingSource.Position = posicion;
                     MessageBox.Show("Transporte editado",
                         "Mensaje",
                         MessageBoxButtons.OK,
@@ -171,6 +168,11 @@ namespace BombonesApp2026.Windows
                 }
             }
 
+
+        }
+
+        private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
 
         }
     }
