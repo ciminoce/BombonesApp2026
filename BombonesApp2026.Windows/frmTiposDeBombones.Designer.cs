@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
@@ -37,6 +37,9 @@
             tsbFiltrar = new ToolStripDropDownButton();
             activosToolStripMenuItem = new ToolStripMenuItem();
             noActivosToolStripMenuItem = new ToolStripMenuItem();
+            toolStripLabel1 = new ToolStripLabel();
+            txtBuscar = new ToolStripTextBox();
+            tsbBuscar = new ToolStripButton();
             tsbActualizar = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
@@ -64,7 +67,7 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbFiltrar, tsbActualizar, toolStripSeparator2, tsbCerrar });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbFiltrar, toolStripLabel1, txtBuscar, tsbBuscar, tsbActualizar, toolStripSeparator2, tsbCerrar });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(800, 70);
@@ -134,6 +137,28 @@
             noActivosToolStripMenuItem.Text = "No Activos";
             noActivosToolStripMenuItem.Click += noActivosToolStripMenuItem_Click;
             // 
+            // toolStripLabel1
+            // 
+            toolStripLabel1.Name = "toolStripLabel1";
+            toolStripLabel1.Size = new Size(45, 67);
+            toolStripLabel1.Text = "Buscar:";
+            // 
+            // txtBuscar
+            // 
+            txtBuscar.Name = "txtBuscar";
+            txtBuscar.Size = new Size(150, 70);
+            // 
+            // tsbBuscar
+            // 
+            tsbBuscar.Image = Properties.Resources.search_property_48px;
+            tsbBuscar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbBuscar.ImageTransparentColor = Color.Magenta;
+            tsbBuscar.Name = "tsbBuscar";
+            tsbBuscar.Size = new Size(52, 67);
+            tsbBuscar.Text = "B&uscar";
+            tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbBuscar.Click += tsbBuscar_Click;
+            // 
             // tsbActualizar
             // 
             tsbActualizar.Image = Properties.Resources.restart_48px;
@@ -190,8 +215,8 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colNombre, colDescripcion, colActivo });
             dgvDatos.Dock = DockStyle.Fill;
@@ -362,5 +387,8 @@
         private Label lblCantidad;
         private Label label2;
         private Label label1;
+        private ToolStripLabel toolStripLabel1;
+        private ToolStripTextBox txtBuscar;
+        private ToolStripButton tsbBuscar;
     }
 }

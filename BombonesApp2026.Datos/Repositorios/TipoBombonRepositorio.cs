@@ -15,7 +15,8 @@ namespace BombonesApp2026.Datos.Repositorios
             }
         }
         public (List<TipoBombon> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
-            int cantidadPorPagina, bool? filtroActivo=null)
+            int cantidadPorPagina, bool? filtroActivo=null, 
+            string? textoBuscar=null)
         {
             using(var context=new BombonesDbContext() )
 	        {
@@ -24,6 +25,10 @@ namespace BombonesApp2026.Datos.Repositorios
                 if(filtroActivo is not null)
                 {
                     query = query.Where(tb => tb.Activo == filtroActivo);
+                }
+                if (!string.IsNullOrWhiteSpace(textoBuscar))
+                {
+                    query = query.Where(tb => tb.Nombre.Contains(textoBuscar));
                 }
                 var cantidad = query.Count();
                 var lista = query
@@ -111,7 +116,8 @@ namespace BombonesApp2026.Datos.Repositorios
             return false;
         }
 
-        public int ObtenerPosicionAlfabetica(string nombre, bool? filtroActivo=null)
+        public int ObtenerPosicionAlfabetica(string nombre, 
+            bool? filtroActivo=null, string? textoBuscar=null)
         {
             using (var context=new BombonesDbContext())
             {
@@ -119,6 +125,10 @@ namespace BombonesApp2026.Datos.Repositorios
                 if (filtroActivo.HasValue)
                 {
                     query=query.Where(tb=>tb.Activo == filtroActivo.Value);
+                }
+                if (!string.IsNullOrWhiteSpace(textoBuscar))
+                {
+                    query = query.Where(tb => tb.Nombre.Contains(textoBuscar));
                 }
                 return query
                     .Count(tb => string

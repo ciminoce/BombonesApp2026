@@ -28,13 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
-            tsbFiltrar = new ToolStripButton();
             tsbActualizar = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
@@ -54,6 +53,12 @@
             btnAnterior = new Button();
             btnSiguiente = new Button();
             label2 = new Label();
+            tsbFiltrar = new ToolStripDropDownButton();
+            activoToolStripMenuItem = new ToolStripMenuItem();
+            noActivoToolStripMenuItem = new ToolStripMenuItem();
+            toolStripLabel1 = new ToolStripLabel();
+            txtBuscar = new ToolStripTextBox();
+            tsbBuscar = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -64,7 +69,7 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbFiltrar, tsbActualizar, toolStripSeparator2, tsbCerrar });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbFiltrar, toolStripLabel1, txtBuscar, tsbBuscar, tsbActualizar, toolStripSeparator2, tsbCerrar });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1011, 70);
@@ -108,16 +113,6 @@
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 70);
-            // 
-            // tsbFiltrar
-            // 
-            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
-            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbFiltrar.ImageTransparentColor = Color.Magenta;
-            tsbFiltrar.Name = "tsbFiltrar";
-            tsbFiltrar.Size = new Size(52, 67);
-            tsbFiltrar.Text = "&Filtrar";
-            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
             // 
             // tsbActualizar
             // 
@@ -174,8 +169,8 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle3;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colTransporte, colProvincia, colTelefono, colEmail, colActivo });
             dgvDatos.Dock = DockStyle.Fill;
@@ -308,6 +303,50 @@
             label2.TabIndex = 16;
             label2.Text = "Cantidad de Páginas:";
             // 
+            // tsbFiltrar
+            // 
+            tsbFiltrar.DropDownItems.AddRange(new ToolStripItem[] { activoToolStripMenuItem, noActivoToolStripMenuItem });
+            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
+            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbFiltrar.ImageTransparentColor = Color.Magenta;
+            tsbFiltrar.Name = "tsbFiltrar";
+            tsbFiltrar.Size = new Size(61, 67);
+            tsbFiltrar.Text = "&Filtrar";
+            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
+            // activoToolStripMenuItem
+            // 
+            activoToolStripMenuItem.Name = "activoToolStripMenuItem";
+            activoToolStripMenuItem.Size = new Size(180, 22);
+            activoToolStripMenuItem.Text = "Activo";
+            // 
+            // noActivoToolStripMenuItem
+            // 
+            noActivoToolStripMenuItem.Name = "noActivoToolStripMenuItem";
+            noActivoToolStripMenuItem.Size = new Size(180, 22);
+            noActivoToolStripMenuItem.Text = "No Activo";
+            // 
+            // toolStripLabel1
+            // 
+            toolStripLabel1.Name = "toolStripLabel1";
+            toolStripLabel1.Size = new Size(45, 67);
+            toolStripLabel1.Text = "Buscar:";
+            // 
+            // txtBuscar
+            // 
+            txtBuscar.Name = "txtBuscar";
+            txtBuscar.Size = new Size(150, 70);
+            // 
+            // tsbBuscar
+            // 
+            tsbBuscar.Image = Properties.Resources.search_property_48px;
+            tsbBuscar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbBuscar.ImageTransparentColor = Color.Magenta;
+            tsbBuscar.Name = "tsbBuscar";
+            tsbBuscar.Size = new Size(52, 67);
+            tsbBuscar.Text = "B&uscar";
+            tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
             // frmTransportes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -349,7 +388,6 @@
         private DataGridViewTextBoxColumn colTelefono;
         private DataGridViewTextBoxColumn colEmail;
         private DataGridViewCheckBoxColumn colActivo;
-        private ToolStripButton tsbFiltrar;
         private Label lblPaginas;
         private Label label1;
         private Button btnUltimo;
@@ -358,5 +396,11 @@
         private Button btnAnterior;
         private Button btnSiguiente;
         private Label label2;
+        private ToolStripDropDownButton tsbFiltrar;
+        private ToolStripMenuItem activoToolStripMenuItem;
+        private ToolStripMenuItem noActivoToolStripMenuItem;
+        private ToolStripButton tsbBuscar;
+        private ToolStripTextBox txtBuscar;
+        private ToolStripLabel toolStripLabel1;
     }
 }
