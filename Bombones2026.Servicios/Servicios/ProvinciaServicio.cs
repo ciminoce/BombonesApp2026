@@ -1,4 +1,4 @@
-﻿using Bombones2026.Servicios.DTOs.FormaDePago;
+﻿using Bombones2026.Servicios.DTOs.Paginacion;
 using Bombones2026.Servicios.DTOs.Provincia;
 using BombonesApp2026.Datos.Repositorios;
 using BombonesApp2026.Entidades.Entidades;
@@ -13,10 +13,38 @@ namespace Bombones2026.Servicios.Servicios
             _provinciaRepositorio = new ProvinciaRepositorio();
         }
 
+        public ResultadoPaginacionDto<ProvinciaListDto> ObtenerPagina(int paginaActual,
+        int cantidadPorPagina, bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            try
+            {
+                var resultado = _provinciaRepositorio.ObtenerPagina(paginaActual,
+                    cantidadPorPagina, filtroActivo, textoBuscar);
+                var listaDto = resultado.lista
+                .Select(p => new ProvinciaListDto
+                {
+                    ProvinciaId = p.ProvinciaId,
+                    Nombre = p.NombreProvincia,
+                }).ToList();
+                return new ResultadoPaginacionDto<ProvinciaListDto>
+                {
+                    Items = listaDto,
+                    TotalRegistros = resultado.cantidadRegistros,
+                    CantidadPorPagina = cantidadPorPagina,
+                    PaginaActual = paginaActual
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public List<ProvinciaListDto> ObtenerTodos()
         {
             return _provinciaRepositorio.ObtenerTodos()
-                .Select(p => new ProvinciaListDto           
+                .Select(p => new ProvinciaListDto
                 {
                     ProvinciaId = p.ProvinciaId,
                     Nombre = p.NombreProvincia,
@@ -74,7 +102,7 @@ namespace Bombones2026.Servicios.Servicios
             Provincia provincia = new Provincia
             {
                 ProvinciaId = provinciaDto.ProvinciaId,
-                NombreProvincia = provinciaDto.Nombre  
+                NombreProvincia = provinciaDto.Nombre
             };
             if (_provinciaRepositorio.ExisteProvincia(provincia)) throw new InvalidOperationException($"Ya existe una Provincia {provincia.NombreProvincia}");
             _provinciaRepositorio.Editar(provincia);
@@ -96,6 +124,13 @@ namespace Bombones2026.Servicios.Servicios
             return provinciaDto;
         }
 
+        public int ObtenerPaginaRegistro(string nombre, int cantidadPorPagina,
+            bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            int posicion = _provinciaRepositorio
+                .ObtenerPosicionAlfabetica(nombre, filtroActivo, textoBuscar);
+            return (int)Math.Ceiling((double)posicion / cantidadPorPagina);
+        }
     }
 
 }

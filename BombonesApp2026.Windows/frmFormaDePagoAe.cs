@@ -20,6 +20,11 @@ namespace BombonesApp2026.Windows
             formaDePagoDto = formaDePagoEditDto;
         }
 
+        public FormaDePagoEditDto? GetTipo()
+        {
+            return formaDePagoDto;
+        }
+
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;

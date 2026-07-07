@@ -14,6 +14,45 @@ namespace BombonesApp2026.Datos.Repositorios
                     .ToList();
             }
         }
+        public (List<Ciudad> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
+    int cantidadPorPagina, bool? filtroActivo = null,
+    string? textoBuscar = null)
+        {
+            using (var context = new BombonesDbContext())
+            {
+                IQueryable<Ciudad> query = context
+                    .Ciudades
+                    .Include(c=> c.Provincia)
+                    .AsNoTracking();
+                if (!string.IsNullOrWhiteSpace(textoBuscar))
+                {
+                    query = query.Where(c => c.Nombre.Contains(textoBuscar));
+                }
+                var cantidad = query.Count();
+                var lista = query
+                    .OrderBy(c => c.Nombre)
+                    .Skip(cantidadPorPagina * (paginaActual - 1))
+                    .Take(cantidadPorPagina)
+                    .ToList();
+                return (lista, cantidad);
+            }
+        }
+        public int ObtenerPosicionAlfabetica(string nombre,
+                bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            using (var context = new BombonesDbContext())
+            {
+                IQueryable<Ciudad> query = context.Ciudades.AsNoTracking();
+                if (!string.IsNullOrWhiteSpace(textoBuscar))
+                {
+                    query = query.Where(c => c.Nombre.Contains(textoBuscar));
+                }
+                return query
+                    .Count(c => string
+                        .Compare(c.Nombre, nombre) <= 0);
+            }
+        }
+
         public void Agregar(Ciudad ciudad)
         {
             using (var context=new BombonesDbContext())

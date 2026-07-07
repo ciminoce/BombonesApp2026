@@ -1,4 +1,5 @@
 ﻿using Bombones2026.Servicios.DTOs.FormaDePago;
+using Bombones2026.Servicios.DTOs.Paginacion;
 using BombonesApp2026.Datos.Repositorios;
 using BombonesApp2026.Entidades.Entidades;
 
@@ -11,6 +12,36 @@ namespace Bombones2026.Servicios.Servicios
         {
             _formasDePagoRepositorio = new FormaDePagoRepositorio();
         }
+
+        public ResultadoPaginacionDto<FormaDePagoListDto> ObtenerPagina(int paginaActual,
+                int cantidadPorPagina, bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            try
+            {
+                var resultado = _formasDePagoRepositorio.ObtenerPagina(paginaActual,
+                    cantidadPorPagina, filtroActivo, textoBuscar);
+                var listaDto = resultado.lista
+                        .Select(f => new FormaDePagoListDto
+                        {
+                            FormaDePagoId = f.FormaDePagoId,
+                            Nombre = f.Nombre,
+                            Activo = f.Activo,
+                        }).ToList();
+                return new ResultadoPaginacionDto<FormaDePagoListDto>
+                {
+                    Items = listaDto,
+                    TotalRegistros = resultado.cantidadRegistros,
+                    CantidadPorPagina = cantidadPorPagina,
+                    PaginaActual = paginaActual
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
 
         public List<FormaDePagoListDto> ObtenerTodos()
         {
@@ -109,5 +140,12 @@ namespace Bombones2026.Servicios.Servicios
                 }).ToList();
         }
 
+        public int ObtenerPaginaRegistro(string nombre, int cantidadPorPagina,
+            bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            int posicion = _formasDePagoRepositorio
+                .ObtenerPosicionAlfabetica(nombre, filtroActivo, textoBuscar);
+            return (int)Math.Ceiling((double)posicion / cantidadPorPagina);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Bombones2026.Servicios.DTOs.Transporte;
+﻿using Bombones2026.Servicios.DTOs.Paginacion;
+using Bombones2026.Servicios.DTOs.Transporte;
 using BombonesApp2026.Datos.Repositorios;
 using BombonesApp2026.Entidades.Entidades;
 
@@ -10,6 +11,37 @@ namespace Bombones2026.Servicios.Servicios
         public TransporteServicio()
         {
             _transporteRepositorio = new TransporteRepositorio();
+        }
+        public ResultadoPaginacionDto<TransporteListDto> ObtenerPagina(int paginaActual,
+                int cantidadPorPagina, bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            try
+            {
+                var resultado = _transporteRepositorio.ObtenerPagina(paginaActual,
+                    cantidadPorPagina, filtroActivo, textoBuscar);
+                var listaDto = resultado.lista
+                    .Select(tb => new TransporteListDto
+                    {
+                        TransporteId = tb.TransporteId,
+                        NombreEmpresa = tb.NombreEmpresa,
+                        Telefono = tb.Telefono,
+                        Email = tb.Email,
+                        Provincia = tb.Provincia!.NombreProvincia,
+                        Activo = tb.Activo
+                    }).ToList();
+                return new ResultadoPaginacionDto<TransporteListDto>
+                {
+                    Items = listaDto,
+                    TotalRegistros = resultado.cantidadRegistros,
+                    CantidadPorPagina = cantidadPorPagina,
+                    PaginaActual = paginaActual
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public int Agregar(TransporteCreateDto? transporteDto)
@@ -142,7 +174,7 @@ namespace Bombones2026.Servicios.Servicios
                     Telefono = transporte.Telefono,
                     Email = transporte.Email,
                     ProvinciaId = transporte.ProvinciaId,
-                    Activo= transporte.Activo
+                    Activo = transporte.Activo
                 };
                 return transporteDto;
 
@@ -167,6 +199,14 @@ namespace Bombones2026.Servicios.Servicios
                     Activo = t.Activo
 
                 }).ToList();
+        }
+
+        public int ObtenerPaginaRegistro(string nombre, int cantidadPorPagina,
+            bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            int posicion = _transporteRepositorio
+                .ObtenerPosicionAlfabetica(nombre, filtroActivo, textoBuscar);
+            return (int)Math.Ceiling((double)posicion / cantidadPorPagina);
         }
     }
 }

@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle5 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
@@ -37,6 +37,9 @@
             tsbFiltrar = new ToolStripDropDownButton();
             activosToolStripMenuItem = new ToolStripMenuItem();
             noActivosToolStripMenuItem = new ToolStripMenuItem();
+            toolStripLabel1 = new ToolStripLabel();
+            txtBuscar = new ToolStripTextBox();
+            tsbBuscar = new ToolStripButton();
             tsbActualizar = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
@@ -53,9 +56,6 @@
             btnAnterior = new Button();
             label1 = new Label();
             btnPrimero = new Button();
-            toolStripLabel1 = new ToolStripLabel();
-            txtBuscar = new ToolStripTextBox();
-            tsbBuscar = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -136,6 +136,28 @@
             noActivosToolStripMenuItem.Text = "No Activos";
             noActivosToolStripMenuItem.Click += noActivosToolStripMenuItem_Click;
             // 
+            // toolStripLabel1
+            // 
+            toolStripLabel1.Name = "toolStripLabel1";
+            toolStripLabel1.Size = new Size(45, 67);
+            toolStripLabel1.Text = "Buscar:";
+            // 
+            // txtBuscar
+            // 
+            txtBuscar.Name = "txtBuscar";
+            txtBuscar.Size = new Size(150, 70);
+            // 
+            // tsbBuscar
+            // 
+            tsbBuscar.Image = Properties.Resources.search_property_48px;
+            tsbBuscar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbBuscar.ImageTransparentColor = Color.Magenta;
+            tsbBuscar.Name = "tsbBuscar";
+            tsbBuscar.Size = new Size(52, 67);
+            tsbBuscar.Text = "B&uscar";
+            tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbBuscar.Click += tsbBuscar_Click;
+            // 
             // tsbActualizar
             // 
             tsbActualizar.Image = Properties.Resources.restart_48px;
@@ -192,8 +214,8 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle5.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle5;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colNombre, colActivo });
             dgvDatos.Dock = DockStyle.Fill;
@@ -246,6 +268,7 @@
             btnUltimo.Size = new Size(42, 38);
             btnUltimo.TabIndex = 6;
             btnUltimo.UseVisualStyleBackColor = true;
+            btnUltimo.Click += btnUltimo_Click;
             // 
             // lblCantidad
             // 
@@ -265,6 +288,7 @@
             btnSiguiente.Size = new Size(42, 38);
             btnSiguiente.TabIndex = 7;
             btnSiguiente.UseVisualStyleBackColor = true;
+            btnSiguiente.Click += btnSiguiente_Click;
             // 
             // label2
             // 
@@ -283,6 +307,7 @@
             btnAnterior.Size = new Size(42, 38);
             btnAnterior.TabIndex = 9;
             btnAnterior.UseVisualStyleBackColor = true;
+            btnAnterior.Click += btnAnterior_Click;
             // 
             // label1
             // 
@@ -301,27 +326,7 @@
             btnPrimero.Size = new Size(42, 38);
             btnPrimero.TabIndex = 10;
             btnPrimero.UseVisualStyleBackColor = true;
-            // 
-            // toolStripLabel1
-            // 
-            toolStripLabel1.Name = "toolStripLabel1";
-            toolStripLabel1.Size = new Size(45, 67);
-            toolStripLabel1.Text = "Buscar:";
-            // 
-            // txtBuscar
-            // 
-            txtBuscar.Name = "txtBuscar";
-            txtBuscar.Size = new Size(150, 70);
-            // 
-            // tsbBuscar
-            // 
-            tsbBuscar.Image = Properties.Resources.search_property_48px;
-            tsbBuscar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbBuscar.ImageTransparentColor = Color.Magenta;
-            tsbBuscar.Name = "tsbBuscar";
-            tsbBuscar.Size = new Size(52, 67);
-            tsbBuscar.Text = "B&uscar";
-            tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnPrimero.Click += btnPrimero_Click;
             // 
             // frmFormasDePago
             // 

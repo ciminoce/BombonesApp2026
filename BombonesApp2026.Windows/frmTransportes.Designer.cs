@@ -128,14 +128,16 @@
             // activoToolStripMenuItem
             // 
             activoToolStripMenuItem.Name = "activoToolStripMenuItem";
-            activoToolStripMenuItem.Size = new Size(127, 22);
+            activoToolStripMenuItem.Size = new Size(180, 22);
             activoToolStripMenuItem.Text = "Activo";
+            activoToolStripMenuItem.Click += activoToolStripMenuItem_Click;
             // 
             // noActivoToolStripMenuItem
             // 
             noActivoToolStripMenuItem.Name = "noActivoToolStripMenuItem";
-            noActivoToolStripMenuItem.Size = new Size(127, 22);
+            noActivoToolStripMenuItem.Size = new Size(180, 22);
             noActivoToolStripMenuItem.Text = "No Activo";
+            noActivoToolStripMenuItem.Click += noActivoToolStripMenuItem_Click;
             // 
             // toolStripLabel1
             // 
@@ -157,6 +159,7 @@
             tsbBuscar.Size = new Size(52, 67);
             tsbBuscar.Text = "B&uscar";
             tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbBuscar.Click += tsbBuscar_Click;
             // 
             // tsbActualizar
             // 
@@ -167,6 +170,7 @@
             tsbActualizar.Size = new Size(63, 67);
             tsbActualizar.Text = "&Actualizar";
             tsbActualizar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbActualizar.Click += tsbActualizar_Click;
             // 
             // toolStripSeparator2
             // 
@@ -300,6 +304,7 @@
             btnUltimo.Size = new Size(42, 38);
             btnUltimo.TabIndex = 14;
             btnUltimo.UseVisualStyleBackColor = true;
+            btnUltimo.Click += btnUltimo_Click;
             // 
             // btnPrimero
             // 
@@ -309,6 +314,7 @@
             btnPrimero.Size = new Size(42, 38);
             btnPrimero.TabIndex = 18;
             btnPrimero.UseVisualStyleBackColor = true;
+            btnPrimero.Click += btnPrimero_Click;
             // 
             // lblCantidad
             // 
@@ -328,6 +334,7 @@
             btnAnterior.Size = new Size(42, 38);
             btnAnterior.TabIndex = 17;
             btnAnterior.UseVisualStyleBackColor = true;
+            btnAnterior.Click += btnAnterior_Click;
             // 
             // btnSiguiente
             // 
@@ -337,6 +344,7 @@
             btnSiguiente.Size = new Size(42, 38);
             btnSiguiente.TabIndex = 15;
             btnSiguiente.UseVisualStyleBackColor = true;
+            btnSiguiente.Click += btnSiguiente_Click;
             // 
             // label2
             // 

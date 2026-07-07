@@ -39,16 +39,6 @@ namespace BombonesApp2026.Datos.Repositorios
                 return (lista, cantidad);
 	        }
         }
-        public List<TipoBombon> FiltrarPorActivo(bool activo)
-        {
-            using (var context = new BombonesDbContext())
-            {
-                return context.TipoBombones
-                    .AsNoTracking()
-                    .Where(tb => tb.Activo == activo)
-                    .ToList();
-            }
-        }
         public void Agregar(TipoBombon tipoBombon)
         {
             using (var context = new BombonesDbContext())

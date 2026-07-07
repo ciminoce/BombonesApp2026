@@ -1,9 +1,9 @@
 ﻿using BombonesApp2026.Entidades.Entidades;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace BombonesApp2026.Datos.Repositorios
 {
+    //TODO:Ver registros relacionadados
     public class ProvinciaRepositorio
     {
         public List<Provincia> ObtenerTodos()
@@ -15,6 +15,43 @@ namespace BombonesApp2026.Datos.Repositorios
                     .ToList();
             }
         }
+        public (List<Provincia> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
+            int cantidadPorPagina, bool? filtroActivo = null,
+            string? textoBuscar = null)
+        {
+            using (var context = new BombonesDbContext())
+            {
+                IQueryable<Provincia> query = context
+                    .Provincias.AsNoTracking();
+                if (!string.IsNullOrWhiteSpace(textoBuscar))
+                {
+                    query = query.Where(p => p.NombreProvincia.Contains(textoBuscar));
+                }
+                var cantidad = query.Count();
+                var lista = query
+                    .OrderBy(p => p.NombreProvincia)
+                    .Skip(cantidadPorPagina * (paginaActual - 1))
+                    .Take(cantidadPorPagina)
+                    .ToList();
+                return (lista, cantidad);
+            }
+        }
+        public int ObtenerPosicionAlfabetica(string nombre,
+                bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            using (var context = new BombonesDbContext())
+            {
+                IQueryable<Provincia> query = context.Provincias.AsNoTracking();
+                if (!string.IsNullOrWhiteSpace(textoBuscar))
+                {
+                    query = query.Where(p => p.NombreProvincia.Contains(textoBuscar));
+                }
+                return query
+                    .Count(p => string
+                        .Compare(p.NombreProvincia, nombre) <= 0);
+            }
+        }
+
         public void Agregar(Provincia provincia)
         {
             using (var context = new BombonesDbContext())

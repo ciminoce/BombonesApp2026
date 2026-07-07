@@ -14,6 +14,51 @@ namespace BombonesApp2026.Datos.Repositorios
                     .ToList();
             }
         }
+        public (List<FormaDePago> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
+    int cantidadPorPagina, bool? filtroActivo = null,
+    string? textoBuscar = null)
+        {
+            using (var context = new BombonesDbContext())
+            {
+                IQueryable<FormaDePago> query = context
+                    .FormasDePago.AsNoTracking();
+                if (filtroActivo is not null)
+                {
+                    query = query.Where(f => f.Activo == filtroActivo);
+                }
+                if (!string.IsNullOrWhiteSpace(textoBuscar))
+                {
+                    query = query.Where(f => f.Nombre.Contains(textoBuscar));
+                }
+                var cantidad = query.Count();
+                var lista = query
+                    .OrderBy(f => f.Nombre)
+                    .Skip(cantidadPorPagina * (paginaActual - 1))
+                    .Take(cantidadPorPagina)
+                    .ToList();
+                return (lista, cantidad);
+            }
+        }
+        public int ObtenerPosicionAlfabetica(string nombre,
+                bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            using (var context = new BombonesDbContext())
+            {
+                IQueryable<FormaDePago> query = context.FormasDePago.AsNoTracking();
+                if (filtroActivo.HasValue)
+                {
+                    query = query.Where(f => f.Activo == filtroActivo.Value);
+                }
+                if (!string.IsNullOrWhiteSpace(textoBuscar))
+                {
+                    query = query.Where(f => f.Nombre.Contains(textoBuscar));
+                }
+                return query
+                    .Count(f => string
+                        .Compare(f.Nombre, nombre) <= 0);
+            }
+        }
+
         public List<FormaDePago> FiltrarPorActivo(bool activo)
         {
             using (var context = new BombonesDbContext())

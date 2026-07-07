@@ -1,14 +1,21 @@
 ﻿using Bombones2026.Servicios.DTOs.FormaDePago;
+using Bombones2026.Servicios.DTOs.Paginacion;
 using Bombones2026.Servicios.Servicios;
-using System.ComponentModel;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmFormasDePago : Form
     {
         private readonly FormaDePagoServicio _formaDePagoServicio;
-        private List<FormaDePagoListDto>? _listaformaDePago;
         private BindingSource _bindingSource = new BindingSource();
+        //para paginar
+        private int paginaActual = 1;
+        private int cantidadPorPagina = 10;
+        private int totalRegistros = 0;
+        private int totalPaginas = 0;
+
+        private bool? filtroActivo = null;
+        private string? textoBuscar = null;
         public frmFormasDePago()
         {
             InitializeComponent();
@@ -20,13 +27,27 @@ namespace BombonesApp2026.Windows
         }
 
 
-        private void MostrarDatosEnGrilla(List<FormaDePagoListDto> lista)
+        private void MostrarDatosEnGrilla(ResultadoPaginacionDto<FormaDePagoListDto> resultado)
         {
-            
-            _bindingSource.DataSource = lista;
+            totalPaginas = resultado.TotalPaginas;
+            totalRegistros = resultado.TotalRegistros;
+            int desde = 1 + (paginaActual - 1) * cantidadPorPagina;
+            int hasta = desde + cantidadPorPagina;
+            if (hasta > totalRegistros)
+            {
+                hasta = totalRegistros;
+            }
+            _bindingSource.DataSource = resultado.Items;
             dgvDatos.DataSource = _bindingSource;
 
-            lblCantidad.Text = lista.Count.ToString();
+            lblCantidad.Text = $"{desde} a {hasta} de {totalRegistros}";
+            lblPaginas.Text = $"{paginaActual} de {totalPaginas}";
+
+            btnPrimero.Enabled = resultado.TieneRegistrosAnteriores;
+            btnAnterior.Enabled = resultado.TieneRegistrosAnteriores;
+            btnSiguiente.Enabled = resultado.TieneRegistrosSiguientes;
+            btnUltimo.Enabled = resultado.TieneRegistrosSiguientes;
+
         }
 
         private void tsbNuevo_Click(object sender, EventArgs e)
@@ -35,24 +56,46 @@ namespace BombonesApp2026.Windows
             {
                 DialogResult dr = frm.ShowDialog();
                 if (dr == DialogResult.Cancel) return;
-                FormaDePagoEditDto? formaDePagoEditDto = frm.GetFormaDePago();
-                if (formaDePagoEditDto == null) return;
+                FormaDePagoEditDto? formaEditDto = frm.GetTipo();
+                if (formaEditDto == null) return;
                 try
                 {
-                    FormaDePagoCreateDto formaDePagoCreateDto = new FormaDePagoCreateDto
+                    FormaDePagoCreateDto formaCreateDto = new FormaDePagoCreateDto
                     {
-                        Nombre = formaDePagoEditDto.Nombre,
+                        Nombre = formaEditDto.Nombre,
                     };
-                    int nuevoId = _formaDePagoServicio.Agregar(formaDePagoCreateDto);
+                    int nuevoId = _formaDePagoServicio.Agregar(formaCreateDto);
+                    if (filtroActivo is null || filtroActivo == true &&
+                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        formaCreateDto.Nombre.Contains(txtBuscar.Text))
+                    {
+                        paginaActual = _formaDePagoServicio
+                            .ObtenerPaginaRegistro(formaCreateDto.Nombre, cantidadPorPagina,
+                            filtroActivo, textoBuscar);
 
-                    _listaformaDePago = _formaDePagoServicio.ObtenerTodos();
-                    MostrarDatosEnGrilla(_listaformaDePago);
-                    var nuevaForma = _listaformaDePago.FirstOrDefault(f => f.FormaDePagoId == nuevoId);
-                    if (nuevaForma is null) return;
-                    _bindingSource.Position = _bindingSource.IndexOf(nuevaForma);
-                    MessageBox.Show("Forma de Pago Agregada",
-                        "Mensaje", MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    }
+                    RecargarGrilla();
+                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
+                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        formaCreateDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower());
+                    if (sePuedeVer)
+                    {
+                        var nuevoTipo = _bindingSource.List
+                            .Cast<FormaDePagoListDto>()
+                            .FirstOrDefault(tb => tb.FormaDePagoId == nuevoId);
+                        if (nuevoTipo is null) return;
+                        _bindingSource.Position = _bindingSource.IndexOf(nuevoTipo);
+                        MessageBox.Show("Forma de Pago Agregada",
+                            "Mensaje", MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Forma de Pago {formaEditDto.Nombre} agregada.\nNo se muestra por condición de filtrado o búsqueda",
+                            "Confirmación", MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -61,6 +104,7 @@ namespace BombonesApp2026.Windows
                                 MessageBoxIcon.Error);
                 }
             }
+
         }
 
         private void tsbBorrar_Click(object sender, EventArgs e)
@@ -73,7 +117,6 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-
             FormaDePagoListDto formaDePagoDto = (FormaDePagoListDto)_bindingSource.Current!;
             DialogResult dr = MessageBox.Show($"¿Desea borrar la forma de pago {formaDePagoDto.Nombre}?",
                 "Confirmar",
@@ -83,8 +126,11 @@ namespace BombonesApp2026.Windows
             try
             {
                 _formaDePagoServicio.Borrar(formaDePagoDto.FormaDePagoId);
-                _listaformaDePago = _formaDePagoServicio.ObtenerTodos();
-                MostrarDatosEnGrilla(_listaformaDePago);
+                if (dgvDatos.Rows.Count == 1 && paginaActual > 1)
+                {
+                    paginaActual--;
+                }
+                RecargarGrilla();
                 MessageBox.Show("Forma de Pago eliminada",
                     "Mensaje",
                     MessageBoxButtons.OK,
@@ -99,6 +145,7 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Error);
 
             }
+
         }
 
         private void tsbEditar_Click(object sender, EventArgs e)
@@ -111,36 +158,58 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-
             FormaDePagoListDto formaDePagoDto = (FormaDePagoListDto)_bindingSource.Current!;
-            int posicion = _bindingSource.Position;
             FormaDePagoEditDto? formaDePagoEditDto = _formaDePagoServicio.ObtenerParaEditar(formaDePagoDto.FormaDePagoId);
             if (formaDePagoEditDto is null) return;
-            using (frmFormaDePagoAe frm = new frmFormaDePagoAe() { Text = "Editar Forma de Pago       " })
+            using (frmFormaDePagoAe frm = new frmFormaDePagoAe() { Text = "Editar Forma de Pago " })
             {
                 frm.SetFormaDePago(formaDePagoEditDto);
                 DialogResult dr = frm.ShowDialog();
                 if (dr == DialogResult.Cancel) return;
                 formaDePagoEditDto = frm.GetFormaDePago();
+                if (formaDePagoEditDto is null) return;
                 try
                 {
                     _formaDePagoServicio.Editar(formaDePagoEditDto);
-                    _listaformaDePago = _formaDePagoServicio.ObtenerTodos();
-                    MostrarDatosEnGrilla(_listaformaDePago);
-                    _bindingSource.Position = posicion;
-                    MessageBox.Show("Forma de Pago editada",
-                        "Mensaje",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
+                    int editadoId = formaDePagoEditDto.FormaDePagoId;
+                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
+                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        formaDePagoEditDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower());
+
+                    if (sePuedeVer)
+                    {
+                        paginaActual = _formaDePagoServicio.ObtenerPaginaRegistro(formaDePagoEditDto.Nombre,
+                            cantidadPorPagina, filtroActivo, textoBuscar);
+                    }
+                    RecargarGrilla();
+                    if (sePuedeVer)
+                    {
+
+                        var editadoTipo = _bindingSource.List
+                            .Cast<FormaDePagoListDto>()
+                            .FirstOrDefault(tb => tb.FormaDePagoId == editadoId);
+
+                        _bindingSource.Position = _bindingSource.IndexOf(editadoTipo);
+                        MessageBox.Show("Forma de Pago editada",
+                            "Mensaje",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Forma de Pago {formaDePagoEditDto.Nombre} editada.\nNo se muestra por condición de filtrado o búsqueda",
+                            "Confirmación",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
 
                 }
                 catch (Exception ex)
                 {
 
                     MessageBox.Show(ex.Message,
-     "Error",
-     MessageBoxButtons.OK,
-     MessageBoxIcon.Error);
+                         "Error",
+                         MessageBoxButtons.OK,
+                         MessageBoxIcon.Error);
 
                 }
             }
@@ -148,33 +217,31 @@ namespace BombonesApp2026.Windows
 
         private void activosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _listaformaDePago = _formaDePagoServicio.FiltrarPorActivo(true);
-            MostrarDatosEnGrilla(_listaformaDePago);
-            ManejarBotones(true);
+            paginaActual = 1;
+            filtroActivo = true;
+            tsbFiltrar.BackColor = Color.Orange;
+            RecargarGrilla();
         }
 
-        private void ManejarBotones(bool filtrado)
-        {
-            tsbNuevo.Enabled = !filtrado;
-            tsbBorrar.Enabled = !filtrado;
-            tsbEditar.Enabled = !filtrado;
-
-            tsbFiltrar.BackColor = filtrado ? Color.Orange : SystemColors.Control;
-        }
 
         private void noActivosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _listaformaDePago = _formaDePagoServicio.FiltrarPorActivo(false);
-            MostrarDatosEnGrilla(_listaformaDePago);
-            ManejarBotones(true);
+            paginaActual = 1;
+            filtroActivo = false;
+            tsbFiltrar.BackColor = Color.Orange;
+            RecargarGrilla();
 
         }
 
         private void tsbActualizar_Click(object sender, EventArgs e)
         {
-            _listaformaDePago = _formaDePagoServicio.ObtenerTodos();
-            MostrarDatosEnGrilla(_listaformaDePago);
-            ManejarBotones(false);
+            paginaActual = 1;
+            filtroActivo = null;
+            textoBuscar = null;
+            txtBuscar.Clear();
+            tsbBuscar.BackColor = SystemColors.Control;
+            tsbFiltrar.BackColor = SystemColors.Control;
+            RecargarGrilla();
         }
 
         private void frmFormasDePago_Load(object sender, EventArgs e)
@@ -186,19 +253,67 @@ namespace BombonesApp2026.Windows
         {
             try
             {
-                _listaformaDePago = _formaDePagoServicio.ObtenerTodos();
-                MostrarDatosEnGrilla(_listaformaDePago);
-
+                var resultado = _formaDePagoServicio.ObtenerPagina(paginaActual,
+                    cantidadPorPagina,
+                    filtroActivo, textoBuscar);
+                MostrarDatosEnGrilla(resultado);
             }
             catch (Exception ex)
             {
 
-
-                MessageBox.Show(ex.Message,
-                     "Error",
-                     MessageBoxButtons.OK,
-                     MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
+        }
+
+        private void btnPrimero_Click(object sender, EventArgs e)
+        {
+            paginaActual = 1;
+            RecargarGrilla();
+        }
+
+        private void btnAnterior_Click(object sender, EventArgs e)
+        {
+            paginaActual--;
+            if (paginaActual == 0)
+            {
+                paginaActual = 1;
+
+            }
+            RecargarGrilla();
+        }
+
+        private void btnSiguiente_Click(object sender, EventArgs e)
+        {
+            paginaActual++;
+            if (paginaActual > totalPaginas)
+            {
+                paginaActual = totalPaginas;
+            }
+            RecargarGrilla();
+        }
+
+        private void btnUltimo_Click(object sender, EventArgs e)
+        {
+            paginaActual = totalPaginas;
+            RecargarGrilla();
+        }
+
+
+        private void tsbBuscar_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtBuscar.Text))
+            {
+                MessageBox.Show("Debe poner un texto para efectuar la búsqueda",
+                    "Advertencia",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+            }
+            textoBuscar = txtBuscar.Text;
+            tsbBuscar.BackColor = Color.Orange;
+            paginaActual = 1;
+            RecargarGrilla();
+
         }
     }
 }

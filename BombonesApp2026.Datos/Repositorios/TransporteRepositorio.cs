@@ -13,6 +13,52 @@ namespace BombonesApp2026.Datos.Repositorios
                 context.SaveChanges();
             }
         }
+        public (List<Transporte> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
+            int cantidadPorPagina, bool? filtroActivo = null,
+            string? textoBuscar = null)
+        {
+            using (var context = new BombonesDbContext())
+            {
+                IQueryable<Transporte> query = context
+                    .Transportes
+                    .Include(t => t.Provincia)
+                    .AsNoTracking();
+                if (filtroActivo is not null)
+                {
+                    query = query.Where(t => t.Activo == filtroActivo);
+                }
+                if (!string.IsNullOrWhiteSpace(textoBuscar))
+                {
+                    query = query.Where(t => t.NombreEmpresa.Contains(textoBuscar));
+                }
+                var cantidad = query.Count();
+                var lista = query
+                    .OrderBy(t => t.NombreEmpresa)
+                    .Skip(cantidadPorPagina * (paginaActual - 1))
+                    .Take(cantidadPorPagina)
+                    .ToList();
+                return (lista, cantidad);
+            }
+        }
+        public int ObtenerPosicionAlfabetica(string nombre,
+                bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            using (var context = new BombonesDbContext())
+            {
+                IQueryable<Transporte> query = context.Transportes.AsNoTracking();
+                if (filtroActivo.HasValue)
+                {
+                    query = query.Where(t => t.Activo == filtroActivo.Value);
+                }
+                if (!string.IsNullOrWhiteSpace(textoBuscar))
+                {
+                    query = query.Where(t => t.NombreEmpresa.Contains(textoBuscar));
+                }
+                return query
+                    .Count(t => string
+                        .Compare(t.NombreEmpresa, nombre) <= 0);
+            }
+        }
 
         public void Borrar(int transporteId)
         {

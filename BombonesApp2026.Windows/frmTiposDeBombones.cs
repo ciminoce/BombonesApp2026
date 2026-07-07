@@ -7,7 +7,6 @@ namespace BombonesApp2026.Windows
     public partial class frmTiposDeBombones : Form
     {
         private readonly TipoBombonServicio _tipoServicio;
-        //private List<TipoBombonListDto>? _listaTipos;
         private BindingSource _bindingSource = new BindingSource();
         //para filtrar
         private bool? filtroActivo = null;

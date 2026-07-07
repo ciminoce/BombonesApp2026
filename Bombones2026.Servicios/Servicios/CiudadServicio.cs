@@ -1,4 +1,5 @@
 ﻿using Bombones2026.Servicios.DTOs.Ciudad;
+using Bombones2026.Servicios.DTOs.Paginacion;
 using BombonesApp2026.Datos.Repositorios;
 using BombonesApp2026.Entidades.Entidades;
 
@@ -11,6 +12,36 @@ namespace Bombones2026.Servicios.Servicios
         {
             _ciudadRepositorio = new CiudadRepositorio();
         }
+
+        public ResultadoPaginacionDto<CiudadListDto> ObtenerPagina(int paginaActual,
+        int cantidadPorPagina, bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            try
+            {
+                var resultado = _ciudadRepositorio.ObtenerPagina(paginaActual,
+                    cantidadPorPagina, filtroActivo, textoBuscar);
+                var listaDto = resultado.lista
+                        .Select(c => new CiudadListDto
+                        {
+                            CiudadId = c.CiudadId,
+                            Ciudad = c.Nombre,
+                            Provincia = c.Provincia!.NombreProvincia
+                        }).ToList();
+                return new ResultadoPaginacionDto<CiudadListDto>
+                {
+                    Items = listaDto,
+                    TotalRegistros = resultado.cantidadRegistros,
+                    CantidadPorPagina = cantidadPorPagina,
+                    PaginaActual = paginaActual
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public List<CiudadListDto> ObtenerTodos()
         {
             return _ciudadRepositorio.ObtenerTodos()
@@ -104,6 +135,14 @@ namespace Bombones2026.Servicios.Servicios
             if (_ciudadRepositorio.ExisteCiudad(ciudad)) throw new InvalidOperationException($"Ya existe una ciudad {ciudad.Nombre}");
             _ciudadRepositorio.Editar(ciudad);
 
+        }
+
+        public int ObtenerPaginaRegistro(string nombre, int cantidadPorPagina,
+            bool? filtroActivo = null, string? textoBuscar = null)
+        {
+            int posicion = _ciudadRepositorio
+                .ObtenerPosicionAlfabetica(nombre, filtroActivo, textoBuscar);
+            return (int)Math.Ceiling((double)posicion / cantidadPorPagina);
         }
     }
 }

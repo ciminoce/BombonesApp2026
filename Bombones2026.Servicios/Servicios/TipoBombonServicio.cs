@@ -52,17 +52,6 @@ namespace Bombones2026.Servicios.Servicios
                     Activo = tb.Activo
                 }).ToList();
         }
-        public List<TipoBombonListDto> FiltrarPorActivo(bool activo)
-        {
-            return _tipoBombonRepositorio.FiltrarPorActivo(activo)
-                .Select(tb => new TipoBombonListDto
-                {
-                    TipoBombonId = tb.TipoBombonId,
-                    Nombre = tb.Nombre,
-                    Descripcion = tb.Descripcion,
-                    Activo = tb.Activo
-                }).ToList();
-        }
 
         public int Agregar(TipoBombonCreateDto? tipoDto)
         {

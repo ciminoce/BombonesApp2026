@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
@@ -44,13 +44,16 @@
             colCiudad = new DataGridViewTextBoxColumn();
             colProvincia = new DataGridViewTextBoxColumn();
             lblPaginas = new Label();
+            label1 = new Label();
             btnUltimo = new Button();
+            btnPrimero = new Button();
             lblCantidad = new Label();
+            btnAnterior = new Button();
             btnSiguiente = new Button();
             label2 = new Label();
-            btnAnterior = new Button();
-            label1 = new Label();
-            btnPrimero = new Button();
+            toolStripLabel1 = new ToolStripLabel();
+            txtBuscar = new ToolStripTextBox();
+            tsbBuscar = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -61,7 +64,7 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbFiltrar, tsbActualizar, toolStripSeparator2, tsbCerrar });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbFiltrar, toolStripLabel1, txtBuscar, tsbBuscar, tsbActualizar, toolStripSeparator2, tsbCerrar });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(800, 70);
@@ -125,6 +128,7 @@
             tsbActualizar.Size = new Size(63, 67);
             tsbActualizar.Text = "&Actualizar";
             tsbActualizar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbActualizar.Click += tsbActualizar_Click;
             // 
             // toolStripSeparator2
             // 
@@ -171,8 +175,8 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle6.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colCiudad, colProvincia });
             dgvDatos.Dock = DockStyle.Fill;
@@ -218,6 +222,15 @@
             lblPaginas.TabIndex = 12;
             lblPaginas.Text = "0";
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(66, 12);
+            label1.Name = "label1";
+            label1.Size = new Size(125, 15);
+            label1.TabIndex = 11;
+            label1.Text = "Cantidad de Registros:";
+            // 
             // btnUltimo
             // 
             btnUltimo.Image = Properties.Resources.last_24px;
@@ -226,6 +239,17 @@
             btnUltimo.Size = new Size(42, 38);
             btnUltimo.TabIndex = 6;
             btnUltimo.UseVisualStyleBackColor = true;
+            btnUltimo.Click += btnUltimo_Click;
+            // 
+            // btnPrimero
+            // 
+            btnPrimero.Image = Properties.Resources.first_24px;
+            btnPrimero.Location = new Point(498, 12);
+            btnPrimero.Name = "btnPrimero";
+            btnPrimero.Size = new Size(42, 38);
+            btnPrimero.TabIndex = 10;
+            btnPrimero.UseVisualStyleBackColor = true;
+            btnPrimero.Click += btnPrimero_Click;
             // 
             // lblCantidad
             // 
@@ -237,6 +261,16 @@
             lblCantidad.TabIndex = 13;
             lblCantidad.Text = "0";
             // 
+            // btnAnterior
+            // 
+            btnAnterior.Image = Properties.Resources.previous_24px;
+            btnAnterior.Location = new Point(546, 12);
+            btnAnterior.Name = "btnAnterior";
+            btnAnterior.Size = new Size(42, 38);
+            btnAnterior.TabIndex = 9;
+            btnAnterior.UseVisualStyleBackColor = true;
+            btnAnterior.Click += btnAnterior_Click;
+            // 
             // btnSiguiente
             // 
             btnSiguiente.Image = Properties.Resources.next_24px;
@@ -245,6 +279,7 @@
             btnSiguiente.Size = new Size(42, 38);
             btnSiguiente.TabIndex = 7;
             btnSiguiente.UseVisualStyleBackColor = true;
+            btnSiguiente.Click += btnSiguiente_Click;
             // 
             // label2
             // 
@@ -255,32 +290,27 @@
             label2.TabIndex = 8;
             label2.Text = "Cantidad de Páginas:";
             // 
-            // btnAnterior
+            // toolStripLabel1
             // 
-            btnAnterior.Image = Properties.Resources.previous_24px;
-            btnAnterior.Location = new Point(546, 12);
-            btnAnterior.Name = "btnAnterior";
-            btnAnterior.Size = new Size(42, 38);
-            btnAnterior.TabIndex = 9;
-            btnAnterior.UseVisualStyleBackColor = true;
+            toolStripLabel1.Name = "toolStripLabel1";
+            toolStripLabel1.Size = new Size(45, 67);
+            toolStripLabel1.Text = "Buscar:";
             // 
-            // label1
+            // txtBuscar
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(66, 12);
-            label1.Name = "label1";
-            label1.Size = new Size(125, 15);
-            label1.TabIndex = 11;
-            label1.Text = "Cantidad de Registros:";
+            txtBuscar.Name = "txtBuscar";
+            txtBuscar.Size = new Size(150, 70);
             // 
-            // btnPrimero
+            // tsbBuscar
             // 
-            btnPrimero.Image = Properties.Resources.first_24px;
-            btnPrimero.Location = new Point(498, 12);
-            btnPrimero.Name = "btnPrimero";
-            btnPrimero.Size = new Size(42, 38);
-            btnPrimero.TabIndex = 10;
-            btnPrimero.UseVisualStyleBackColor = true;
+            tsbBuscar.Image = Properties.Resources.search_property_48px;
+            tsbBuscar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbBuscar.ImageTransparentColor = Color.Magenta;
+            tsbBuscar.Name = "tsbBuscar";
+            tsbBuscar.Size = new Size(52, 67);
+            tsbBuscar.Text = "B&uscar";
+            tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbBuscar.Click += tsbBuscar_Click;
             // 
             // frmCiudades
             // 
@@ -329,5 +359,8 @@
         private Button btnAnterior;
         private Button btnSiguiente;
         private Label label2;
+        private ToolStripLabel toolStripLabel1;
+        private ToolStripTextBox txtBuscar;
+        private ToolStripButton tsbBuscar;
     }
 }
