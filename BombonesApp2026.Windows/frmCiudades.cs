@@ -84,9 +84,9 @@ namespace BombonesApp2026.Windows
                         ProvinciaId = ciudadEditDto.ProvinciaId
                     };
                     int nuevoId = _ciudadServicio.Agregar(ciudadCreateDto);
-                    if (filtroActivo is null || filtroActivo == true &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        ciudadCreateDto.Nombre.Contains(txtBuscar.Text))
+                    bool sePuedeVer = string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        ciudadCreateDto.Nombre.Contains(txtBuscar.Text);
+                    if (sePuedeVer)
                     {
                         paginaActual = _ciudadServicio
                             .ObtenerPaginaRegistro(ciudadCreateDto.Nombre, cantidadPorPagina,
@@ -94,9 +94,6 @@ namespace BombonesApp2026.Windows
 
                     }
                     RecargarGrilla();
-                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        ciudadCreateDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower());
                     if (sePuedeVer)
                     {
                         var nuevoTipo = _bindingSource.List
@@ -150,11 +147,12 @@ namespace BombonesApp2026.Windows
             try
             {
                 _ciudadServicio.Borrar(ciudadDto.CiudadId);
-                if (dgvDatos.Rows.Count == 1 && paginaActual > 1)
-                {
-                    paginaActual--;
-                }
                 RecargarGrilla();
+                if (paginaActual > totalPaginas && totalPaginas > 1)
+                {
+                    paginaActual = totalPaginas;
+                    RecargarGrilla();
+                }
                 MessageBox.Show("Ciudad eliminada",
                     "Mensaje",
                     MessageBoxButtons.OK,
@@ -197,8 +195,7 @@ namespace BombonesApp2026.Windows
                 {
                     _ciudadServicio.Editar(ciudadEditDto);
                     int editadoId = ciudadEditDto.CiudadId;
-                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                    bool sePuedeVer =string.IsNullOrWhiteSpace(txtBuscar.Text) ||
                         ciudadEditDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower());
 
                     if (sePuedeVer)

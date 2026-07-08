@@ -65,9 +65,10 @@ namespace BombonesApp2026.Windows
                         Nombre = provinciaEditDto.Nombre,
                     };
                     int nuevoId = _provinciaServicio.Agregar(provinciaCreateDto);
-                    if (filtroActivo is null || filtroActivo == true &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        provinciaCreateDto.Nombre.Contains(txtBuscar.Text))
+                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
+                        (string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        provinciaCreateDto.Nombre.Contains(txtBuscar.Text));
+                    if (sePuedeVer)
                     {
                         paginaActual = _provinciaServicio
                             .ObtenerPaginaRegistro(provinciaCreateDto.Nombre, cantidadPorPagina,
@@ -75,9 +76,6 @@ namespace BombonesApp2026.Windows
 
                     }
                     RecargarGrilla();
-                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        provinciaCreateDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower());
                     if (sePuedeVer)
                     {
                         var nuevoTipo = _bindingSource.List
@@ -125,11 +123,12 @@ namespace BombonesApp2026.Windows
             try
             {
                 _provinciaServicio.Borrar(provinciaDto.ProvinciaId);
-                if (dgvDatos.Rows.Count == 1 && paginaActual > 1)
-                {
-                    paginaActual--;
-                }
                 RecargarGrilla();
+                if (paginaActual > totalPaginas && totalPaginas > 1)
+                {
+                    paginaActual = totalPaginas;
+                    RecargarGrilla();
+                }
                 MessageBox.Show("Provincia eliminada",
                     "Mensaje",
                     MessageBoxButtons.OK,
@@ -171,8 +170,8 @@ namespace BombonesApp2026.Windows
                     _provinciaServicio.Editar(provinciaEditDto);
                     int editadoId = provinciaEditDto.ProvinciaId;
                     bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        provinciaEditDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower());
+                        (string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        provinciaEditDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower()));
 
                     if (sePuedeVer)
                     {

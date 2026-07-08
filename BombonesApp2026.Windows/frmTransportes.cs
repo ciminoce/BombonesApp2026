@@ -5,7 +5,6 @@ using BombonesApp2026.Entidades.Enum;
 
 namespace BombonesApp2026.Windows
 {
-    //TODO:Ver filtros
     public partial class frmTransportes : Form
     {
         private readonly TransporteServicio _transporteServicio;
@@ -125,9 +124,11 @@ namespace BombonesApp2026.Windows
                         ProvinciaId = transporteEditDto.ProvinciaId,
                     };
                     int nuevoId = _transporteServicio.Agregar(transporteCreateDto);
-                    if (filtroActivo is null || filtroActivo == true &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        transporteCreateDto.NombreEmpresa.Contains(txtBuscar.Text))
+                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
+                        (provinciaIdFiltro is null || transporteCreateDto.ProvinciaId==provinciaIdFiltro) &&
+                        (string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        transporteCreateDto.NombreEmpresa.Contains(txtBuscar.Text));
+                    if (sePuedeVer)
                     {
                         paginaActual = _transporteServicio
                             .ObtenerPaginaRegistro(transporteCreateDto.NombreEmpresa, cantidadPorPagina,
@@ -135,9 +136,6 @@ namespace BombonesApp2026.Windows
 
                     }
                     RecargarGrilla();
-                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        transporteCreateDto.NombreEmpresa.ToLower().Contains(txtBuscar.Text.ToLower());
                     if (sePuedeVer)
                     {
                         var nuevoTransporte = _bindingSource.List
@@ -186,11 +184,12 @@ namespace BombonesApp2026.Windows
             try
             {
                 _transporteServicio.Borrar(transporteDto.TransporteId);
-                if (dgvDatos.Rows.Count == 1 && paginaActual > 1)
-                {
-                    paginaActual--;
-                }
                 RecargarGrilla();
+                if (paginaActual > totalPaginas && totalPaginas > 1)
+                {
+                    paginaActual = totalPaginas;
+                    RecargarGrilla();
+                }
                 MessageBox.Show("Transporte eliminado",
                     "Mensaje",
                     MessageBoxButtons.OK,
@@ -236,8 +235,9 @@ namespace BombonesApp2026.Windows
                     _transporteServicio.Editar(transporteEditDto);
                     int editadoId = transporteEditDto.TransporteId;
                     bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        transporteEditDto.NombreEmpresa.ToLower().Contains(txtBuscar.Text.ToLower());
+                        (provinciaIdFiltro is null || transporteEditDto.ProvinciaId == provinciaIdFiltro) &&
+                        (string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        transporteEditDto.NombreEmpresa.Contains(txtBuscar.Text));
 
                     if (sePuedeVer)
                     {

@@ -65,9 +65,11 @@ namespace BombonesApp2026.Windows
                         Nombre = formaEditDto.Nombre,
                     };
                     int nuevoId = _formaDePagoServicio.Agregar(formaCreateDto);
-                    if (filtroActivo is null || filtroActivo == true &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        formaCreateDto.Nombre.Contains(txtBuscar.Text))
+                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
+                        (string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        formaCreateDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower()));
+
+                    if (sePuedeVer)
                     {
                         paginaActual = _formaDePagoServicio
                             .ObtenerPaginaRegistro(formaCreateDto.Nombre, cantidadPorPagina,
@@ -75,9 +77,6 @@ namespace BombonesApp2026.Windows
 
                     }
                     RecargarGrilla();
-                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        formaCreateDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower());
                     if (sePuedeVer)
                     {
                         var nuevoTipo = _bindingSource.List
@@ -126,11 +125,12 @@ namespace BombonesApp2026.Windows
             try
             {
                 _formaDePagoServicio.Borrar(formaDePagoDto.FormaDePagoId);
-                if (dgvDatos.Rows.Count == 1 && paginaActual > 1)
-                {
-                    paginaActual--;
-                }
                 RecargarGrilla();
+                if (paginaActual > totalPaginas && totalPaginas > 1)
+                {
+                    paginaActual = totalPaginas;
+                    RecargarGrilla();
+                }
                 MessageBox.Show("Forma de Pago eliminada",
                     "Mensaje",
                     MessageBoxButtons.OK,
@@ -173,8 +173,9 @@ namespace BombonesApp2026.Windows
                     _formaDePagoServicio.Editar(formaDePagoEditDto);
                     int editadoId = formaDePagoEditDto.FormaDePagoId;
                     bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        formaDePagoEditDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower());
+                        (string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        formaDePagoEditDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower()));
+
 
                     if (sePuedeVer)
                     {

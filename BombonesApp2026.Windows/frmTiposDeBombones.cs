@@ -122,9 +122,10 @@ namespace BombonesApp2026.Windows
                         Descripcion = tipoEditDto.Descripcion,
                     };
                     int nuevoId = _tipoServicio.Agregar(tipoCreateDto);
-                    if (filtroActivo is null || filtroActivo == true && 
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        tipoCreateDto.Nombre.Contains(txtBuscar.Text))
+                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
+                        (string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        tipoCreateDto.Nombre.Contains(txtBuscar.Text));
+                    if (sePuedeVer)
                     {
                         paginaActual = _tipoServicio
                             .ObtenerPaginaRegistro(tipoCreateDto.Nombre, cantidadPorPagina,
@@ -132,9 +133,6 @@ namespace BombonesApp2026.Windows
 
                     }
                     RecargarGrilla();
-                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        tipoCreateDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower());
                     if (sePuedeVer)
                     {
                         var nuevoTipo = _bindingSource.List
@@ -183,11 +181,13 @@ namespace BombonesApp2026.Windows
             try
             {
                 _tipoServicio.Borrar(tipoBombonDto.TipoBombonId);
-                if (dgvDatos.Rows.Count == 1 && paginaActual > 1)
-                {
-                    paginaActual--;
-                }
                 RecargarGrilla();
+                if (paginaActual>totalPaginas && totalPaginas>1)
+                {
+                    paginaActual = totalPaginas;
+                    RecargarGrilla();
+                }
+               
                 MessageBox.Show("Tipo de Bombón eliminado",
                     "Mensaje",
                     MessageBoxButtons.OK,
