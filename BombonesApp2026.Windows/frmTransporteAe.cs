@@ -16,7 +16,7 @@ namespace BombonesApp2026.Windows
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            CargarDatosEnCombo(ref cboProvincias);
+            CargarDatosEnCombo(cboProvincias);
             if (_transporteDto is null)
             {
                 chkActivo.Checked = true;
@@ -33,7 +33,7 @@ namespace BombonesApp2026.Windows
 
         }
 
-        private void CargarDatosEnCombo(ref ComboBox cboProvincias)
+        private void CargarDatosEnCombo(ComboBox cboProvincias)
         {
             var listaProvincias = _provinciaServicio.ObtenerTodos();
             var defaultProvincia = new ProvinciaListDto()

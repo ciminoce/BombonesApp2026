@@ -15,6 +15,7 @@ namespace BombonesApp2026.Datos.Repositorios
         }
         public (List<Transporte> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
             int cantidadPorPagina, bool? filtroActivo = null,
+            int? provinciaIdFiltro=null,
             string? textoBuscar = null)
         {
             using (var context = new BombonesDbContext())
@@ -26,6 +27,10 @@ namespace BombonesApp2026.Datos.Repositorios
                 if (filtroActivo is not null)
                 {
                     query = query.Where(t => t.Activo == filtroActivo);
+                }
+                if(provinciaIdFiltro is not null)
+                {
+                    query = query.Where(t => t.ProvinciaId == provinciaIdFiltro);
                 }
                 if (!string.IsNullOrWhiteSpace(textoBuscar))
                 {
@@ -41,7 +46,7 @@ namespace BombonesApp2026.Datos.Repositorios
             }
         }
         public int ObtenerPosicionAlfabetica(string nombre,
-                bool? filtroActivo = null, string? textoBuscar = null)
+                bool? filtroActivo = null, int? provinciaIdFiltro=null, string? textoBuscar = null)
         {
             using (var context = new BombonesDbContext())
             {
@@ -49,6 +54,10 @@ namespace BombonesApp2026.Datos.Repositorios
                 if (filtroActivo.HasValue)
                 {
                     query = query.Where(t => t.Activo == filtroActivo.Value);
+                }
+                if(provinciaIdFiltro is not null)
+                {
+                    query=query.Where(t=>t.ProvinciaId== provinciaIdFiltro);
                 }
                 if (!string.IsNullOrWhiteSpace(textoBuscar))
                 {
@@ -126,6 +135,7 @@ namespace BombonesApp2026.Datos.Repositorios
             {
                 return context.Transportes
                     .Include(t=>t.Provincia)
+                    .OrderBy(t=>t.NombreEmpresa)
                     .ToList();
             }
         }

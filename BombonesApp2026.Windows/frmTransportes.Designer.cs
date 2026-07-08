@@ -34,9 +34,8 @@
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
-            tsbFiltrar = new ToolStripDropDownButton();
-            activoToolStripMenuItem = new ToolStripMenuItem();
-            noActivoToolStripMenuItem = new ToolStripMenuItem();
+            toolStripLabel2 = new ToolStripLabel();
+            tsCboProvincias = new ToolStripComboBox();
             toolStripLabel1 = new ToolStripLabel();
             txtBuscar = new ToolStripTextBox();
             tsbBuscar = new ToolStripButton();
@@ -69,7 +68,7 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbFiltrar, toolStripLabel1, txtBuscar, tsbBuscar, tsbActualizar, toolStripSeparator2, tsbCerrar });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, toolStripLabel2, tsCboProvincias, toolStripLabel1, txtBuscar, tsbBuscar, tsbActualizar, toolStripSeparator2, tsbCerrar });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
             toolStrip1.Size = new Size(1011, 70);
@@ -114,30 +113,20 @@
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 70);
             // 
-            // tsbFiltrar
+            // toolStripLabel2
             // 
-            tsbFiltrar.DropDownItems.AddRange(new ToolStripItem[] { activoToolStripMenuItem, noActivoToolStripMenuItem });
-            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
-            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbFiltrar.ImageTransparentColor = Color.Magenta;
-            tsbFiltrar.Name = "tsbFiltrar";
-            tsbFiltrar.Size = new Size(61, 67);
-            tsbFiltrar.Text = "&Filtrar";
-            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            toolStripLabel2.Image = Properties.Resources.filled_filter_48px;
+            toolStripLabel2.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripLabel2.Name = "toolStripLabel2";
+            toolStripLabel2.Size = new Size(109, 67);
+            toolStripLabel2.Text = "Filtrar por:";
             // 
-            // activoToolStripMenuItem
+            // tsCboProvincias
             // 
-            activoToolStripMenuItem.Name = "activoToolStripMenuItem";
-            activoToolStripMenuItem.Size = new Size(180, 22);
-            activoToolStripMenuItem.Text = "Activo";
-            activoToolStripMenuItem.Click += activoToolStripMenuItem_Click;
-            // 
-            // noActivoToolStripMenuItem
-            // 
-            noActivoToolStripMenuItem.Name = "noActivoToolStripMenuItem";
-            noActivoToolStripMenuItem.Size = new Size(180, 22);
-            noActivoToolStripMenuItem.Text = "No Activo";
-            noActivoToolStripMenuItem.Click += noActivoToolStripMenuItem_Click;
+            tsCboProvincias.DropDownStyle = ComboBoxStyle.DropDownList;
+            tsCboProvincias.Name = "tsCboProvincias";
+            tsCboProvincias.Size = new Size(121, 70);
+            tsCboProvincias.SelectedIndexChanged += tsCboProvincias_SelectedIndexChanged;
             // 
             // toolStripLabel1
             // 
@@ -404,11 +393,10 @@
         private Button btnAnterior;
         private Button btnSiguiente;
         private Label label2;
-        private ToolStripDropDownButton tsbFiltrar;
-        private ToolStripMenuItem activoToolStripMenuItem;
-        private ToolStripMenuItem noActivoToolStripMenuItem;
         private ToolStripButton tsbBuscar;
         private ToolStripTextBox txtBuscar;
         private ToolStripLabel toolStripLabel1;
+        private ToolStripLabel toolStripLabel2;
+        private ToolStripComboBox tsCboProvincias;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
+using Bombones2026.Servicios.DTOs.Provincia;
 using Bombones2026.Servicios.DTOs.Transporte;
 using Bombones2026.Servicios.Servicios;
 
@@ -17,6 +18,7 @@ namespace BombonesApp2026.Windows
         private int totalPaginas = 0;
         //para filtrar
         private bool? filtroActivo = null;
+        private int? provinciaIdFiltro = null;
         private string? textoBuscar = null;
         public frmTransportes()
         {
@@ -31,15 +33,30 @@ namespace BombonesApp2026.Windows
 
         private void frmTransportes_Load(object sender, EventArgs e)
         {
+            CargarComboProvincias(tsCboProvincias.ComboBox);
             RecargarGrilla();
         }
-
+        public void CargarComboProvincias(ComboBox combo)
+        {
+            var provinciaServicio = new ProvinciaServicio();
+            var lista = provinciaServicio.ObtenerTodos();
+            var defaultProvincia = new ProvinciaListDto
+            {
+                ProvinciaId = 0,
+                Nombre = "Todas"
+            };
+            lista.Insert(0, defaultProvincia);
+            combo.DataSource = lista;
+            combo.DisplayMember = "Nombre";
+            combo.ValueMember = "ProvinciaId";
+            combo.SelectedIndex = 0;
+        }
         private void RecargarGrilla()
         {
             try
             {
                 var resultado = _transporteServicio.ObtenerPagina(paginaActual, cantidadPorPagina,
-                    filtroActivo, textoBuscar);
+                    filtroActivo, provinciaIdFiltro, textoBuscar);
                 MostrarDatosEnGrilla(resultado);
             }
             catch (Exception ex)
@@ -96,7 +113,7 @@ namespace BombonesApp2026.Windows
                     {
                         paginaActual = _transporteServicio
                             .ObtenerPaginaRegistro(transporteCreateDto.NombreEmpresa, cantidadPorPagina,
-                            filtroActivo, textoBuscar);
+                            filtroActivo, provinciaIdFiltro, textoBuscar);
 
                     }
                     RecargarGrilla();
@@ -207,7 +224,7 @@ namespace BombonesApp2026.Windows
                     if (sePuedeVer)
                     {
                         paginaActual = _transporteServicio.ObtenerPaginaRegistro(transporteEditDto.NombreEmpresa,
-                            cantidadPorPagina, filtroActivo, textoBuscar);
+                            cantidadPorPagina, filtroActivo, provinciaIdFiltro, textoBuscar);
                     }
                     RecargarGrilla();
                     if (sePuedeVer)
@@ -300,30 +317,29 @@ namespace BombonesApp2026.Windows
         private void tsbActualizar_Click(object sender, EventArgs e)
         {
             filtroActivo = null;
+            provinciaIdFiltro = null;
             textoBuscar = null;
             txtBuscar.Clear();
             tsbBuscar.BackColor = SystemColors.Control;
-            tsbFiltrar.BackColor = SystemColors.Control;
+            tsCboProvincias.ComboBox.SelectedIndex = 0;
             paginaActual = 1;
             RecargarGrilla();
 
         }
 
-        private void activoToolStripMenuItem_Click(object sender, EventArgs e)
+        private void tsCboProvincias_SelectedIndexChanged(object sender, EventArgs e)
         {
-            filtroActivo = true;
+            if (tsCboProvincias.ComboBox.ValueMember == null) return;
+            if (tsCboProvincias.ComboBox.SelectedIndex == 0)
+            {
+                provinciaIdFiltro = null;
+            }
+            else
+            {
+                provinciaIdFiltro = (int)tsCboProvincias.ComboBox.SelectedValue!;
+            }
             paginaActual = 1;
-            tsbFiltrar.BackColor = Color.Orange;
             RecargarGrilla();
-        }
-
-        private void noActivoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            filtroActivo = false;
-            paginaActual = 1;
-            tsbFiltrar.BackColor = Color.Orange;
-            RecargarGrilla();
-
         }
     }
 }
