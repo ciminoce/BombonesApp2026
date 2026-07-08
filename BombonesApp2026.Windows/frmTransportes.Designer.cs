@@ -35,7 +35,10 @@
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
             toolStripLabel2 = new ToolStripLabel();
+            toolStripLabel3 = new ToolStripLabel();
             tsCboProvincias = new ToolStripComboBox();
+            toolStripLabel4 = new ToolStripLabel();
+            tsCboActivo = new ToolStripComboBox();
             toolStripLabel1 = new ToolStripLabel();
             txtBuscar = new ToolStripTextBox();
             tsbBuscar = new ToolStripButton();
@@ -68,10 +71,10 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, toolStripLabel2, tsCboProvincias, toolStripLabel1, txtBuscar, tsbBuscar, tsbActualizar, toolStripSeparator2, tsbCerrar });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, toolStripLabel2, toolStripLabel3, tsCboProvincias, toolStripLabel4, tsCboActivo, toolStripLabel1, txtBuscar, tsbBuscar, tsbActualizar, toolStripSeparator2, tsbCerrar });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(1011, 70);
+            toolStrip1.Size = new Size(1036, 70);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -119,7 +122,13 @@
             toolStripLabel2.ImageScaling = ToolStripItemImageScaling.None;
             toolStripLabel2.Name = "toolStripLabel2";
             toolStripLabel2.Size = new Size(109, 67);
-            toolStripLabel2.Text = "Filtrar por:";
+            toolStripLabel2.Text = "Filtrar por ";
+            // 
+            // toolStripLabel3
+            // 
+            toolStripLabel3.Name = "toolStripLabel3";
+            toolStripLabel3.Size = new Size(35, 67);
+            toolStripLabel3.Text = "Pcia.:";
             // 
             // tsCboProvincias
             // 
@@ -127,6 +136,19 @@
             tsCboProvincias.Name = "tsCboProvincias";
             tsCboProvincias.Size = new Size(121, 70);
             tsCboProvincias.SelectedIndexChanged += tsCboProvincias_SelectedIndexChanged;
+            // 
+            // toolStripLabel4
+            // 
+            toolStripLabel4.Name = "toolStripLabel4";
+            toolStripLabel4.Size = new Size(45, 67);
+            toolStripLabel4.Text = "Estado:";
+            // 
+            // tsCboActivo
+            // 
+            tsCboActivo.DropDownStyle = ComboBoxStyle.DropDownList;
+            tsCboActivo.Name = "tsCboActivo";
+            tsCboActivo.Size = new Size(121, 70);
+            tsCboActivo.SelectedIndexChanged += tsCboActivo_SelectedIndexChanged;
             // 
             // toolStripLabel1
             // 
@@ -198,7 +220,7 @@
             splitContainer1.Panel2.Controls.Add(btnAnterior);
             splitContainer1.Panel2.Controls.Add(btnSiguiente);
             splitContainer1.Panel2.Controls.Add(label2);
-            splitContainer1.Size = new Size(1011, 380);
+            splitContainer1.Size = new Size(1036, 380);
             splitContainer1.SplitterDistance = 321;
             splitContainer1.TabIndex = 1;
             // 
@@ -216,7 +238,7 @@
             dgvDatos.Name = "dgvDatos";
             dgvDatos.ReadOnly = true;
             dgvDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDatos.Size = new Size(1011, 321);
+            dgvDatos.Size = new Size(1036, 321);
             dgvDatos.TabIndex = 0;
             // 
             // colId
@@ -348,7 +370,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1011, 450);
+            ClientSize = new Size(1036, 450);
             Controls.Add(splitContainer1);
             Controls.Add(toolStrip1);
             Name = "frmTransportes";
@@ -398,5 +420,8 @@
         private ToolStripLabel toolStripLabel1;
         private ToolStripLabel toolStripLabel2;
         private ToolStripComboBox tsCboProvincias;
+        private ToolStripLabel toolStripLabel3;
+        private ToolStripLabel toolStripLabel4;
+        private ToolStripComboBox tsCboActivo;
     }
 }

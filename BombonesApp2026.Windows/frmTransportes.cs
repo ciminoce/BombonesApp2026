@@ -1,7 +1,7 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
-using Bombones2026.Servicios.DTOs.Provincia;
 using Bombones2026.Servicios.DTOs.Transporte;
 using Bombones2026.Servicios.Servicios;
+using BombonesApp2026.Entidades.Enum;
 
 namespace BombonesApp2026.Windows
 {
@@ -17,6 +17,7 @@ namespace BombonesApp2026.Windows
         private int totalRegistros = 0;
         private int totalPaginas = 0;
         //para filtrar
+        private bool estaCargado = false;
         private bool? filtroActivo = null;
         private int? provinciaIdFiltro = null;
         private string? textoBuscar = null;
@@ -33,23 +34,40 @@ namespace BombonesApp2026.Windows
 
         private void frmTransportes_Load(object sender, EventArgs e)
         {
+            estaCargado = false;
             CargarComboProvincias(tsCboProvincias.ComboBox);
+            estaCargado = false;
+            CargarComboEstados(tsCboActivo.ComboBox);
             RecargarGrilla();
         }
+
+        private void CargarComboEstados(ComboBox comboBox)
+        {
+            var lista = Enum.GetValues(typeof(TipoFiltroEstado))
+                .Cast<TipoFiltroEstado>()
+                .Select(e => new
+                {
+                    Valor = (int)e,
+                    Texto = e
+                })
+                .ToList();
+            comboBox.DataSource = lista;
+            comboBox.DisplayMember = "Texto";
+            comboBox.ValueMember = "Valor";
+            comboBox.SelectedIndex = 0;
+            estaCargado = true;
+
+        }
+
         public void CargarComboProvincias(ComboBox combo)
         {
             var provinciaServicio = new ProvinciaServicio();
-            var lista = provinciaServicio.ObtenerTodos();
-            var defaultProvincia = new ProvinciaListDto
-            {
-                ProvinciaId = 0,
-                Nombre = "Todas"
-            };
-            lista.Insert(0, defaultProvincia);
+            var lista = provinciaServicio.ObtenerDatosCombo(TipoProvinciaDefault.Todas);
             combo.DataSource = lista;
             combo.DisplayMember = "Nombre";
             combo.ValueMember = "ProvinciaId";
             combo.SelectedIndex = 0;
+            estaCargado = true;
         }
         private void RecargarGrilla()
         {
@@ -322,6 +340,7 @@ namespace BombonesApp2026.Windows
             txtBuscar.Clear();
             tsbBuscar.BackColor = SystemColors.Control;
             tsCboProvincias.ComboBox.SelectedIndex = 0;
+            tsCboActivo.ComboBox.SelectedIndex = 0;
             paginaActual = 1;
             RecargarGrilla();
 
@@ -329,6 +348,7 @@ namespace BombonesApp2026.Windows
 
         private void tsCboProvincias_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!estaCargado) return;
             if (tsCboProvincias.ComboBox.ValueMember == null) return;
             if (tsCboProvincias.ComboBox.SelectedIndex == 0)
             {
@@ -337,6 +357,26 @@ namespace BombonesApp2026.Windows
             else
             {
                 provinciaIdFiltro = (int)tsCboProvincias.ComboBox.SelectedValue!;
+            }
+            paginaActual = 1;
+            RecargarGrilla();
+        }
+
+        private void tsCboActivo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!estaCargado) return;
+            if (tsCboActivo.ComboBox.ValueMember == null) return;
+            switch (tsCboActivo.ComboBox.Text)
+            {
+                case "Todos":
+                    filtroActivo = null;
+                    break;
+                case "Activos":
+                    filtroActivo = true;
+                    break;
+                case "Inactivos":
+                    filtroActivo = false;
+                    break;
             }
             paginaActual = 1;
             RecargarGrilla();
