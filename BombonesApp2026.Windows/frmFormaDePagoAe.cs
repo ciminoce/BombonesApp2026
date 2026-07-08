@@ -9,7 +9,22 @@ namespace BombonesApp2026.Windows
         {
             InitializeComponent();
         }
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if(formaDePagoDto is not null)
+            {
+                txtFormaDePago.Text = formaDePagoDto.Nombre;
+                chkActivo.Checked = formaDePagoDto.Activo;
 
+                chkActivo.Enabled = true;
+            }
+            else
+            {
+                chkActivo.Enabled = false;
+                chkActivo.Checked = true;
+            }
+        }
         public FormaDePagoEditDto? GetFormaDePago()
         {
             return formaDePagoDto;

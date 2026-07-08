@@ -4,6 +4,10 @@ using Bombones2026.Servicios.Servicios;
 
 namespace BombonesApp2026.Windows
 {
+    //TODO: Modificar el filtrado de ciduidades
+    //TODO: Método para cargar las provincias
+    //TODO: ver cuando se carga el combo de provincias en el load
+    //TODO: Corregir la condición del sePuedeVer!!!
     public partial class frmCiudades : Form
     {
         private readonly CiudadServicio _ciudadServicio;

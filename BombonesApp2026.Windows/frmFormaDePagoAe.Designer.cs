@@ -87,6 +87,7 @@
             // 
             chkActivo.AutoSize = true;
             chkActivo.CheckAlign = ContentAlignment.MiddleRight;
+            chkActivo.Enabled = false;
             chkActivo.Location = new Point(49, 68);
             chkActivo.Name = "chkActivo";
             chkActivo.Size = new Size(65, 19);
