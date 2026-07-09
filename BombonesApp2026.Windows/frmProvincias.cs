@@ -124,7 +124,7 @@ namespace BombonesApp2026.Windows
             {
                 _provinciaServicio.Borrar(provinciaDto.ProvinciaId);
                 RecargarGrilla();
-                if (paginaActual > totalPaginas && totalPaginas > 1)
+                if (paginaActual > totalPaginas && totalPaginas > 0)
                 {
                     paginaActual = totalPaginas;
                     RecargarGrilla();
