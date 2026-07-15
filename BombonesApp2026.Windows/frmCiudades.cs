@@ -293,7 +293,6 @@ namespace BombonesApp2026.Windows
             textoBuscar = null;
             txtBuscar.Clear();
             tsbBuscar.BackColor = SystemColors.Control;
-            tsbFiltrar.BackColor = SystemColors.Control;
             RecargarGrilla();
         }
     }
