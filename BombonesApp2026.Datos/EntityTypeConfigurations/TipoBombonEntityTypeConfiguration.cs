@@ -13,7 +13,6 @@ namespace BombonesApp2026.Datos.EntityTypeConfigurations
             builder.Property(tb => tb.Nombre).HasMaxLength(50).IsRequired();
             builder.Property(tb => tb.Descripcion).HasMaxLength(150);
             builder.HasIndex(tb => tb.Nombre, "IX_TipoBombones_Nombre").IsUnique();
-            builder.Property(tb => tb.RowVersion).IsRowVersion();
         }
     }
 }

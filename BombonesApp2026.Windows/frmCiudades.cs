@@ -4,6 +4,10 @@ using Bombones2026.Servicios.Servicios;
 
 namespace BombonesApp2026.Windows
 {
+    //TODO: Modificar el filtrado de ciduidades
+    //TODO: Método para cargar las provincias
+    //TODO: ver cuando se carga el combo de provincias en el load
+    //TODO: Corregir la condición del sePuedeVer!!!
     public partial class frmCiudades : Form
     {
         private readonly CiudadServicio _ciudadServicio;
@@ -47,7 +51,7 @@ namespace BombonesApp2026.Windows
             totalPaginas = resultado.TotalPaginas;
             totalRegistros = resultado.TotalRegistros;
             int desde = 1 + (paginaActual - 1) * cantidadPorPagina;
-            int hasta = desde + cantidadPorPagina;
+            int hasta = desde + cantidadPorPagina-1;//OJO acá!!
             if (hasta > totalRegistros)
             {
                 hasta = totalRegistros;
