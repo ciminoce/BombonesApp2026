@@ -1,6 +1,4 @@
-﻿using Bombones2026.Servicios.DTOs.TipoBombon;
-
-namespace Bombones2026.Servicios.DTOs.Paginacion
+﻿namespace Bombones2026.Servicios.DTOs.Paginacion
 {
     public class ResultadoPaginacionDto<T> where T : class
     {

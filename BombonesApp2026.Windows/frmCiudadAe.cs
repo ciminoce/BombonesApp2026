@@ -1,6 +1,7 @@
 ﻿using Bombones2026.Servicios.DTOs.Ciudad;
 using Bombones2026.Servicios.DTOs.Provincia;
 using Bombones2026.Servicios.Servicios;
+using BombonesApp2026.Entidades.Enum;
 
 namespace BombonesApp2026.Windows
 {
@@ -16,7 +17,7 @@ namespace BombonesApp2026.Windows
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            CargarComboProvincias(ref cboProvincias);
+            CargarComboProvincias(cboProvincias);
             if (_ciudadDto is not null)
             {
                 txtCiudad.Text = _ciudadDto.Nombre;
@@ -24,15 +25,10 @@ namespace BombonesApp2026.Windows
             }
         }
 
-        private void CargarComboProvincias(ref ComboBox cboProvincias)
+        private void CargarComboProvincias(ComboBox cboProvincias)
         {
-            var listaProvincias = _provinciaServicio.ObtenerTodos();
-            ProvinciaListDto defaultProvincia = new ProvinciaListDto
-            {
-                ProvinciaId = 0,
-                Nombre = "Seleccione Provincia"
-            };
-            listaProvincias.Insert(0, defaultProvincia);
+            var listaProvincias = _provinciaServicio
+                .ObtenerDatosCombo(TipoProvinciaDefault.Seleccione);
             cboProvincias.DataSource = listaProvincias;
             cboProvincias.DisplayMember = "Nombre";
             cboProvincias.ValueMember = "ProvinciaId";

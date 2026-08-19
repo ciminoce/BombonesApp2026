@@ -13,12 +13,14 @@ namespace Bombones2026.Servicios.Servicios
             _transporteRepositorio = new TransporteRepositorio();
         }
         public ResultadoPaginacionDto<TransporteListDto> ObtenerPagina(int paginaActual,
-                int cantidadPorPagina, bool? filtroActivo = null, string? textoBuscar = null)
+                int cantidadPorPagina, bool? filtroActivo = null,
+                int? provinciaIdFiltro=null,
+                string? textoBuscar = null)
         {
             try
             {
                 var resultado = _transporteRepositorio.ObtenerPagina(paginaActual,
-                    cantidadPorPagina, filtroActivo, textoBuscar);
+                    cantidadPorPagina, filtroActivo, provinciaIdFiltro, textoBuscar);
                 var listaDto = resultado.lista
                     .Select(tb => new TransporteListDto
                     {
@@ -202,10 +204,13 @@ namespace Bombones2026.Servicios.Servicios
         }
 
         public int ObtenerPaginaRegistro(string nombre, int cantidadPorPagina,
-            bool? filtroActivo = null, string? textoBuscar = null)
+            bool? filtroActivo = null, int? provinciaIdFiltro=null,
+            string? textoBuscar = null)
         {
             int posicion = _transporteRepositorio
-                .ObtenerPosicionAlfabetica(nombre, filtroActivo, textoBuscar);
+                .ObtenerPosicionAlfabetica(nombre, filtroActivo,
+                provinciaIdFiltro,
+                textoBuscar);
             return (int)Math.Ceiling((double)posicion / cantidadPorPagina);
         }
     }

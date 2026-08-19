@@ -1,6 +1,7 @@
 ﻿using Bombones2026.Servicios.DTOs.Provincia;
 using Bombones2026.Servicios.DTOs.Transporte;
 using Bombones2026.Servicios.Servicios;
+using BombonesApp2026.Entidades.Enum;
 
 namespace BombonesApp2026.Windows
 {
@@ -16,7 +17,7 @@ namespace BombonesApp2026.Windows
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-            CargarDatosEnCombo(ref cboProvincias);
+            CargarDatosEnCombo(cboProvincias);
             if (_transporteDto is null)
             {
                 chkActivo.Checked = true;
@@ -33,15 +34,10 @@ namespace BombonesApp2026.Windows
 
         }
 
-        private void CargarDatosEnCombo(ref ComboBox cboProvincias)
+        private void CargarDatosEnCombo(ComboBox cboProvincias)
         {
-            var listaProvincias = _provinciaServicio.ObtenerTodos();
-            var defaultProvincia = new ProvinciaListDto()
-            {
-                ProvinciaId = 0,
-                Nombre = "Seleccione Provincia"
-            };
-            listaProvincias.Insert(0, defaultProvincia);
+            var listaProvincias = _provinciaServicio
+                .ObtenerDatosCombo(TipoProvinciaDefault.Seleccione);
             cboProvincias.DataSource = listaProvincias;
             cboProvincias.DisplayMember = "Nombre";
             cboProvincias.ValueMember = "ProvinciaId";

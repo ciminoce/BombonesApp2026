@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Bombones2026.Servicios\Bombones2026.Servicios.csproj" />
+    <ProjectReference Include="..\BombonesApp2026.Servicios\BombonesApp2026.Servicios.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -11,6 +11,7 @@ namespace BombonesApp2026.Datos.Repositorios
             using (var context = new BombonesDbContext())
             {
                 return context.Provincias
+                    .OrderBy(p=>p.NombreProvincia)
                     .AsNoTracking()
                     .ToList();
             }

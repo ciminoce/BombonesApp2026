@@ -122,9 +122,10 @@ namespace BombonesApp2026.Windows
                         Descripcion = tipoEditDto.Descripcion,
                     };
                     int nuevoId = _tipoServicio.Agregar(tipoCreateDto);
-                    if (filtroActivo is null || filtroActivo == true && 
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        tipoCreateDto.Nombre.Contains(txtBuscar.Text))
+                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
+                        (string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                        tipoCreateDto.Nombre.Contains(txtBuscar.Text));
+                    if (sePuedeVer)
                     {
                         paginaActual = _tipoServicio
                             .ObtenerPaginaRegistro(tipoCreateDto.Nombre, cantidadPorPagina,
@@ -132,9 +133,6 @@ namespace BombonesApp2026.Windows
 
                     }
                     RecargarGrilla();
-                    bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
-                        string.IsNullOrWhiteSpace(txtBuscar.Text) ||
-                        tipoCreateDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower());
                     if (sePuedeVer)
                     {
                         var nuevoTipo = _bindingSource.List
@@ -182,12 +180,23 @@ namespace BombonesApp2026.Windows
             if (dr == DialogResult.No) return;
             try
             {
+                // 1. Borramos el registro físicamente en la base de datos
                 _tipoServicio.Borrar(tipoBombonDto.TipoBombonId);
-                if (dgvDatos.Rows.Count == 1 && paginaActual > 1)
-                {
-                    paginaActual--;
-                }
+
+                // 2. Recargamos la grilla inmediatamente. 
+                // Esto viaja al servicio, calcula el nuevo Count real de la base de datos 
+                // y actualiza la variable global 'totalPaginas'.
                 RecargarGrilla();
+
+                // 3. CONTROL POST-BORRADO:
+                // Evaluamos con el diario del lunes. Si después de haber recalculado todo resulta que 
+                // quedamos parados en una página fantasma (ej: páginaActual = 2 pero totalPaginas = 1),
+                // recién ahí corregimos el rumbo.
+                if (paginaActual > totalPaginas && totalPaginas > 0)
+                {
+                    paginaActual = totalPaginas; // Nos acomodamos en la última página real disponible
+                    RecargarGrilla();            // Volvemos a pedir los datos de esa página
+                }
                 MessageBox.Show("Tipo de Bombón eliminado",
                     "Mensaje",
                     MessageBoxButtons.OK,

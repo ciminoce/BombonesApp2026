@@ -28,13 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle6 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
-            tsbFiltrar = new ToolStripButton();
+            toolStripLabel2 = new ToolStripLabel();
+            toolStripLabel3 = new ToolStripLabel();
+            tsCboProvincias = new ToolStripComboBox();
+            toolStripLabel1 = new ToolStripLabel();
+            txtBuscar = new ToolStripTextBox();
+            tsbBuscar = new ToolStripButton();
             tsbActualizar = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
@@ -51,9 +56,6 @@
             btnAnterior = new Button();
             btnSiguiente = new Button();
             label2 = new Label();
-            toolStripLabel1 = new ToolStripLabel();
-            txtBuscar = new ToolStripTextBox();
-            tsbBuscar = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -64,10 +66,10 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbFiltrar, toolStripLabel1, txtBuscar, tsbBuscar, tsbActualizar, toolStripSeparator2, tsbCerrar });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, toolStripLabel2, toolStripLabel3, tsCboProvincias, toolStripLabel1, txtBuscar, tsbBuscar, tsbActualizar, toolStripSeparator2, tsbCerrar });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(800, 70);
+            toolStrip1.Size = new Size(860, 70);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -109,15 +111,47 @@
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 70);
             // 
-            // tsbFiltrar
+            // toolStripLabel2
             // 
-            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
-            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbFiltrar.ImageTransparentColor = Color.Magenta;
-            tsbFiltrar.Name = "tsbFiltrar";
-            tsbFiltrar.Size = new Size(52, 67);
-            tsbFiltrar.Text = "&Filtrar";
-            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            toolStripLabel2.Image = Properties.Resources.filled_filter_48px;
+            toolStripLabel2.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripLabel2.Name = "toolStripLabel2";
+            toolStripLabel2.Size = new Size(109, 67);
+            toolStripLabel2.Text = "Filtrar por ";
+            // 
+            // toolStripLabel3
+            // 
+            toolStripLabel3.Name = "toolStripLabel3";
+            toolStripLabel3.Size = new Size(35, 67);
+            toolStripLabel3.Text = "Pcia.:";
+            // 
+            // tsCboProvincias
+            // 
+            tsCboProvincias.DropDownStyle = ComboBoxStyle.DropDownList;
+            tsCboProvincias.Name = "tsCboProvincias";
+            tsCboProvincias.Size = new Size(121, 70);
+            // 
+            // toolStripLabel1
+            // 
+            toolStripLabel1.Name = "toolStripLabel1";
+            toolStripLabel1.Size = new Size(45, 67);
+            toolStripLabel1.Text = "Buscar:";
+            // 
+            // txtBuscar
+            // 
+            txtBuscar.Name = "txtBuscar";
+            txtBuscar.Size = new Size(150, 70);
+            // 
+            // tsbBuscar
+            // 
+            tsbBuscar.Image = Properties.Resources.search_property_48px;
+            tsbBuscar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbBuscar.ImageTransparentColor = Color.Magenta;
+            tsbBuscar.Name = "tsbBuscar";
+            tsbBuscar.Size = new Size(52, 67);
+            tsbBuscar.Text = "B&uscar";
+            tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbBuscar.Click += tsbBuscar_Click;
             // 
             // tsbActualizar
             // 
@@ -167,7 +201,7 @@
             splitContainer1.Panel2.Controls.Add(btnAnterior);
             splitContainer1.Panel2.Controls.Add(btnSiguiente);
             splitContainer1.Panel2.Controls.Add(label2);
-            splitContainer1.Size = new Size(800, 380);
+            splitContainer1.Size = new Size(860, 380);
             splitContainer1.SplitterDistance = 321;
             splitContainer1.TabIndex = 1;
             // 
@@ -175,8 +209,8 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle6.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colCiudad, colProvincia });
             dgvDatos.Dock = DockStyle.Fill;
@@ -185,7 +219,7 @@
             dgvDatos.Name = "dgvDatos";
             dgvDatos.ReadOnly = true;
             dgvDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDatos.Size = new Size(800, 321);
+            dgvDatos.Size = new Size(860, 321);
             dgvDatos.TabIndex = 0;
             // 
             // colId
@@ -290,33 +324,11 @@
             label2.TabIndex = 8;
             label2.Text = "Cantidad de Páginas:";
             // 
-            // toolStripLabel1
-            // 
-            toolStripLabel1.Name = "toolStripLabel1";
-            toolStripLabel1.Size = new Size(45, 67);
-            toolStripLabel1.Text = "Buscar:";
-            // 
-            // txtBuscar
-            // 
-            txtBuscar.Name = "txtBuscar";
-            txtBuscar.Size = new Size(150, 70);
-            // 
-            // tsbBuscar
-            // 
-            tsbBuscar.Image = Properties.Resources.search_property_48px;
-            tsbBuscar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbBuscar.ImageTransparentColor = Color.Magenta;
-            tsbBuscar.Name = "tsbBuscar";
-            tsbBuscar.Size = new Size(52, 67);
-            tsbBuscar.Text = "B&uscar";
-            tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
-            tsbBuscar.Click += tsbBuscar_Click;
-            // 
             // frmCiudades
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(860, 450);
             Controls.Add(splitContainer1);
             Controls.Add(toolStrip1);
             Name = "frmCiudades";
@@ -350,7 +362,6 @@
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colCiudad;
         private DataGridViewTextBoxColumn colProvincia;
-        private ToolStripButton tsbFiltrar;
         private Label lblPaginas;
         private Label label1;
         private Button btnUltimo;
@@ -362,5 +373,8 @@
         private ToolStripLabel toolStripLabel1;
         private ToolStripTextBox txtBuscar;
         private ToolStripButton tsbBuscar;
+        private ToolStripLabel toolStripLabel2;
+        private ToolStripLabel toolStripLabel3;
+        private ToolStripComboBox tsCboProvincias;
     }
 }

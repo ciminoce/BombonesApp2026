@@ -2,6 +2,7 @@
 using Bombones2026.Servicios.DTOs.Provincia;
 using BombonesApp2026.Datos.Repositorios;
 using BombonesApp2026.Entidades.Entidades;
+using BombonesApp2026.Entidades.Enum;
 
 namespace Bombones2026.Servicios.Servicios
 {
@@ -130,6 +131,36 @@ namespace Bombones2026.Servicios.Servicios
             int posicion = _provinciaRepositorio
                 .ObtenerPosicionAlfabetica(nombre, filtroActivo, textoBuscar);
             return (int)Math.Ceiling((double)posicion / cantidadPorPagina);
+        }
+
+        public List<ProvinciaListDto> ObtenerDatosCombo(TipoProvinciaDefault tipoDefault)
+        {
+            var lista = _provinciaRepositorio.ObtenerTodos()
+                .Select(p=>new ProvinciaListDto
+                {
+                    ProvinciaId = p.ProvinciaId,
+                    Nombre = p.NombreProvincia
+                }).ToList();
+            if (tipoDefault == TipoProvinciaDefault.Todas)
+            {
+                var defaultProvincia = new ProvinciaListDto
+                {
+                    ProvinciaId = 0,
+                    Nombre = "Todas"
+                };
+                lista.Insert(0, defaultProvincia);
+
+            }
+            else
+            {
+                var defaultProvincia = new ProvinciaListDto
+                {
+                    ProvinciaId = 0,
+                    Nombre="Seleccione"
+                };
+                lista.Insert(0,defaultProvincia);
+            }
+            return lista;
         }
     }
 

@@ -34,9 +34,6 @@
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
-            tsbFiltrar = new ToolStripDropDownButton();
-            activosToolStripMenuItem = new ToolStripMenuItem();
-            noActivosToolStripMenuItem = new ToolStripMenuItem();
             tsbActualizar = new ToolStripButton();
             toolStripSeparator2 = new ToolStripSeparator();
             tsbCerrar = new ToolStripButton();
@@ -55,6 +52,14 @@
             btnAnterior = new Button();
             btnSiguiente = new Button();
             label2 = new Label();
+            toolStripLabel2 = new ToolStripLabel();
+            toolStripLabel3 = new ToolStripLabel();
+            tsCboProvincias = new ToolStripComboBox();
+            toolStripLabel1 = new ToolStripLabel();
+            tsCboCiudades = new ToolStripComboBox();
+            toolStripLabel4 = new ToolStripLabel();
+            txtBuscar = new ToolStripTextBox();
+            tsbBuscar = new ToolStripButton();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -65,10 +70,10 @@
             // 
             // toolStrip1
             // 
-            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbFiltrar, tsbActualizar, toolStripSeparator2, tsbCerrar });
+            toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripLabel2, toolStripLabel3, tsCboProvincias, toolStripLabel1, tsCboCiudades, toolStripLabel4, txtBuscar, tsbBuscar, toolStripSeparator1, tsbActualizar, toolStripSeparator2, tsbCerrar });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(800, 70);
+            toolStrip1.Size = new Size(1009, 70);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -106,29 +111,6 @@
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 70);
-            // 
-            // tsbFiltrar
-            // 
-            tsbFiltrar.DropDownItems.AddRange(new ToolStripItem[] { activosToolStripMenuItem, noActivosToolStripMenuItem });
-            tsbFiltrar.Image = Properties.Resources.filled_filter_48px;
-            tsbFiltrar.ImageScaling = ToolStripItemImageScaling.None;
-            tsbFiltrar.ImageTransparentColor = Color.Magenta;
-            tsbFiltrar.Name = "tsbFiltrar";
-            tsbFiltrar.Size = new Size(61, 67);
-            tsbFiltrar.Text = "&Filtrar";
-            tsbFiltrar.TextImageRelation = TextImageRelation.ImageAboveText;
-            // 
-            // activosToolStripMenuItem
-            // 
-            activosToolStripMenuItem.Name = "activosToolStripMenuItem";
-            activosToolStripMenuItem.Size = new Size(132, 22);
-            activosToolStripMenuItem.Text = "Activos";
-            // 
-            // noActivosToolStripMenuItem
-            // 
-            noActivosToolStripMenuItem.Name = "noActivosToolStripMenuItem";
-            noActivosToolStripMenuItem.Size = new Size(132, 22);
-            noActivosToolStripMenuItem.Text = "No Activos";
             // 
             // tsbActualizar
             // 
@@ -176,7 +158,7 @@
             splitContainer1.Panel2.Controls.Add(btnAnterior);
             splitContainer1.Panel2.Controls.Add(btnSiguiente);
             splitContainer1.Panel2.Controls.Add(label2);
-            splitContainer1.Size = new Size(800, 380);
+            splitContainer1.Size = new Size(1009, 380);
             splitContainer1.SplitterDistance = 321;
             splitContainer1.TabIndex = 1;
             // 
@@ -194,7 +176,7 @@
             dgvDatos.Name = "dgvDatos";
             dgvDatos.ReadOnly = true;
             dgvDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDatos.Size = new Size(800, 321);
+            dgvDatos.Size = new Size(1009, 321);
             dgvDatos.TabIndex = 0;
             // 
             // colId
@@ -304,11 +286,64 @@
             label2.TabIndex = 8;
             label2.Text = "Cantidad de Páginas:";
             // 
+            // toolStripLabel2
+            // 
+            toolStripLabel2.Image = Properties.Resources.filled_filter_48px;
+            toolStripLabel2.ImageScaling = ToolStripItemImageScaling.None;
+            toolStripLabel2.Name = "toolStripLabel2";
+            toolStripLabel2.Size = new Size(109, 67);
+            toolStripLabel2.Text = "Filtrar por ";
+            // 
+            // toolStripLabel3
+            // 
+            toolStripLabel3.Name = "toolStripLabel3";
+            toolStripLabel3.Size = new Size(35, 67);
+            toolStripLabel3.Text = "Pcia.:";
+            // 
+            // tsCboProvincias
+            // 
+            tsCboProvincias.DropDownStyle = ComboBoxStyle.DropDownList;
+            tsCboProvincias.Name = "tsCboProvincias";
+            tsCboProvincias.Size = new Size(121, 70);
+            // 
+            // toolStripLabel1
+            // 
+            toolStripLabel1.Name = "toolStripLabel1";
+            toolStripLabel1.Size = new Size(48, 67);
+            toolStripLabel1.Text = "Ciudad:";
+            // 
+            // tsCboCiudades
+            // 
+            tsCboCiudades.DropDownStyle = ComboBoxStyle.DropDownList;
+            tsCboCiudades.Name = "tsCboCiudades";
+            tsCboCiudades.Size = new Size(121, 70);
+            // 
+            // toolStripLabel4
+            // 
+            toolStripLabel4.Name = "toolStripLabel4";
+            toolStripLabel4.Size = new Size(45, 67);
+            toolStripLabel4.Text = "Buscar:";
+            // 
+            // txtBuscar
+            // 
+            txtBuscar.Name = "txtBuscar";
+            txtBuscar.Size = new Size(150, 70);
+            // 
+            // tsbBuscar
+            // 
+            tsbBuscar.Image = Properties.Resources.search_property_48px;
+            tsbBuscar.ImageScaling = ToolStripItemImageScaling.None;
+            tsbBuscar.ImageTransparentColor = Color.Magenta;
+            tsbBuscar.Name = "tsbBuscar";
+            tsbBuscar.Size = new Size(52, 67);
+            tsbBuscar.Text = "B&uscar";
+            tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
             // frmClientes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1009, 450);
             Controls.Add(splitContainer1);
             Controls.Add(toolStrip1);
             Name = "frmClientes";
@@ -338,9 +373,6 @@
         private ToolStripButton tsbCerrar;
         private SplitContainer splitContainer1;
         private DataGridView dgvDatos;
-        private ToolStripDropDownButton tsbFiltrar;
-        private ToolStripMenuItem activosToolStripMenuItem;
-        private ToolStripMenuItem noActivosToolStripMenuItem;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colNombre;
         private DataGridViewTextBoxColumn colTelefono;
@@ -354,5 +386,13 @@
         private Button btnAnterior;
         private Button btnSiguiente;
         private Label label2;
+        private ToolStripLabel toolStripLabel2;
+        private ToolStripLabel toolStripLabel3;
+        private ToolStripComboBox tsCboProvincias;
+        private ToolStripLabel toolStripLabel1;
+        private ToolStripComboBox tsCboCiudades;
+        private ToolStripLabel toolStripLabel4;
+        private ToolStripTextBox txtBuscar;
+        private ToolStripButton tsbBuscar;
     }
 }
