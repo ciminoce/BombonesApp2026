@@ -5,99 +5,81 @@ namespace BombonesApp2026.Datos.Repositorios
 {
     public class TipoBombonRepositorio
     {
+        private readonly BombonesDbContext _context;
+        public TipoBombonRepositorio(BombonesDbContext context)
+        {
+            _context = context;
+        }
         public List<TipoBombon> ObtenerTodos()
         {
-            using (var context = new BombonesDbContext())
-            {
-                return context.TipoBombones
-                    .AsNoTracking()
-                    .ToList();
-            }
+            return _context.TipoBombones
+                .AsNoTracking()
+                .ToList();
         }
         public (List<TipoBombon> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
-            int cantidadPorPagina, bool? filtroActivo=null, 
-            string? textoBuscar=null)
+            int cantidadPorPagina, bool? filtroActivo = null,
+            string? textoBuscar = null)
         {
-            using(var context=new BombonesDbContext() )
-	        {
-                IQueryable<TipoBombon> query = context
-                    .TipoBombones.AsNoTracking();
-                if(filtroActivo is not null)
-                {
-                    query = query.Where(tb => tb.Activo == filtroActivo);
-                }
-                if (!string.IsNullOrWhiteSpace(textoBuscar))
-                {
-                    query = query.Where(tb => tb.Nombre.Contains(textoBuscar));
-                }
-                var cantidad = query.Count();
-                var lista = query
-                    .OrderBy(tb => tb.Nombre)
-                    .Skip(cantidadPorPagina*(paginaActual-1))
-                    .Take(cantidadPorPagina)
-                    .ToList();
-                return (lista, cantidad);
-	        }
+            IQueryable<TipoBombon> query = _context
+                .TipoBombones.AsNoTracking();
+            if (filtroActivo is not null)
+            {
+                query = query.Where(tb => tb.Activo == filtroActivo);
+            }
+            if (!string.IsNullOrWhiteSpace(textoBuscar))
+            {
+                query = query.Where(tb => tb.Nombre.Contains(textoBuscar));
+            }
+            var cantidad = query.Count();
+            var lista = query
+                .OrderBy(tb => tb.Nombre)
+                .Skip(cantidadPorPagina * (paginaActual - 1))
+                .Take(cantidadPorPagina)
+                .ToList();
+            return (lista, cantidad);
         }
         public void Agregar(TipoBombon tipoBombon)
         {
-            using (var context = new BombonesDbContext())
-            {
-                context.TipoBombones.Add(tipoBombon);
+            _context.TipoBombones.Add(tipoBombon);
 
-                context.SaveChanges();
+            _context.SaveChanges();
 
-            }
         }
         public void Editar(TipoBombon tipoBombon)
         {
-            using (var context = new BombonesDbContext())
-            {
+            var tipoEnDb = _context.TipoBombones.Find(tipoBombon.TipoBombonId);
 
-                var tipoEnDb = context.TipoBombones.Find(tipoBombon.TipoBombonId);
+            if (tipoEnDb is null) throw new Exception("Tipo de Bombon no encontrado");
+            tipoEnDb.Nombre = tipoBombon.Nombre;
+            tipoEnDb.Descripcion = tipoBombon.Descripcion;
+            tipoEnDb.Activo = tipoBombon.Activo;
 
-                if (tipoEnDb is null) throw new Exception("Tipo de Bombon no encontrado");
-                tipoEnDb.Nombre = tipoBombon.Nombre;
-                tipoEnDb.Descripcion = tipoBombon.Descripcion;
-                tipoEnDb.Activo = tipoBombon.Activo;
-
-                context.SaveChanges();
-
-            }
+            _context.SaveChanges();
         }
         public void Borrar(int id)
         {
-            using (var context = new BombonesDbContext())
-            {
-                var tipoEnDb = context.TipoBombones
-                    .Find(id);
-                if (tipoEnDb is null) throw new Exception("Tipo de Bombón no encontrado");
-                context.TipoBombones.Remove(tipoEnDb);
-                context.SaveChanges();
-            }
+            var tipoEnDb = _context.TipoBombones
+                .Find(id);
+            if (tipoEnDb is null) throw new Exception("Tipo de Bombón no encontrado");
+            _context.TipoBombones.Remove(tipoEnDb);
+            _context.SaveChanges();
         }
         public TipoBombon? ObtenerPorId(int id)
         {
-            using (var context = new BombonesDbContext())
-            {
-                return context.TipoBombones.AsNoTracking()
-                    .FirstOrDefault(tb => tb.TipoBombonId == id);
-            }
+            return _context.TipoBombones.AsNoTracking()
+                .FirstOrDefault(tb => tb.TipoBombonId == id);
         }
 
         public bool ExisteTipoBombon(TipoBombon tipoBombon)
         {
-            using (var context = new BombonesDbContext())
+            if (tipoBombon.TipoBombonId == 0)
             {
-                if (tipoBombon.TipoBombonId == 0)
-                {
-                    return context.TipoBombones.Any(tb => tb.Nombre == tipoBombon.Nombre);
-                }
-                else
-                {
-                    return context.TipoBombones.Any(tb => tb.Nombre == tipoBombon.Nombre &&
-                            tb.TipoBombonId != tipoBombon.TipoBombonId);
-                }
+                return _context.TipoBombones.Any(tb => tb.Nombre == tipoBombon.Nombre);
+            }
+            else
+            {
+                return _context.TipoBombones.Any(tb => tb.Nombre == tipoBombon.Nombre &&
+                        tb.TipoBombonId != tipoBombon.TipoBombonId);
             }
         }
 
@@ -106,24 +88,21 @@ namespace BombonesApp2026.Datos.Repositorios
             return false;
         }
 
-        public int ObtenerPosicionAlfabetica(string nombre, 
-            bool? filtroActivo=null, string? textoBuscar=null)
+        public int ObtenerPosicionAlfabetica(string nombre,
+            bool? filtroActivo = null, string? textoBuscar = null)
         {
-            using (var context=new BombonesDbContext())
+            IQueryable<TipoBombon> query = _context.TipoBombones.AsNoTracking();
+            if (filtroActivo.HasValue)
             {
-                IQueryable<TipoBombon> query = context.TipoBombones.AsNoTracking();
-                if (filtroActivo.HasValue)
-                {
-                    query=query.Where(tb=>tb.Activo == filtroActivo.Value);
-                }
-                if (!string.IsNullOrWhiteSpace(textoBuscar))
-                {
-                    query = query.Where(tb => tb.Nombre.Contains(textoBuscar));
-                }
-                return query
-                    .Count(tb => string
-                        .Compare(tb.Nombre, nombre) <= 0);
+                query = query.Where(tb => tb.Activo == filtroActivo.Value);
             }
+            if (!string.IsNullOrWhiteSpace(textoBuscar))
+            {
+                query = query.Where(tb => tb.Nombre.Contains(textoBuscar));
+            }
+            return query
+                .Count(tb => string
+                    .Compare(tb.Nombre, nombre) <= 0);
         }
     }
 }

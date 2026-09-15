@@ -8,9 +8,9 @@ namespace Bombones2026.Servicios.Servicios
     public class TipoBombonServicio
     {
         private readonly TipoBombonRepositorio _tipoBombonRepositorio;
-        public TipoBombonServicio()
+        public TipoBombonServicio(TipoBombonRepositorio tipoBombonRepositorio)
         {
-            _tipoBombonRepositorio = new TipoBombonRepositorio();
+            _tipoBombonRepositorio = tipoBombonRepositorio;
         }
         public ResultadoPaginacionDto<TipoBombonListDto> ObtenerPagina(int paginaActual,
             int cantidadPorPagina, bool? filtroActivo=null, string? textoBuscar=null)

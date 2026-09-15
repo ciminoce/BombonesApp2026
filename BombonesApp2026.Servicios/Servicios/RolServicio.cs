@@ -7,9 +7,9 @@ namespace Bombones2026.Servicios.Servicios
     public class RolServicio
     {
         private readonly RolRepositorio _rolRepositorio;
-        public RolServicio()
+        public RolServicio(RolRepositorio rolRepositorio)
         {
-            _rolRepositorio = new RolRepositorio();
+            _rolRepositorio = rolRepositorio;
         }
 
         public List<RolListDto> ObtenerTodos()

@@ -8,9 +8,9 @@ namespace Bombones2026.Servicios.Servicios
     public class FormaDePagoServicio
     {
         private readonly FormaDePagoRepositorio _formasDePagoRepositorio;
-        public FormaDePagoServicio()
+        public FormaDePagoServicio(FormaDePagoRepositorio formasDePagoRepositorio)
         {
-            _formasDePagoRepositorio = new FormaDePagoRepositorio();
+            _formasDePagoRepositorio = formasDePagoRepositorio;
         }
 
         public ResultadoPaginacionDto<FormaDePagoListDto> ObtenerPagina(int paginaActual,

@@ -14,15 +14,16 @@ namespace BombonesApp2026.Datos
         public DbSet<FormaDePago> FormasDePago { get; set; }
         public DbSet<Ciudad> Ciudades { get; set; }
         public DbSet<Transporte> Transportes { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public BombonesDbContext(
+            DbContextOptions<BombonesDbContext> options)
+            : base(options)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=.; Initial Catalog=Bombones2026;
-                    Integrated Security=true; TrustServerCertificate=true;");
-            optionsBuilder.LogTo(msg=>Debug.WriteLine(msg),LogLevel.Information);
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(RolEntityTypeConfiguration).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(
+                typeof(RolEntityTypeConfiguration).Assembly);
         }
     }
 }

@@ -39,7 +39,6 @@
             txtPrecio = new TextBox();
             label5 = new Label();
             nudStock = new NumericUpDown();
-            this.chkEsSurtida = new CheckBox();
             chkActivo = new CheckBox();
             label6 = new Label();
             nudCantidadBombones = new NumericUpDown();
@@ -148,14 +147,6 @@
             // 
             // chkEsSurtida
             // 
-            this.chkEsSurtida.AutoSize = true;
-            this.chkEsSurtida.CheckAlign = ContentAlignment.MiddleRight;
-            this.chkEsSurtida.Location = new Point(497, 136);
-            this.chkEsSurtida.Name = "chkEsSurtida";
-            this.chkEsSurtida.Size = new Size(86, 19);
-            this.chkEsSurtida.TabIndex = 13;
-            this.chkEsSurtida.Text = "¿Es surtida?";
-            this.chkEsSurtida.UseVisualStyleBackColor = true;
             // 
             // chkActivo
             // 
@@ -237,7 +228,6 @@
             ClientSize = new Size(794, 416);
             Controls.Add(panel1);
             Controls.Add(chkActivo);
-            Controls.Add(this.chkEsSurtida);
             Controls.Add(nudCantidadBombones);
             Controls.Add(nudStock);
             Controls.Add(btnCancelar);

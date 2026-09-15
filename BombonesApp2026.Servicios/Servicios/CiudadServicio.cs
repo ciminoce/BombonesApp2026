@@ -8,9 +8,9 @@ namespace Bombones2026.Servicios.Servicios
     public class CiudadServicio
     {
         private readonly CiudadRepositorio _ciudadRepositorio;
-        public CiudadServicio()
+        public CiudadServicio(CiudadRepositorio ciudadRepositorio)
         {
-            _ciudadRepositorio = new CiudadRepositorio();
+            _ciudadRepositorio = ciudadRepositorio;
         }
 
         public ResultadoPaginacionDto<CiudadListDto> ObtenerPagina(int paginaActual,

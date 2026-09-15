@@ -8,9 +8,9 @@ namespace Bombones2026.Servicios.Servicios
     public class TransporteServicio
     {
         private readonly TransporteRepositorio _transporteRepositorio;
-        public TransporteServicio()
+        public TransporteServicio(TransporteRepositorio transporteRepositorio)
         {
-            _transporteRepositorio = new TransporteRepositorio();
+            _transporteRepositorio = transporteRepositorio;
         }
         public ResultadoPaginacionDto<TransporteListDto> ObtenerPagina(int paginaActual,
                 int cantidadPorPagina, bool? filtroActivo = null,

@@ -9,9 +9,9 @@ namespace Bombones2026.Servicios.Servicios
     public class ProvinciaServicio
     {
         private readonly ProvinciaRepositorio _provinciaRepositorio;
-        public ProvinciaServicio()
+        public ProvinciaServicio(ProvinciaRepositorio provinciaRepositorio)
         {
-            _provinciaRepositorio = new ProvinciaRepositorio();
+            _provinciaRepositorio = provinciaRepositorio;
         }
 
         public ResultadoPaginacionDto<ProvinciaListDto> ObtenerPagina(int paginaActual,

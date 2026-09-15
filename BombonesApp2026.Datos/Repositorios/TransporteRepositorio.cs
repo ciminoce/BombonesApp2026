@@ -5,139 +5,118 @@ namespace BombonesApp2026.Datos.Repositorios
 {
     public class TransporteRepositorio
     {
+        private readonly BombonesDbContext _context;
+        public TransporteRepositorio(BombonesDbContext context)
+        {
+            _context = context;
+        }
         public void Agregar(Transporte transporte)
         {
-            using (var context=new BombonesDbContext())
-            {
-                context.Transportes.Add(transporte);
-                context.SaveChanges();
-            }
+            _context.Transportes.Add(transporte);
+            _context.SaveChanges();
         }
         public (List<Transporte> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
             int cantidadPorPagina, bool? filtroActivo = null,
-            int? provinciaIdFiltro=null,
+            int? provinciaIdFiltro = null,
             string? textoBuscar = null)
         {
-            using (var context = new BombonesDbContext())
+            IQueryable<Transporte> query = _context
+                .Transportes
+                .Include(t => t.Provincia)
+                .AsNoTracking();
+            if (filtroActivo is not null)
             {
-                IQueryable<Transporte> query = context
-                    .Transportes
-                    .Include(t => t.Provincia)
-                    .AsNoTracking();
-                if (filtroActivo is not null)
-                {
-                    query = query.Where(t => t.Activo == filtroActivo);
-                }
-                if(provinciaIdFiltro is not null)
-                {
-                    query = query.Where(t => t.ProvinciaId == provinciaIdFiltro);
-                }
-                if (!string.IsNullOrWhiteSpace(textoBuscar))
-                {
-                    query = query.Where(t => t.NombreEmpresa.Contains(textoBuscar));
-                }
-                var cantidad = query.Count();
-                var lista = query
-                    .OrderBy(t => t.NombreEmpresa)
-                    .Skip(cantidadPorPagina * (paginaActual - 1))
-                    .Take(cantidadPorPagina)
-                    .ToList();
-                return (lista, cantidad);
+                query = query.Where(t => t.Activo == filtroActivo);
             }
+            if (provinciaIdFiltro is not null)
+            {
+                query = query.Where(t => t.ProvinciaId == provinciaIdFiltro);
+            }
+            if (!string.IsNullOrWhiteSpace(textoBuscar))
+            {
+                query = query.Where(t => t.NombreEmpresa.Contains(textoBuscar));
+            }
+            var cantidad = query.Count();
+            var lista = query
+                .OrderBy(t => t.NombreEmpresa)
+                .Skip(cantidadPorPagina * (paginaActual - 1))
+                .Take(cantidadPorPagina)
+                .ToList();
+            return (lista, cantidad);
         }
         public int ObtenerPosicionAlfabetica(string nombre,
-                bool? filtroActivo = null, int? provinciaIdFiltro=null, string? textoBuscar = null)
+                bool? filtroActivo = null, int? provinciaIdFiltro = null, string? textoBuscar = null)
         {
-            using (var context = new BombonesDbContext())
+            IQueryable<Transporte> query = _context.Transportes.AsNoTracking();
+            if (filtroActivo.HasValue)
             {
-                IQueryable<Transporte> query = context.Transportes.AsNoTracking();
-                if (filtroActivo.HasValue)
-                {
-                    query = query.Where(t => t.Activo == filtroActivo.Value);
-                }
-                if(provinciaIdFiltro is not null)
-                {
-                    query=query.Where(t=>t.ProvinciaId== provinciaIdFiltro);
-                }
-                if (!string.IsNullOrWhiteSpace(textoBuscar))
-                {
-                    query = query.Where(t => t.NombreEmpresa.Contains(textoBuscar));
-                }
-                return query
-                    .Count(t => string
-                        .Compare(t.NombreEmpresa, nombre) <= 0);
+                query = query.Where(t => t.Activo == filtroActivo.Value);
             }
+            if (provinciaIdFiltro is not null)
+            {
+                query = query.Where(t => t.ProvinciaId == provinciaIdFiltro);
+            }
+            if (!string.IsNullOrWhiteSpace(textoBuscar))
+            {
+                query = query.Where(t => t.NombreEmpresa.Contains(textoBuscar));
+            }
+            return query
+                .Count(t => string
+                    .Compare(t.NombreEmpresa, nombre) <= 0);
         }
 
         public void Borrar(int transporteId)
         {
-            using (var context = new BombonesDbContext())
-            {
-                var transporteEnDb = context.Transportes
-                    .Find(transporteId);
-                if (transporteEnDb is null) throw new Exception("Transporte no encontrado");
-                context.Transportes.Remove(transporteEnDb);
-                context.SaveChanges();
-            }
+            var transporteEnDb = _context.Transportes
+                .Find(transporteId);
+            if (transporteEnDb is null) throw new Exception("Transporte no encontrado");
+            _context.Transportes.Remove(transporteEnDb);
+            _context.SaveChanges();
         }
 
         public void Editar(Transporte transporte)
         {
-            using (var context = new BombonesDbContext())
-            {
+            var transporteEnDb = _context.Transportes.Find(transporte.TransporteId);
 
-                var transporteEnDb = context.Transportes.Find(transporte.TransporteId);
+            if (transporteEnDb is null) throw new Exception("Transporte no encontrado");
+            transporteEnDb.NombreEmpresa = transporte.NombreEmpresa;
+            transporteEnDb.Telefono = transporte.Telefono;
+            transporteEnDb.Email = transporte.Email;
+            transporteEnDb.Activo = transporte.Activo;
 
-                if (transporteEnDb is null) throw new Exception("Transporte no encontrado");
-                transporteEnDb.NombreEmpresa = transporte.NombreEmpresa;
-                transporteEnDb.Telefono = transporte.Telefono;
-                transporteEnDb.Email= transporte.Email;
-                transporteEnDb.Activo = transporte.Activo;
-
-                context.SaveChanges();
-
-            }
+            _context.SaveChanges();
         }
 
         public bool ExisteTransporte(Transporte transporte)
         {
-            using (var context=new BombonesDbContext())
+            if (transporte.TransporteId == 0)
             {
-                if (transporte.TransporteId == 0)
-                {
-                    return context.Transportes
-                        .Any(t=>t.NombreEmpresa==transporte.NombreEmpresa && 
-                        t.ProvinciaId == transporte.ProvinciaId);
-                }
-                else
-                {
-                    return context.Transportes
-                        .Any(t => t.NombreEmpresa == transporte.NombreEmpresa &&
-                        t.ProvinciaId == transporte.ProvinciaId && 
-                        t.TransporteId!=transporte.TransporteId);
+                return _context.Transportes
+                    .Any(t => t.NombreEmpresa == transporte.NombreEmpresa &&
+                    t.ProvinciaId == transporte.ProvinciaId);
+            }
+            else
+            {
+                return _context.Transportes
+                    .Any(t => t.NombreEmpresa == transporte.NombreEmpresa &&
+                    t.ProvinciaId == transporte.ProvinciaId &&
+                    t.TransporteId != transporte.TransporteId);
 
-                }
             }
         }
 
         public Transporte? ObtenerPorId(int transporteId)
         {
-            using (var context = new BombonesDbContext())
-            {
-                return context.Transportes.AsNoTracking()
-                    .FirstOrDefault(t => t.TransporteId == transporteId);
-            }
+            return _context.Transportes.AsNoTracking()
+                .FirstOrDefault(t => t.TransporteId == transporteId);
         }
 
         public List<Transporte> ObtenerTodos()
         {
-            using (var context=new BombonesDbContext())
-            {
-                return context.Transportes
-                    .Include(t=>t.Provincia)
-                    .OrderBy(t=>t.NombreEmpresa)
-                    .ToList();
-            }
+            return _context.Transportes
+                .Include(t => t.Provincia)
+                .OrderBy(t => t.NombreEmpresa)
+                .ToList();
         }
 
         public bool TieneRegistrosRelacionados(int transporteId)
