@@ -408,4 +408,3 @@
         private DataGridViewCheckBoxColumn colActivo;
     }
 }
-}

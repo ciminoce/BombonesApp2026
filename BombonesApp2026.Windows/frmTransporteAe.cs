@@ -7,12 +7,12 @@ namespace BombonesApp2026.Windows
 {
     public partial class frmTransporteAe : Form
     {
-        private TransporteEditDto? _transporteDto;
         private readonly ProvinciaServicio _provinciaServicio;
-        public frmTransporteAe()
+        private TransporteEditDto? _transporteDto;
+        public frmTransporteAe(ProvinciaServicio provinciaServicio)
         {
             InitializeComponent();
-            _provinciaServicio = new ProvinciaServicio();
+            _provinciaServicio = provinciaServicio;
         }
         protected override void OnLoad(EventArgs e)
         {

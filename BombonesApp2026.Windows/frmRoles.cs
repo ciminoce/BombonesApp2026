@@ -10,10 +10,10 @@ namespace BombonesApp2026.Windows
         private readonly RolServicio _rolServicio;
         private List<RolListDto>? _listaRoles;
         private BindingSource _bindingSource = new BindingSource();
-        public frmRoles()
+        public frmRoles(RolServicio rolServicio)
         {
             InitializeComponent();
-            _rolServicio = new RolServicio();
+            _rolServicio = rolServicio;
         }
 
         private void tsbCerrar_Click(object sender, EventArgs e)

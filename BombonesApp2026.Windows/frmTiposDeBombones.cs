@@ -20,10 +20,10 @@ namespace BombonesApp2026.Windows
         private int cantidadPorPagina = 10;
         private int totalRegistros = 0;
         private int totalPaginas = 0;
-        public frmTiposDeBombones()
+        public frmTiposDeBombones(TipoBombonServicio tipoServicio)
         {
             InitializeComponent();
-            _tipoServicio = new TipoBombonServicio();
+            _tipoServicio = tipoServicio;
         }
 
         private void tsbCerrar_Click(object sender, EventArgs e)

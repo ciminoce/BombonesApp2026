@@ -1,4 +1,6 @@
+using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Datos;
+using BombonesApp2026.Datos.Repositorios;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -38,7 +40,31 @@ namespace BombonesApp2026.Windows
             var context =
                 new BombonesDbContext(options);
             //instanciar repositorios y servicios aquí si es necesario
-            Application.Run(new frmPrincipal());
+            var tipoBombonRepositorio = new TipoBombonRepositorio(context);
+            var formaDePagoRepositorio = new FormaDePagoRepositorio(context);
+            var rolRepositorio = new RolRepositorio(context);
+            var provinciaRepositorio = new ProvinciaRepositorio(context);
+            var ciudadRepositorio = new CiudadRepositorio(context);
+            var transporteRepositorio = new TransporteRepositorio(context);
+
+            var tipoBombonServicio = new TipoBombonServicio(tipoBombonRepositorio);
+            var formaDePagoServicio = new FormaDePagoServicio(formaDePagoRepositorio);
+            var rolServicio = new RolServicio(rolRepositorio);
+            var provinciaServicio = new ProvinciaServicio(provinciaRepositorio);
+            var ciudadServicio = new CiudadServicio(ciudadRepositorio);
+            var transporteServicio = new TransporteServicio(transporteRepositorio);
+            Application.Run(new frmPrincipal(tipoBombonRepositorio,
+                formaDePagoRepositorio,
+                rolRepositorio,
+                provinciaRepositorio,
+                ciudadRepositorio,
+                transporteRepositorio,
+                tipoBombonServicio,
+                formaDePagoServicio,
+                rolServicio,
+                provinciaServicio,
+                ciudadServicio,
+                transporteServicio));
         }
     }
 }

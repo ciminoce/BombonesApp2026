@@ -16,10 +16,10 @@ namespace BombonesApp2026.Windows
 
         private bool? filtroActivo = null;
         private string? textoBuscar = null;
-        public frmFormasDePago()
+        public frmFormasDePago(FormaDePagoServicio formaDePagoServicio)
         {
             InitializeComponent();
-            _formaDePagoServicio = new FormaDePagoServicio();
+            _formaDePagoServicio = formaDePagoServicio;
         }
         private void tsbCerrar_Click(object sender, EventArgs e)
         {

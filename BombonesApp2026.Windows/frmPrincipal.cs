@@ -1,15 +1,53 @@
-﻿namespace BombonesApp2026.Windows
+﻿using Bombones2026.Servicios.Servicios;
+using BombonesApp2026.Datos.Repositorios;
+
+namespace BombonesApp2026.Windows
 {
     public partial class frmPrincipal : Form
     {
-        public frmPrincipal()
+        private readonly TipoBombonRepositorio _tipoBombonRepositorio;
+        private readonly FormaDePagoRepositorio _formaDePagoRepositorio;
+        private readonly RolRepositorio _rolRepositorio;
+        private readonly ProvinciaRepositorio _provinciaRepositorio;
+        private readonly CiudadRepositorio _ciudadRepositorio;
+        private readonly TransporteRepositorio _transporteRepositorio;
+        private readonly TipoBombonServicio _tipoBombonServicio;
+        private readonly FormaDePagoServicio _formaDePagoServicio;
+        private readonly RolServicio _rolServicio;
+        private readonly ProvinciaServicio _provinciaServicio;
+        private readonly CiudadServicio _ciudadServicio;
+        private readonly TransporteServicio _transporteServicio;
+        public frmPrincipal(TipoBombonRepositorio tipoBombonRepositorio,
+            FormaDePagoRepositorio formaDePagoRepositorio,
+            RolRepositorio rolRepositorio,
+            ProvinciaRepositorio provinciaRepositorio,
+            CiudadRepositorio ciudadRepositorio,
+            TransporteRepositorio transporteRepositorio,
+            TipoBombonServicio tipoBombonServicio,
+            FormaDePagoServicio formaDePagoServicio,
+            RolServicio rolServicio,
+            ProvinciaServicio provinciaServicio,
+            CiudadServicio ciudadServicio,
+            TransporteServicio transporteServicio   )
         {
             InitializeComponent();
+            _tipoBombonRepositorio = tipoBombonRepositorio;
+            _formaDePagoRepositorio = formaDePagoRepositorio;
+            _rolRepositorio = rolRepositorio;
+            _provinciaRepositorio = provinciaRepositorio;
+            _ciudadRepositorio = ciudadRepositorio;
+            _transporteRepositorio = transporteRepositorio;
+            _tipoBombonServicio = tipoBombonServicio;
+            _formaDePagoServicio = formaDePagoServicio;
+            _rolServicio = rolServicio;
+            _provinciaServicio = provinciaServicio;
+            _ciudadServicio = ciudadServicio;
+            _transporteServicio = transporteServicio;
         }
 
         private void btnRoles_Click(object sender, EventArgs e)
         {
-            using (frmRoles frm = new frmRoles() { Text = "Listado de Roles" })
+            using (frmRoles frm = new frmRoles(_rolServicio) { Text = "Listado de Roles" })
             {
                 frm.ShowDialog();
             }
@@ -22,7 +60,7 @@
 
         private void btnTiposBombones_Click(object sender, EventArgs e)
         {
-            using (frmTiposDeBombones frm = new frmTiposDeBombones() { Text = "Listado de Tipos de Bombones" })
+            using (frmTiposDeBombones frm = new frmTiposDeBombones(_tipoBombonServicio) { Text = "Listado de Tipos de Bombones" })
             {
                 frm.ShowDialog();
             }
@@ -31,7 +69,7 @@
 
         private void btnFormaDePago_Click(object sender, EventArgs e)
         {
-            using (frmFormasDePago frm = new frmFormasDePago() { Text = "Listado de Formas de Pago" })
+            using (frmFormasDePago frm = new frmFormasDePago(_formaDePagoServicio) { Text = "Listado de Formas de Pago" })
             {
                 frm.ShowDialog();
             }
@@ -40,7 +78,7 @@
 
         private void btnProvincias_Click(object sender, EventArgs e)
         {
-            using (frmProvincias frm = new frmProvincias() { Text = "Listado de Provincias" })
+            using (frmProvincias frm = new frmProvincias(_provinciaServicio) { Text = "Listado de Provincias" })
             {
                 frm.ShowDialog();
             }
@@ -48,7 +86,7 @@
 
         private void btnCiudades_Click(object sender, EventArgs e)
         {
-            using (frmCiudades frm = new frmCiudades() { Text = "Listado de Ciudades" })
+            using (frmCiudades frm = new frmCiudades(_ciudadServicio, _provinciaServicio) { Text = "Listado de Ciudades" })
             {
                 frm.ShowDialog();
             }
@@ -56,7 +94,7 @@
 
         private void btnTransportes_Click(object sender, EventArgs e)
         {
-            using (frmTransportes frm=new frmTransportes() { Text="Listado de Transportes"})
+            using (frmTransportes frm=new frmTransportes(_transporteServicio,_provinciaServicio) { Text="Listado de Transportes"})
             {
                 frm.ShowDialog();
             }

@@ -11,6 +11,7 @@ namespace BombonesApp2026.Windows
     public partial class frmCiudades : Form
     {
         private readonly CiudadServicio _ciudadServicio;
+        private readonly ProvinciaServicio _provinciaServicio;
         private BindingSource _bindingSource = new BindingSource();
         //para paginar
         private int paginaActual = 1;
@@ -20,10 +21,11 @@ namespace BombonesApp2026.Windows
 
         private bool? filtroActivo = null;
         private string? textoBuscar = null;
-        public frmCiudades()
+        public frmCiudades(CiudadServicio ciuidadServicio, ProvinciaServicio provinciaServicio)
         {
             InitializeComponent();
-            _ciudadServicio = new CiudadServicio();
+            _ciudadServicio = ciuidadServicio;
+            _provinciaServicio = provinciaServicio;
         }
 
         private void frmCiudades_Load(object sender, EventArgs e)
@@ -70,7 +72,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbNuevo_Click(object sender, EventArgs e)
         {
-            using (frmCiudadAe frm = new frmCiudadAe() { Text = "Nueva Ciudad" })
+            using (frmCiudadAe frm = new frmCiudadAe(_provinciaServicio) { Text = "Nueva Ciudad" })
             {
                 DialogResult dr = frm.ShowDialog();
                 if (dr == DialogResult.Cancel) return;
@@ -184,7 +186,7 @@ namespace BombonesApp2026.Windows
             CiudadListDto ciudadDto = (CiudadListDto)_bindingSource.Current!;
             CiudadEditDto? ciudadEditDto = _ciudadServicio.ObtenerParaEditar(ciudadDto.CiudadId);
             if (ciudadEditDto is null) return;
-            using (frmCiudadAe frm = new frmCiudadAe() { Text = "Editar Ciudad " })
+            using (frmCiudadAe frm = new frmCiudadAe(_provinciaServicio) { Text = "Editar Ciudad " })
             {
                 frm.SetCiudad(ciudadEditDto);
                 DialogResult dr = frm.ShowDialog();

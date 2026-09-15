@@ -17,10 +17,10 @@ namespace BombonesApp2026.Windows
         //para filtrar
         private bool? filtroActivo = null;
         private string? textoBuscar = null;
-        public frmProvincias()
+        public frmProvincias(ProvinciaServicio servicio)
         {
             InitializeComponent();
-            _provinciaServicio = new ProvinciaServicio();
+            _provinciaServicio =servicio;
         }
 
         private void tsbCerrar_Click(object sender, EventArgs e)

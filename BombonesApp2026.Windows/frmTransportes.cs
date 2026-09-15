@@ -8,7 +8,7 @@ namespace BombonesApp2026.Windows
     public partial class frmTransportes : Form
     {
         private readonly TransporteServicio _transporteServicio;
-
+        private readonly ProvinciaServicio _provinciaServicio;
         private BindingSource _bindingSource = new BindingSource();
         //para paginar
         private int paginaActual = 1;
@@ -20,10 +20,11 @@ namespace BombonesApp2026.Windows
         private bool? filtroActivo = null;
         private int? provinciaIdFiltro = null;
         private string? textoBuscar = null;
-        public frmTransportes()
+        public frmTransportes(TransporteServicio servicio, ProvinciaServicio provinciaServicio)
         {
             InitializeComponent();
-            _transporteServicio = new TransporteServicio();
+            _transporteServicio =servicio;
+            _provinciaServicio = provinciaServicio;
         }
 
         private void tsbCerrar_Click(object sender, EventArgs e)
@@ -60,8 +61,7 @@ namespace BombonesApp2026.Windows
 
         public void CargarComboProvincias(ComboBox combo)
         {
-            var provinciaServicio = new ProvinciaServicio();
-            var lista = provinciaServicio.ObtenerDatosCombo(TipoProvinciaDefault.Todas);
+            var lista = _provinciaServicio.ObtenerDatosCombo(TipoProvinciaDefault.Todas);
             combo.DataSource = lista;
             combo.DisplayMember = "Nombre";
             combo.ValueMember = "ProvinciaId";
@@ -108,7 +108,7 @@ namespace BombonesApp2026.Windows
 
         private void tsbNuevo_Click(object sender, EventArgs e)
         {
-            using (frmTransporteAe frm = new frmTransporteAe() { Text = "Nuevo Transporte" })
+            using (frmTransporteAe frm = new frmTransporteAe(_provinciaServicio) { Text = "Nuevo Transporte" })
             {
                 DialogResult dr = frm.ShowDialog();
                 if (dr == DialogResult.Cancel) return;
@@ -223,7 +223,7 @@ namespace BombonesApp2026.Windows
             int posicion = _bindingSource.Position;
             TransporteEditDto? transporteEditDto = _transporteServicio.ObtenerParaEditar(transporteDto.TransporteId);
             if (transporteEditDto is null) return;
-            using (frmTransporteAe frm = new frmTransporteAe() { Text = "Editar Transporte " })
+            using (frmTransporteAe frm = new frmTransporteAe(_provinciaServicio) { Text = "Editar Transporte " })
             {
                 frm.SetTransporte(transporteEditDto);
                 DialogResult dr = frm.ShowDialog();

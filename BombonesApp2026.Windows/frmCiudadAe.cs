@@ -1,5 +1,4 @@
 ﻿using Bombones2026.Servicios.DTOs.Ciudad;
-using Bombones2026.Servicios.DTOs.Provincia;
 using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Entidades.Enum;
 
@@ -9,10 +8,10 @@ namespace BombonesApp2026.Windows
     {
         private readonly ProvinciaServicio _provinciaServicio;
         private CiudadEditDto? _ciudadDto;
-        public frmCiudadAe()
+        public frmCiudadAe(ProvinciaServicio servicio)
         {
             InitializeComponent();
-            _provinciaServicio = new ProvinciaServicio();
+            _provinciaServicio = servicio;
         }
         protected override void OnLoad(EventArgs e)
         {
