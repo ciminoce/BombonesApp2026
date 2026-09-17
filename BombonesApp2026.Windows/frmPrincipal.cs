@@ -1,5 +1,6 @@
 ﻿using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Servicios.Servicios;
 
 namespace BombonesApp2026.Windows
 {
@@ -11,24 +12,29 @@ namespace BombonesApp2026.Windows
         private readonly ProvinciaRepositorio _provinciaRepositorio;
         private readonly CiudadRepositorio _ciudadRepositorio;
         private readonly TransporteRepositorio _transporteRepositorio;
+        private readonly BombonRepositorio _bombonRepositorio;
         private readonly TipoBombonServicio _tipoBombonServicio;
         private readonly FormaDePagoServicio _formaDePagoServicio;
         private readonly RolServicio _rolServicio;
         private readonly ProvinciaServicio _provinciaServicio;
         private readonly CiudadServicio _ciudadServicio;
         private readonly TransporteServicio _transporteServicio;
+        private readonly BombonServicio _bombonServicio;
         public frmPrincipal(TipoBombonRepositorio tipoBombonRepositorio,
             FormaDePagoRepositorio formaDePagoRepositorio,
             RolRepositorio rolRepositorio,
             ProvinciaRepositorio provinciaRepositorio,
             CiudadRepositorio ciudadRepositorio,
             TransporteRepositorio transporteRepositorio,
+            BombonRepositorio bombonRepositorio,
             TipoBombonServicio tipoBombonServicio,
+
             FormaDePagoServicio formaDePagoServicio,
             RolServicio rolServicio,
             ProvinciaServicio provinciaServicio,
             CiudadServicio ciudadServicio,
-            TransporteServicio transporteServicio   )
+            TransporteServicio transporteServicio,
+            BombonServicio bombonServicio)
         {
             InitializeComponent();
             _tipoBombonRepositorio = tipoBombonRepositorio;
@@ -43,6 +49,7 @@ namespace BombonesApp2026.Windows
             _provinciaServicio = provinciaServicio;
             _ciudadServicio = ciudadServicio;
             _transporteServicio = transporteServicio;
+            _bombonServicio=bombonServicio;
         }
 
         private void btnRoles_Click(object sender, EventArgs e)
@@ -94,9 +101,18 @@ namespace BombonesApp2026.Windows
 
         private void btnTransportes_Click(object sender, EventArgs e)
         {
-            using (frmTransportes frm=new frmTransportes(_transporteServicio,_provinciaServicio) { Text="Listado de Transportes"})
+            using (frmTransportes frm = new frmTransportes(_transporteServicio, _provinciaServicio) { Text = "Listado de Transportes" })
             {
                 frm.ShowDialog();
+            }
+        }
+
+        private void btnBombones_Click(object sender, EventArgs e)
+        {
+            using (frmBombones frm = new frmBombones(_bombonServicio, _tipoBombonServicio) { Text = "Listado de Bombones" })
+            {
+                frm.ShowDialog();
+
             }
         }
     }

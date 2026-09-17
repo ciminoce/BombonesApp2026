@@ -34,6 +34,8 @@
             tsbBorrar = new ToolStripButton();
             tsbEditar = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
+            tsbDetalle = new ToolStripButton();
+            toolStripSeparator3 = new ToolStripSeparator();
             toolStripLabel2 = new ToolStripLabel();
             toolStripLabel3 = new ToolStripLabel();
             tsCboTipos = new ToolStripComboBox();
@@ -58,9 +60,8 @@
             colTipoBombon = new DataGridViewTextBoxColumn();
             colPrecio = new DataGridViewTextBoxColumn();
             colStock = new DataGridViewTextBoxColumn();
+            colAzucar = new DataGridViewTextBoxColumn();
             colActivo = new DataGridViewCheckBoxColumn();
-            tsbDetalle = new ToolStripButton();
-            toolStripSeparator3 = new ToolStripSeparator();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -74,7 +75,7 @@
             toolStrip1.Items.AddRange(new ToolStripItem[] { tsbNuevo, tsbBorrar, tsbEditar, toolStripSeparator1, tsbDetalle, toolStripSeparator3, toolStripLabel2, toolStripLabel3, tsCboTipos, toolStripLabel1, txtBuscar, tsbBuscar, tsbActualizar, toolStripSeparator2, tsbCerrar });
             toolStrip1.Location = new Point(0, 0);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(860, 70);
+            toolStrip1.Size = new Size(917, 70);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -112,6 +113,21 @@
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 70);
+            // 
+            // tsbDetalle
+            // 
+            tsbDetalle.Image = Properties.Resources.details_48px;
+            tsbDetalle.ImageScaling = ToolStripItemImageScaling.None;
+            tsbDetalle.ImageTransparentColor = Color.Magenta;
+            tsbDetalle.Name = "tsbDetalle";
+            tsbDetalle.Size = new Size(52, 67);
+            tsbDetalle.Text = "&Detalles";
+            tsbDetalle.TextImageRelation = TextImageRelation.ImageAboveText;
+            // 
+            // toolStripSeparator3
+            // 
+            toolStripSeparator3.Name = "toolStripSeparator3";
+            toolStripSeparator3.Size = new Size(6, 70);
             // 
             // toolStripLabel2
             // 
@@ -200,7 +216,7 @@
             splitContainer1.Panel2.Controls.Add(btnAnterior);
             splitContainer1.Panel2.Controls.Add(btnSiguiente);
             splitContainer1.Panel2.Controls.Add(label2);
-            splitContainer1.Size = new Size(860, 380);
+            splitContainer1.Size = new Size(917, 380);
             splitContainer1.SplitterDistance = 321;
             splitContainer1.TabIndex = 1;
             // 
@@ -211,14 +227,14 @@
             dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
             dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colNombre, colTipoBombon, colPrecio, colStock, colActivo });
+            dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colNombre, colTipoBombon, colPrecio, colStock, colAzucar, colActivo });
             dgvDatos.Dock = DockStyle.Fill;
             dgvDatos.Location = new Point(0, 0);
             dgvDatos.MultiSelect = false;
             dgvDatos.Name = "dgvDatos";
             dgvDatos.ReadOnly = true;
             dgvDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvDatos.Size = new Size(860, 321);
+            dgvDatos.Size = new Size(917, 321);
             dgvDatos.TabIndex = 0;
             // 
             // lblPaginas
@@ -297,7 +313,7 @@
             // 
             // colId
             // 
-            colId.DataPropertyName = "Ciudadid";
+            colId.DataPropertyName = "ProductoId";
             colId.HeaderText = "Id";
             colId.Name = "colId";
             colId.ReadOnly = true;
@@ -306,7 +322,7 @@
             // colNombre
             // 
             colNombre.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colNombre.DataPropertyName = "Bombón";
+            colNombre.DataPropertyName = "Nombre";
             colNombre.HeaderText = "Nombre";
             colNombre.Name = "colNombre";
             colNombre.ReadOnly = true;
@@ -321,47 +337,43 @@
             // 
             // colPrecio
             // 
+            colPrecio.DataPropertyName = "Precio";
             colPrecio.HeaderText = "Precio";
             colPrecio.Name = "colPrecio";
             colPrecio.ReadOnly = true;
             // 
             // colStock
             // 
+            colStock.DataPropertyName = "Stock";
             colStock.HeaderText = "Stock";
             colStock.Name = "colStock";
             colStock.ReadOnly = true;
             // 
+            // colAzucar
+            // 
+            colAzucar.DataPropertyName = "TieneAzucar";
+            colAzucar.HeaderText = "Azucar?";
+            colAzucar.Name = "colAzucar";
+            colAzucar.ReadOnly = true;
+            // 
             // colActivo
             // 
+            colActivo.DataPropertyName = "Activo";
             colActivo.HeaderText = "Activo";
             colActivo.Name = "colActivo";
             colActivo.ReadOnly = true;
-            // 
-            // tsbDetalle
-            // 
-            tsbDetalle.Image = Properties.Resources.details_48px;
-            tsbDetalle.ImageScaling = ToolStripItemImageScaling.None;
-            tsbDetalle.ImageTransparentColor = Color.Magenta;
-            tsbDetalle.Name = "tsbDetalle";
-            tsbDetalle.Size = new Size(52, 67);
-            tsbDetalle.Text = "&Detalles";
-            tsbDetalle.TextImageRelation = TextImageRelation.ImageAboveText;
-            // 
-            // toolStripSeparator3
-            // 
-            toolStripSeparator3.Name = "toolStripSeparator3";
-            toolStripSeparator3.Size = new Size(6, 70);
             // 
             // frmBombones
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(860, 450);
+            ClientSize = new Size(917, 450);
             Controls.Add(splitContainer1);
             Controls.Add(toolStrip1);
             Name = "frmBombones";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "frmCiudades";
+            Text = "frmBombones";
+            Load += frmBombones_Load;
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
@@ -400,13 +412,14 @@
         private ToolStripLabel toolStripLabel2;
         private ToolStripLabel toolStripLabel3;
         private ToolStripComboBox tsCboTipos;
+        private ToolStripButton tsbDetalle;
+        private ToolStripSeparator toolStripSeparator3;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colNombre;
         private DataGridViewTextBoxColumn colTipoBombon;
         private DataGridViewTextBoxColumn colPrecio;
         private DataGridViewTextBoxColumn colStock;
+        private DataGridViewTextBoxColumn colAzucar;
         private DataGridViewCheckBoxColumn colActivo;
-        private ToolStripButton tsbDetalle;
-        private ToolStripSeparator toolStripSeparator3;
     }
 }

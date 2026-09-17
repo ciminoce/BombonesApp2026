@@ -1,6 +1,7 @@
 using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Datos;
 using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Servicios.Servicios;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -46,6 +47,7 @@ namespace BombonesApp2026.Windows
             var provinciaRepositorio = new ProvinciaRepositorio(context);
             var ciudadRepositorio = new CiudadRepositorio(context);
             var transporteRepositorio = new TransporteRepositorio(context);
+            var bombonRepositorio = new BombonRepositorio(context);
 
             var tipoBombonServicio = new TipoBombonServicio(tipoBombonRepositorio);
             var formaDePagoServicio = new FormaDePagoServicio(formaDePagoRepositorio);
@@ -53,18 +55,21 @@ namespace BombonesApp2026.Windows
             var provinciaServicio = new ProvinciaServicio(provinciaRepositorio);
             var ciudadServicio = new CiudadServicio(ciudadRepositorio);
             var transporteServicio = new TransporteServicio(transporteRepositorio);
+            var bombonServicio = new BombonServicio(bombonRepositorio);
             Application.Run(new frmPrincipal(tipoBombonRepositorio,
                 formaDePagoRepositorio,
                 rolRepositorio,
                 provinciaRepositorio,
                 ciudadRepositorio,
                 transporteRepositorio,
+                bombonRepositorio,
                 tipoBombonServicio,
                 formaDePagoServicio,
                 rolServicio,
                 provinciaServicio,
                 ciudadServicio,
-                transporteServicio));
+                transporteServicio,
+                bombonServicio));
         }
     }
 }

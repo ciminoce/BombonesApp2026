@@ -49,6 +49,7 @@
 
         // El tipo bool solo admite true/false (no requiere validación explícita)
         public bool Activo { get; set; } = true;
+        public ICollection<Bombon> Bombones { get; set; } = new List<Bombon>();
 
         // Constructores
         public TipoBombon()

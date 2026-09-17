@@ -14,6 +14,8 @@ namespace BombonesApp2026.Datos
         public DbSet<FormaDePago> FormasDePago { get; set; }
         public DbSet<Ciudad> Ciudades { get; set; }
         public DbSet<Transporte> Transportes { get; set; }
+        public DbSet<Producto> Productos { get; set; }
+        public DbSet<Bombon> Bombones { get; set; }
         public BombonesDbContext(
             DbContextOptions<BombonesDbContext> options)
             : base(options)

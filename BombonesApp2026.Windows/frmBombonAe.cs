@@ -1,18 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
+﻿using Bombones2026.Servicios.Servicios;
+using BombonesApp2026.Servicios.DTOs.Bombon;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmBombonAe : Form
     {
-        public frmBombonAe()
+        private readonly TipoBombonServicio _tipoServicio;
+        public frmBombonAe(TipoBombonServicio tipoServicio)
         {
             InitializeComponent();
+            _tipoServicio = tipoServicio;
+        }
+
+        internal BombonEditDto? GetBombon()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetBombon(BombonEditDto bombonEditDto)
+        {
+            throw new NotImplementedException();
         }
     }
 }
