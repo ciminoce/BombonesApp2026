@@ -44,21 +44,29 @@
             nudCantidadBombones = new NumericUpDown();
             errorProvider1 = new ErrorProvider(components);
             panel1 = new Panel();
-            dataGridView1 = new DataGridView();
+            splitContainer1 = new SplitContainer();
+            dgvDatos = new DataGridView();
             colId = new DataGridViewTextBoxColumn();
             colBombon = new DataGridViewTextBoxColumn();
             colCantidad = new DataGridViewTextBoxColumn();
+            btnAgregarBombon = new Button();
+            btnBorrarBombon = new Button();
+            btnEditarBombon = new Button();
             ((System.ComponentModel.ISupportInitialize)nudStock).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudCantidadBombones).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
             SuspendLayout();
             // 
             // btnCancelar
             // 
             btnCancelar.Image = Properties.Resources.cancel_24px;
-            btnCancelar.Location = new Point(668, 344);
+            btnCancelar.Location = new Point(668, 397);
             btnCancelar.Name = "btnCancelar";
             btnCancelar.Size = new Size(75, 60);
             btnCancelar.TabIndex = 10;
@@ -69,13 +77,14 @@
             // btnOK
             // 
             btnOK.Image = Properties.Resources.ok_24px;
-            btnOK.Location = new Point(31, 344);
+            btnOK.Location = new Point(31, 397);
             btnOK.Name = "btnOK";
             btnOK.Size = new Size(75, 60);
             btnOK.TabIndex = 9;
             btnOK.Text = "OK";
             btnOK.TextImageRelation = TextImageRelation.ImageAboveText;
             btnOK.UseVisualStyleBackColor = true;
+            btnOK.Click += btnOK_Click;
             // 
             // txtNombreBombon
             // 
@@ -145,9 +154,6 @@
             nudStock.Size = new Size(134, 23);
             nudStock.TabIndex = 12;
             // 
-            // chkEsSurtida
-            // 
-            // 
             // chkActivo
             // 
             chkActivo.AutoSize = true;
@@ -181,24 +187,43 @@
             // 
             // panel1
             // 
-            panel1.Controls.Add(dataGridView1);
+            panel1.Controls.Add(splitContainer1);
             panel1.Location = new Point(9, 166);
             panel1.Name = "panel1";
-            panel1.Size = new Size(773, 172);
+            panel1.Size = new Size(773, 225);
             panel1.TabIndex = 14;
             // 
-            // dataGridView1
+            // splitContainer1
             // 
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.AllowUserToDeleteRows = false;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { colId, colBombon, colCantidad });
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(0, 0);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.ReadOnly = true;
-            dataGridView1.Size = new Size(773, 172);
-            dataGridView1.TabIndex = 0;
+            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Location = new Point(0, 0);
+            splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(dgvDatos);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.Controls.Add(btnEditarBombon);
+            splitContainer1.Panel2.Controls.Add(btnBorrarBombon);
+            splitContainer1.Panel2.Controls.Add(btnAgregarBombon);
+            splitContainer1.Size = new Size(773, 225);
+            splitContainer1.SplitterDistance = 604;
+            splitContainer1.TabIndex = 0;
+            // 
+            // dgvDatos
+            // 
+            dgvDatos.AllowUserToAddRows = false;
+            dgvDatos.AllowUserToDeleteRows = false;
+            dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colBombon, colCantidad });
+            dgvDatos.Dock = DockStyle.Fill;
+            dgvDatos.Location = new Point(0, 0);
+            dgvDatos.Name = "dgvDatos";
+            dgvDatos.ReadOnly = true;
+            dgvDatos.Size = new Size(604, 225);
+            dgvDatos.TabIndex = 0;
             // 
             // colId
             // 
@@ -216,16 +241,50 @@
             // 
             // colCantidad
             // 
-            colCantidad.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colCantidad.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             colCantidad.HeaderText = "Cantidad";
             colCantidad.Name = "colCantidad";
             colCantidad.ReadOnly = true;
+            colCantidad.Width = 80;
+            // 
+            // btnAgregarBombon
+            // 
+            btnAgregarBombon.Image = Properties.Resources.ok_24px;
+            btnAgregarBombon.Location = new Point(14, 13);
+            btnAgregarBombon.Name = "btnAgregarBombon";
+            btnAgregarBombon.Size = new Size(134, 60);
+            btnAgregarBombon.TabIndex = 9;
+            btnAgregarBombon.Text = "Agregar Bombón";
+            btnAgregarBombon.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnAgregarBombon.UseVisualStyleBackColor = true;
+            // 
+            // btnBorrarBombon
+            // 
+            btnBorrarBombon.Image = Properties.Resources.cancel_24px;
+            btnBorrarBombon.Location = new Point(14, 79);
+            btnBorrarBombon.Name = "btnBorrarBombon";
+            btnBorrarBombon.Size = new Size(134, 60);
+            btnBorrarBombon.TabIndex = 9;
+            btnBorrarBombon.Text = "Borrar Bombón";
+            btnBorrarBombon.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnBorrarBombon.UseVisualStyleBackColor = true;
+            // 
+            // btnEditarBombon
+            // 
+            btnEditarBombon.Image = Properties.Resources.edit_property_24px;
+            btnEditarBombon.Location = new Point(14, 145);
+            btnEditarBombon.Name = "btnEditarBombon";
+            btnEditarBombon.Size = new Size(134, 60);
+            btnEditarBombon.TabIndex = 9;
+            btnEditarBombon.Text = "Editar Bombón";
+            btnEditarBombon.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnEditarBombon.UseVisualStyleBackColor = true;
             // 
             // frmCajaAe
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(794, 416);
+            ClientSize = new Size(794, 479);
             Controls.Add(panel1);
             Controls.Add(chkActivo);
             Controls.Add(nudCantidadBombones);
@@ -246,7 +305,11 @@
             ((System.ComponentModel.ISupportInitialize)nudCantidadBombones).EndInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -271,9 +334,13 @@
         private NumericUpDown nudCantidadBombones;
         private ErrorProvider errorProvider1;
         private Panel panel1;
-        private DataGridView dataGridView1;
+        private SplitContainer splitContainer1;
+        private DataGridView dgvDatos;
         private DataGridViewTextBoxColumn colId;
         private DataGridViewTextBoxColumn colBombon;
         private DataGridViewTextBoxColumn colCantidad;
+        private Button btnBorrarBombon;
+        private Button btnAgregarBombon;
+        private Button btnEditarBombon;
     }
 }

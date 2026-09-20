@@ -113,6 +113,16 @@ namespace BombonesApp2026.Windows.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap edit_property_24px {
+            get {
+                object obj = ResourceManager.GetObject("edit_property_24px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap filled_filter_48px {
             get {
                 object obj = ResourceManager.GetObject("filled_filter_48px", resourceCulture);

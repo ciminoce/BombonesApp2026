@@ -16,7 +16,7 @@ namespace BombonesApp2026.Datos.EntityTypeConfigurations
                 .HasColumnName("PesoGramos");
 
             builder.HasOne(b => b.TipoBombon)
-                .WithMany(t=>t.Bombones)
+                .WithMany(t=>t.Bombones)//Joder me faltó esto
                 .HasForeignKey(b => b.TipoBombonId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
