@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BombonesApp2026.Servicios.DTOs.Cliente
+﻿namespace BombonesApp2026.Servicios.DTOs.Cliente
 {
     public class ClienteEditDto
     {
@@ -20,6 +18,7 @@ namespace BombonesApp2026.Servicios.DTOs.Cliente
         public string? Numero { get; set; }
 
         public int CiudadId { get; set; }
+        public int ProvinciaId { get; set; }
 
         public string? CodigoPostal { get; set; }
 

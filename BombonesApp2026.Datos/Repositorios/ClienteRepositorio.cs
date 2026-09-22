@@ -101,7 +101,7 @@ namespace BombonesApp2026.Datos.Repositorios
 
         public bool ExisteCliente(Cliente cliente)
         {
-            throw new NotImplementedException();
+            return _context.Clientes.Any(c => c.Documento == cliente.Documento);
         }
     }
 }

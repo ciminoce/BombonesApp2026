@@ -39,11 +39,12 @@
             txtNombre = new TextBox();
             label1 = new Label();
             groupBox1 = new GroupBox();
-            cboLocalidad = new ComboBox();
+            chkActivo = new CheckBox();
+            cboCiudad = new ComboBox();
             cboProvincia = new ComboBox();
-            textBox2 = new TextBox();
-            textBox3 = new TextBox();
-            textBox1 = new TextBox();
+            txtNumero = new TextBox();
+            txtCodPostal = new TextBox();
+            txtCalle = new TextBox();
             label9 = new Label();
             txtEmail = new TextBox();
             label8 = new Label();
@@ -69,6 +70,7 @@
             btnCancelar.Text = "Cancelar";
             btnCancelar.TextImageRelation = TextImageRelation.ImageAboveText;
             btnCancelar.UseVisualStyleBackColor = true;
+            btnCancelar.Click += btnCancelar_Click;
             // 
             // btnOK
             // 
@@ -80,6 +82,7 @@
             btnOK.Text = "OK";
             btnOK.TextImageRelation = TextImageRelation.ImageAboveText;
             btnOK.UseVisualStyleBackColor = true;
+            btnOK.Click += btnOK_Click;
             // 
             // groupBox2
             // 
@@ -149,11 +152,12 @@
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(cboLocalidad);
+            groupBox1.Controls.Add(chkActivo);
+            groupBox1.Controls.Add(cboCiudad);
             groupBox1.Controls.Add(cboProvincia);
-            groupBox1.Controls.Add(textBox2);
-            groupBox1.Controls.Add(textBox3);
-            groupBox1.Controls.Add(textBox1);
+            groupBox1.Controls.Add(txtNumero);
+            groupBox1.Controls.Add(txtCodPostal);
+            groupBox1.Controls.Add(txtCalle);
             groupBox1.Controls.Add(label9);
             groupBox1.Controls.Add(txtEmail);
             groupBox1.Controls.Add(label8);
@@ -165,19 +169,30 @@
             groupBox1.Controls.Add(label6);
             groupBox1.Location = new Point(32, 162);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(799, 209);
+            groupBox1.Size = new Size(799, 236);
             groupBox1.TabIndex = 7;
             groupBox1.TabStop = false;
             groupBox1.Text = " Datos Optativos del Cliente";
             // 
-            // cboLocalidad
+            // chkActivo
             // 
-            cboLocalidad.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboLocalidad.FormattingEnabled = true;
-            cboLocalidad.Location = new Point(99, 156);
-            cboLocalidad.Name = "cboLocalidad";
-            cboLocalidad.Size = new Size(399, 23);
-            cboLocalidad.TabIndex = 2;
+            chkActivo.AutoSize = true;
+            chkActivo.CheckAlign = ContentAlignment.MiddleRight;
+            chkActivo.Location = new Point(102, 198);
+            chkActivo.Name = "chkActivo";
+            chkActivo.Size = new Size(63, 19);
+            chkActivo.TabIndex = 3;
+            chkActivo.Text = "Activo:";
+            chkActivo.UseVisualStyleBackColor = true;
+            // 
+            // cboCiudad
+            // 
+            cboCiudad.DropDownStyle = ComboBoxStyle.DropDownList;
+            cboCiudad.FormattingEnabled = true;
+            cboCiudad.Location = new Point(99, 156);
+            cboCiudad.Name = "cboCiudad";
+            cboCiudad.Size = new Size(399, 23);
+            cboCiudad.TabIndex = 2;
             // 
             // cboProvincia
             // 
@@ -187,30 +202,31 @@
             cboProvincia.Name = "cboProvincia";
             cboProvincia.Size = new Size(399, 23);
             cboProvincia.TabIndex = 2;
+            cboProvincia.SelectedIndexChanged += cboProvincia_SelectedIndexChanged;
             // 
-            // textBox2
+            // txtNumero
             // 
-            textBox2.Location = new Point(602, 82);
-            textBox2.MaxLength = 20;
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(141, 23);
-            textBox2.TabIndex = 1;
+            txtNumero.Location = new Point(602, 82);
+            txtNumero.MaxLength = 20;
+            txtNumero.Name = "txtNumero";
+            txtNumero.Size = new Size(141, 23);
+            txtNumero.TabIndex = 1;
             // 
-            // textBox3
+            // txtCodPostal
             // 
-            textBox3.Location = new Point(602, 159);
-            textBox3.MaxLength = 20;
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(141, 23);
-            textBox3.TabIndex = 1;
+            txtCodPostal.Location = new Point(602, 159);
+            txtCodPostal.MaxLength = 20;
+            txtCodPostal.Name = "txtCodPostal";
+            txtCodPostal.Size = new Size(141, 23);
+            txtCodPostal.TabIndex = 1;
             // 
-            // textBox1
+            // txtCalle
             // 
-            textBox1.Location = new Point(99, 82);
-            textBox1.MaxLength = 20;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(399, 23);
-            textBox1.TabIndex = 1;
+            txtCalle.Location = new Point(99, 82);
+            txtCalle.MaxLength = 20;
+            txtCalle.Name = "txtCalle";
+            txtCalle.Size = new Size(399, 23);
+            txtCalle.TabIndex = 1;
             // 
             // label9
             // 
@@ -326,20 +342,21 @@
         private TextBox txtNombre;
         private Label label1;
         private GroupBox groupBox1;
-        private TextBox textBox1;
+        private TextBox txtCalle;
         private TextBox txtEmail;
         private Label label4;
         private Label label5;
         private TextBox txtTelefono;
         private Label label6;
-        private TextBox textBox2;
-        private TextBox textBox3;
+        private TextBox txtNumero;
+        private TextBox txtCodPostal;
         private Label label9;
         private Label label8;
         private Label label10;
         private Label label7;
         private ErrorProvider errorProvider1;
-        private ComboBox cboLocalidad;
+        private ComboBox cboCiudad;
         private ComboBox cboProvincia;
+        private CheckBox chkActivo;
     }
 }

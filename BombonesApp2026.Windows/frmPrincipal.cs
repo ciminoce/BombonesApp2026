@@ -124,7 +124,7 @@ namespace BombonesApp2026.Windows
 
         private void btnClientes_Click(object sender, EventArgs e)
         {
-            using (frmClientes frm = new frmClientes(_clienteServicio) { Text = "Listado de Clientes" })
+            using (frmClientes frm = new frmClientes(_clienteServicio, _provinciaServicio, _ciudadServicio                                                                                                           ) { Text = "Listado de Clientes" })
             {
                 frm.ShowDialog();
             }

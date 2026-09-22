@@ -111,11 +111,11 @@ namespace BombonesApp2026.Servicios.Servicios
 
         }
 
-        public int ObtenerPaginaRegistro(string nombre, int cantidadPorPagina,
+        public int ObtenerPaginaRegistro(string documento, int cantidadPorPagina,
             bool? filtroActivo = null, string? textoBuscar = null)
         {
             int posicion = _clienteRepositorio
-                .ObtenerPosicionAlfabetica(nombre, filtroActivo, textoBuscar);
+                .ObtenerPosicionAlfabetica(documento, filtroActivo, textoBuscar);
             return (int)Math.Ceiling((double)posicion / cantidadPorPagina);
         }
     }

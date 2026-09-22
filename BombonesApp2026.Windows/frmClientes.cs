@@ -1,4 +1,5 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
+using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Servicios.DTOs.Cliente;
 using BombonesApp2026.Servicios.Mapeadores;
 using BombonesApp2026.Servicios.Servicios;
@@ -8,6 +9,8 @@ namespace BombonesApp2026.Windows
     public partial class frmClientes : Form
     {
         private readonly ClienteServicio _clienteServicio;
+        private readonly ProvinciaServicio _provinciaServicio;
+        private readonly CiudadServicio _ciudadServicio;
         private BindingSource _bindingSource = new BindingSource();
         //para paginar
         private int paginaActual = 1;
@@ -17,10 +20,14 @@ namespace BombonesApp2026.Windows
 
         private bool? filtroActivo = null;
         private string? textoBuscar = null;
-        public frmClientes(ClienteServicio clienteServicio)
+        public frmClientes(ClienteServicio clienteServicio, ProvinciaServicio provinciaServicio,
+            CiudadServicio ciudadServicio)
         {
             InitializeComponent();
             _clienteServicio = clienteServicio;
+            _provinciaServicio = provinciaServicio;
+            _ciudadServicio = ciudadServicio;
+
         }
 
 
@@ -68,7 +75,8 @@ namespace BombonesApp2026.Windows
 
         private void tsbNuevo_Click(object sender, EventArgs e)
         {
-            using (frmClienteAe frm = new frmClienteAe() { Text = "Nuevo Cliente" })
+            using (frmClienteAe frm = new frmClienteAe(_provinciaServicio, 
+                _ciudadServicio) { Text = "Nuevo Cliente" })
             {
                 DialogResult dr = frm.ShowDialog();
                 if (dr == DialogResult.Cancel) return;
@@ -178,7 +186,8 @@ namespace BombonesApp2026.Windows
             ClienteListDto clienteDto = (ClienteListDto)_bindingSource.Current!;
             ClienteEditDto? clienteEditDto = _clienteServicio.ObtenerParaEditar(clienteDto.ClienteId);
             if (clienteEditDto is null) return;
-            using (frmClienteAe frm = new frmClienteAe() { Text = "Editar  " })
+            using (frmClienteAe frm = new frmClienteAe(_provinciaServicio,
+                _ciudadServicio) { Text = "Editar  " })
             {
                 frm.SetCliente(clienteEditDto);
                 DialogResult dr = frm.ShowDialog();

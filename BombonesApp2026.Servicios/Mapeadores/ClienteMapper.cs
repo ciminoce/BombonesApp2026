@@ -32,6 +32,7 @@ namespace BombonesApp2026.Servicios.Mapeadores
                 Calle = cliente.Calle,
                 Numero = cliente.Numero,
                 CiudadId = cliente.CiudadId,
+                ProvinciaId = cliente.Ciudad?.ProvinciaId ?? 0,
                 CodigoPostal = cliente.CodigoPostal,
                 Activo = cliente.Activo
             };

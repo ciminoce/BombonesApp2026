@@ -10,10 +10,11 @@ namespace BombonesApp2026.Datos.Repositorios
         {
             _context = context;
         }
-        public List<Ciudad> ObtenerTodos()
+        public List<Ciudad> ObtenerTodos(int? provinciaId=null)
         {
             return _context.Ciudades
-                .Include(c => c.Provincia)
+                .OrderBy(c=>c.Nombre)
+                .Where(c => c.ProvinciaId==provinciaId)
                 .ToList();
         }
         public (List<Ciudad> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
