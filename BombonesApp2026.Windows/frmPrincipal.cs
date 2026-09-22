@@ -13,6 +13,7 @@ namespace BombonesApp2026.Windows
         private readonly CiudadRepositorio _ciudadRepositorio;
         private readonly TransporteRepositorio _transporteRepositorio;
         private readonly BombonRepositorio _bombonRepositorio;
+        private readonly ClienteRepositorio _clienteRepositorio;
         private readonly TipoBombonServicio _tipoBombonServicio;
         private readonly FormaDePagoServicio _formaDePagoServicio;
         private readonly RolServicio _rolServicio;
@@ -20,6 +21,7 @@ namespace BombonesApp2026.Windows
         private readonly CiudadServicio _ciudadServicio;
         private readonly TransporteServicio _transporteServicio;
         private readonly BombonServicio _bombonServicio;
+        private readonly ClienteServicio _clienteServicio;
         public frmPrincipal(TipoBombonRepositorio tipoBombonRepositorio,
             FormaDePagoRepositorio formaDePagoRepositorio,
             RolRepositorio rolRepositorio,
@@ -27,6 +29,7 @@ namespace BombonesApp2026.Windows
             CiudadRepositorio ciudadRepositorio,
             TransporteRepositorio transporteRepositorio,
             BombonRepositorio bombonRepositorio,
+            ClienteRepositorio clienteRepositorio,
             TipoBombonServicio tipoBombonServicio,
 
             FormaDePagoServicio formaDePagoServicio,
@@ -34,7 +37,8 @@ namespace BombonesApp2026.Windows
             ProvinciaServicio provinciaServicio,
             CiudadServicio ciudadServicio,
             TransporteServicio transporteServicio,
-            BombonServicio bombonServicio)
+            BombonServicio bombonServicio,
+            ClienteServicio clienteServicio)
         {
             InitializeComponent();
             _tipoBombonRepositorio = tipoBombonRepositorio;
@@ -43,13 +47,15 @@ namespace BombonesApp2026.Windows
             _provinciaRepositorio = provinciaRepositorio;
             _ciudadRepositorio = ciudadRepositorio;
             _transporteRepositorio = transporteRepositorio;
+            _clienteRepositorio = clienteRepositorio;
             _tipoBombonServicio = tipoBombonServicio;
             _formaDePagoServicio = formaDePagoServicio;
             _rolServicio = rolServicio;
             _provinciaServicio = provinciaServicio;
             _ciudadServicio = ciudadServicio;
             _transporteServicio = transporteServicio;
-            _bombonServicio=bombonServicio;
+            _bombonServicio = bombonServicio;
+            _clienteServicio = clienteServicio;
         }
 
         private void btnRoles_Click(object sender, EventArgs e)
@@ -113,6 +119,14 @@ namespace BombonesApp2026.Windows
             {
                 frm.ShowDialog();
 
+            }
+        }
+
+        private void btnClientes_Click(object sender, EventArgs e)
+        {
+            using (frmClientes frm = new frmClientes(_clienteServicio) { Text = "Listado de Clientes" })
+            {
+                frm.ShowDialog();
             }
         }
     }

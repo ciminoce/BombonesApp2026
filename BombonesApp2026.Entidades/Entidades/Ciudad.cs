@@ -45,5 +45,6 @@
 
         // Propiedad de navegación (Entity Framework)
         public Provincia? Provincia { get; set; }
+        public ICollection<Cliente> Clientes { get; set; } = new List<Cliente>();
     }
 }

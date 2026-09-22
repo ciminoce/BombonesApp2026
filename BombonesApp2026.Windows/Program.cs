@@ -48,6 +48,7 @@ namespace BombonesApp2026.Windows
             var ciudadRepositorio = new CiudadRepositorio(context);
             var transporteRepositorio = new TransporteRepositorio(context);
             var bombonRepositorio = new BombonRepositorio(context);
+            var clienteRepositorio = new ClienteRepositorio(context);
 
             var tipoBombonServicio = new TipoBombonServicio(tipoBombonRepositorio);
             var formaDePagoServicio = new FormaDePagoServicio(formaDePagoRepositorio);
@@ -56,6 +57,7 @@ namespace BombonesApp2026.Windows
             var ciudadServicio = new CiudadServicio(ciudadRepositorio);
             var transporteServicio = new TransporteServicio(transporteRepositorio);
             var bombonServicio = new BombonServicio(bombonRepositorio);
+            var clienteServicio = new ClienteServicio(clienteRepositorio);
             Application.Run(new frmPrincipal(tipoBombonRepositorio,
                 formaDePagoRepositorio,
                 rolRepositorio,
@@ -63,13 +65,15 @@ namespace BombonesApp2026.Windows
                 ciudadRepositorio,
                 transporteRepositorio,
                 bombonRepositorio,
+                clienteRepositorio,
                 tipoBombonServicio,
                 formaDePagoServicio,
                 rolServicio,
                 provinciaServicio,
                 ciudadServicio,
                 transporteServicio,
-                bombonServicio));
+                bombonServicio,
+                clienteServicio));
         }
     }
 }

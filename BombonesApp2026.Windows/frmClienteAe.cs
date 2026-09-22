@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BombonesApp2026.Servicios.DTOs.Cliente;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,6 +14,16 @@ namespace BombonesApp2026.Windows
         public frmClienteAe()
         {
             InitializeComponent();
+        }
+
+        internal ClienteEditDto? GetCliente()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void SetCliente(object clienteEditDto)
+        {
+            throw new NotImplementedException();
         }
     }
 }
