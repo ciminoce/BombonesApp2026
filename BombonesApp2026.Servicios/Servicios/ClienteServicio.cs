@@ -1,15 +1,16 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
-using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Datos.Interfaces;
 using BombonesApp2026.Entidades.Entidades;
 using BombonesApp2026.Servicios.DTOs.Cliente;
+using BombonesApp2026.Servicios.Interfaces;
 using BombonesApp2026.Servicios.Mapeadores;
 
 namespace BombonesApp2026.Servicios.Servicios
 {
-    public class ClienteServicio
+    public class ClienteServicio : IClienteServicio
     {
-        private readonly ClienteRepositorio _clienteRepositorio;
-        public ClienteServicio(ClienteRepositorio bombonRepositorio)
+        private readonly IClienteRepositorio _clienteRepositorio;
+        public ClienteServicio(IClienteRepositorio bombonRepositorio)
         {
             _clienteRepositorio = bombonRepositorio;
         }

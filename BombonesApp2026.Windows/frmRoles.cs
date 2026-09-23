@@ -1,5 +1,5 @@
 ﻿using Bombones2026.Servicios.DTOs.Rol;
-using Bombones2026.Servicios.Servicios;
+using BombonesApp2026.Servicios.Interfaces;
 using System.ComponentModel;
 
 namespace BombonesApp2026.Windows
@@ -7,10 +7,10 @@ namespace BombonesApp2026.Windows
     //TODO:Ver detalles de los roles
     public partial class frmRoles : Form
     {
-        private readonly RolServicio _rolServicio;
+        private readonly IRolServicio _rolServicio;
         private List<RolListDto>? _listaRoles;
         private BindingSource _bindingSource = new BindingSource();
-        public frmRoles(RolServicio rolServicio)
+        public frmRoles(IRolServicio rolServicio)
         {
             InitializeComponent();
             _rolServicio = rolServicio;
@@ -47,7 +47,7 @@ namespace BombonesApp2026.Windows
         private void MostrarDatosEnGrilla(List<RolListDto> listaRoles)
         {
             var bindingList = new BindingList<RolListDto>(listaRoles);
-            _bindingSource.DataSource= bindingList;
+            _bindingSource.DataSource = bindingList;
             dgvDatos.DataSource = _bindingSource;
 
             lblCantidad.Text = listaRoles.Count.ToString();
@@ -69,7 +69,7 @@ namespace BombonesApp2026.Windows
                         Nombre = rolEditDto.Nombre,
                         Descripcion = rolEditDto.Descripcion,
                     };
-                    var nuevoId=_rolServicio.Agregar(rolCreateDto);
+                    var nuevoId = _rolServicio.Agregar(rolCreateDto);
                     _listaRoles = _rolServicio.ObtenerTodos();
                     MostrarDatosEnGrilla(_listaRoles);
                     var nuevoRol = _listaRoles.FirstOrDefault(r => r.RolId == nuevoId);
@@ -136,8 +136,8 @@ namespace BombonesApp2026.Windows
                     MessageBoxIcon.Warning);
                 return;
             }
-            
-            RolListDto rolDto =(RolListDto) _bindingSource.Current!;
+
+            RolListDto rolDto = (RolListDto)_bindingSource.Current!;
 
             int posicion = _bindingSource.Position;//reservo la posición
 

@@ -1,6 +1,8 @@
 using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Datos;
+using BombonesApp2026.Datos.Interfaces;
 using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Servicios.Interfaces;
 using BombonesApp2026.Servicios.Servicios;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -41,31 +43,24 @@ namespace BombonesApp2026.Windows
             var context =
                 new BombonesDbContext(options);
             //instanciar repositorios y servicios aquí si es necesario
-            var tipoBombonRepositorio = new TipoBombonRepositorio(context);
-            var formaDePagoRepositorio = new FormaDePagoRepositorio(context);
-            var rolRepositorio = new RolRepositorio(context);
-            var provinciaRepositorio = new ProvinciaRepositorio(context);
-            var ciudadRepositorio = new CiudadRepositorio(context);
-            var transporteRepositorio = new TransporteRepositorio(context);
-            var bombonRepositorio = new BombonRepositorio(context);
-            var clienteRepositorio = new ClienteRepositorio(context);
+            ITipoBombonRepositorio tipoBombonRepositorio = new TipoBombonRepositorio(context);
+            IFormaDePagoRepositorio formaDePagoRepositorio = new FormaDePagoRepositorio(context);
+            IRolRepositorio rolRepositorio = new RolRepositorio(context);
+            IProvinciaRepositorio provinciaRepositorio = new ProvinciaRepositorio(context);
+            ICiudadRepositorio ciudadRepositorio = new CiudadRepositorio(context);
+            ITransporteRepositorio transporteRepositorio = new TransporteRepositorio(context);
+            IBombonRepositorio bombonRepositorio = new BombonRepositorio(context);
+            IClienteRepositorio clienteRepositorio = new ClienteRepositorio(context);
 
-            var tipoBombonServicio = new TipoBombonServicio(tipoBombonRepositorio);
-            var formaDePagoServicio = new FormaDePagoServicio(formaDePagoRepositorio);
-            var rolServicio = new RolServicio(rolRepositorio);
-            var provinciaServicio = new ProvinciaServicio(provinciaRepositorio);
-            var ciudadServicio = new CiudadServicio(ciudadRepositorio);
-            var transporteServicio = new TransporteServicio(transporteRepositorio);
-            var bombonServicio = new BombonServicio(bombonRepositorio);
-            var clienteServicio = new ClienteServicio(clienteRepositorio);
-            Application.Run(new frmPrincipal(tipoBombonRepositorio,
-                formaDePagoRepositorio,
-                rolRepositorio,
-                provinciaRepositorio,
-                ciudadRepositorio,
-                transporteRepositorio,
-                bombonRepositorio,
-                clienteRepositorio,
+            ITipoBombonServicio tipoBombonServicio = new TipoBombonServicio(tipoBombonRepositorio);
+            IFormaDePagoServicio formaDePagoServicio = new FormaDePagoServicio(formaDePagoRepositorio);
+            IRolServicio rolServicio = new RolServicio(rolRepositorio);
+            IProvinciaServicio provinciaServicio = new ProvinciaServicio(provinciaRepositorio);
+            ICiudadServicio ciudadServicio = new CiudadServicio(ciudadRepositorio);
+            ITransporteServicio transporteServicio = new TransporteServicio(transporteRepositorio);
+            IBombonServicio bombonServicio = new BombonServicio(bombonRepositorio);
+            IClienteServicio clienteServicio = new ClienteServicio(clienteRepositorio);
+            Application.Run(new frmPrincipal(
                 tipoBombonServicio,
                 formaDePagoServicio,
                 rolServicio,

@@ -1,10 +1,11 @@
-﻿using BombonesApp2026.Entidades.Entidades;
+﻿using BombonesApp2026.Datos.Interfaces;
+using BombonesApp2026.Entidades.Entidades;
 using Microsoft.EntityFrameworkCore;
 
 namespace BombonesApp2026.Datos.Repositorios
 {
     //TODO:Ver registros relacionadados
-    public class ProvinciaRepositorio
+    public class ProvinciaRepositorio : IProvinciaRepositorio
     {
         private readonly BombonesDbContext _context;
         public ProvinciaRepositorio(BombonesDbContext context)

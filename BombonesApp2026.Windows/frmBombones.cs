@@ -1,15 +1,14 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
-using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Servicios.DTOs.Bombon;
+using BombonesApp2026.Servicios.Interfaces;
 using BombonesApp2026.Servicios.Mapeadores;
-using BombonesApp2026.Servicios.Servicios;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmBombones : Form
     {
-        private readonly BombonServicio _bombonServicio;
-        private readonly TipoBombonServicio _tipoServicio;
+        private readonly IBombonServicio _bombonServicio;
+        private readonly ITipoBombonServicio _tipoServicio;
         private BindingSource _bindingSource = new BindingSource();
         //para paginar
         private int paginaActual = 1;
@@ -20,8 +19,8 @@ namespace BombonesApp2026.Windows
         private bool? filtroActivo = null;
         private string? textoBuscar = null;
 
-        public frmBombones(BombonServicio bombonServicio,
-            TipoBombonServicio tipoServicio)
+        public frmBombones(IBombonServicio bombonServicio,
+            ITipoBombonServicio tipoServicio)
         {
             InitializeComponent();
             _bombonServicio = bombonServicio;
@@ -307,7 +306,7 @@ namespace BombonesApp2026.Windows
             BombonListDto bombonDto = (BombonListDto)_bindingSource.Current!;
             BombonEditDto? bombonEditDto = _bombonServicio.ObtenerParaEditar(bombonDto.ProductoId);
             if (bombonEditDto is null) return;
-            using (frmDetalleBombon frm=new frmDetalleBombon() { Text=$"Descripción del Bombón: {bombonEditDto.Nombre}"})
+            using (frmDetalleBombon frm = new frmDetalleBombon() { Text = $"Descripción del Bombón: {bombonEditDto.Nombre}" })
             {
                 frm.SetDescripcion(bombonEditDto.Descripcion);
                 frm.ShowDialog(this);

@@ -2,15 +2,16 @@
 using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Entidades.Enum;
 using BombonesApp2026.Servicios.DTOs.Bombon;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmBombonAe : Form
     {
-        private readonly TipoBombonServicio _tipoServicio;
+        private readonly ITipoBombonServicio _tipoServicio;
         private TipoBombonListDto? _tipoSeleccionado = null;
         private BombonEditDto? _bombonDto;
-        public frmBombonAe(TipoBombonServicio tipoServicio)
+        public frmBombonAe(ITipoBombonServicio tipoServicio)
         {
             InitializeComponent();
             _tipoServicio = tipoServicio;

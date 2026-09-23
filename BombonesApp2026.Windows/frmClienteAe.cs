@@ -3,16 +3,17 @@ using Bombones2026.Servicios.DTOs.Provincia;
 using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Entidades.Enum;
 using BombonesApp2026.Servicios.DTOs.Cliente;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmClienteAe : Form
     {
         private ClienteEditDto? _clienteDto;
-        private readonly ProvinciaServicio _provinciaServicio;
-        private readonly CiudadServicio _ciudadServicio;
+        private readonly IProvinciaServicio _provinciaServicio;
+        private readonly ICiudadServicio _ciudadServicio;
         private ProvinciaListDto? _provinciaSeleccionada;
-        public frmClienteAe(ProvinciaServicio provinciaServicio, CiudadServicio ciudadServicio)
+        public frmClienteAe(IProvinciaServicio provinciaServicio, ICiudadServicio ciudadServicio)
         {
             InitializeComponent();
             _provinciaServicio = provinciaServicio;

@@ -1,9 +1,10 @@
-﻿using BombonesApp2026.Entidades.Entidades;
+﻿using BombonesApp2026.Datos.Interfaces;
+using BombonesApp2026.Entidades.Entidades;
 using Microsoft.EntityFrameworkCore;
 
 namespace BombonesApp2026.Datos.Repositorios
 {
-    public class RolRepositorio
+    public class RolRepositorio : IRolRepositorio
     {
         private readonly BombonesDbContext _context;
         public RolRepositorio(BombonesDbContext context)

@@ -1,6 +1,6 @@
 ﻿using Bombones2026.Servicios.DTOs.Ciudad;
 using Bombones2026.Servicios.DTOs.Paginacion;
-using Bombones2026.Servicios.Servicios;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace BombonesApp2026.Windows
 {
@@ -10,8 +10,8 @@ namespace BombonesApp2026.Windows
     //TODO: Corregir la condición del sePuedeVer!!!
     public partial class frmCiudades : Form
     {
-        private readonly CiudadServicio _ciudadServicio;
-        private readonly ProvinciaServicio _provinciaServicio;
+        private readonly ICiudadServicio _ciudadServicio;
+        private readonly IProvinciaServicio _provinciaServicio;
         private BindingSource _bindingSource = new BindingSource();
         //para paginar
         private int paginaActual = 1;
@@ -21,7 +21,7 @@ namespace BombonesApp2026.Windows
 
         private bool? filtroActivo = null;
         private string? textoBuscar = null;
-        public frmCiudades(CiudadServicio ciuidadServicio, ProvinciaServicio provinciaServicio)
+        public frmCiudades(ICiudadServicio ciuidadServicio, IProvinciaServicio provinciaServicio)
         {
             InitializeComponent();
             _ciudadServicio = ciuidadServicio;
@@ -53,7 +53,7 @@ namespace BombonesApp2026.Windows
             totalPaginas = resultado.TotalPaginas;
             totalRegistros = resultado.TotalRegistros;
             int desde = 1 + (paginaActual - 1) * cantidadPorPagina;
-            int hasta = desde + cantidadPorPagina-1;//OJO acá!!
+            int hasta = desde + cantidadPorPagina - 1;//OJO acá!!
             if (hasta > totalRegistros)
             {
                 hasta = totalRegistros;
@@ -197,7 +197,7 @@ namespace BombonesApp2026.Windows
                 {
                     _ciudadServicio.Editar(ciudadEditDto);
                     int editadoId = ciudadEditDto.CiudadId;
-                    bool sePuedeVer =string.IsNullOrWhiteSpace(txtBuscar.Text) ||
+                    bool sePuedeVer = string.IsNullOrWhiteSpace(txtBuscar.Text) ||
                         ciudadEditDto.Nombre.ToLower().Contains(txtBuscar.Text.ToLower());
 
                     if (sePuedeVer)

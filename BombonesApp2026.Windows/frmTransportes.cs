@@ -1,14 +1,14 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
 using Bombones2026.Servicios.DTOs.Transporte;
-using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Entidades.Enum;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmTransportes : Form
     {
-        private readonly TransporteServicio _transporteServicio;
-        private readonly ProvinciaServicio _provinciaServicio;
+        private readonly ITransporteServicio _transporteServicio;
+        private readonly IProvinciaServicio _provinciaServicio;
         private BindingSource _bindingSource = new BindingSource();
         //para paginar
         private int paginaActual = 1;
@@ -20,10 +20,10 @@ namespace BombonesApp2026.Windows
         private bool? filtroActivo = null;
         private int? provinciaIdFiltro = null;
         private string? textoBuscar = null;
-        public frmTransportes(TransporteServicio servicio, ProvinciaServicio provinciaServicio)
+        public frmTransportes(ITransporteServicio servicio, IProvinciaServicio provinciaServicio)
         {
             InitializeComponent();
-            _transporteServicio =servicio;
+            _transporteServicio = servicio;
             _provinciaServicio = provinciaServicio;
         }
 
@@ -125,7 +125,7 @@ namespace BombonesApp2026.Windows
                     };
                     int nuevoId = _transporteServicio.Agregar(transporteCreateDto);
                     bool sePuedeVer = (filtroActivo is null || filtroActivo == true) &&
-                        (provinciaIdFiltro is null || transporteCreateDto.ProvinciaId==provinciaIdFiltro) &&
+                        (provinciaIdFiltro is null || transporteCreateDto.ProvinciaId == provinciaIdFiltro) &&
                         (string.IsNullOrWhiteSpace(txtBuscar.Text) ||
                         transporteCreateDto.NombreEmpresa.Contains(txtBuscar.Text));
                     if (sePuedeVer)

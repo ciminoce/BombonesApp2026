@@ -1,22 +1,22 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
-using Bombones2026.Servicios.DTOs.Provincia;
 using Bombones2026.Servicios.DTOs.TipoBombon;
-using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Datos.Interfaces;
 using BombonesApp2026.Entidades.Entidades;
 using BombonesApp2026.Entidades.Enum;
+using BombonesApp2026.Servicios.Interfaces;
 using BombonesApp2026.Servicios.Mapeadores;
 
 namespace Bombones2026.Servicios.Servicios
 {
-    public class TipoBombonServicio
+    public class TipoBombonServicio : ITipoBombonServicio
     {
-        private readonly TipoBombonRepositorio _tipoBombonRepositorio;
-        public TipoBombonServicio(TipoBombonRepositorio tipoBombonRepositorio)
+        private readonly ITipoBombonRepositorio _tipoBombonRepositorio;
+        public TipoBombonServicio(ITipoBombonRepositorio tipoBombonRepositorio)
         {
             _tipoBombonRepositorio = tipoBombonRepositorio;
         }
         public ResultadoPaginacionDto<TipoBombonListDto> ObtenerPagina(int paginaActual,
-            int cantidadPorPagina, bool? filtroActivo=null, string? textoBuscar=null)
+            int cantidadPorPagina, bool? filtroActivo = null, string? textoBuscar = null)
         {
             try
             {
@@ -24,18 +24,18 @@ namespace Bombones2026.Servicios.Servicios
                     cantidadPorPagina, filtroActivo, textoBuscar);
                 var listaDto = resultado.lista
                     .Select(tb => new TipoBombonListDto
-                        {
-                            TipoBombonId = tb.TipoBombonId,
-                            Nombre = tb.Nombre,
-                            Descripcion = tb.Descripcion,
-                            Activo = tb.Activo
-                        }).ToList();
+                    {
+                        TipoBombonId = tb.TipoBombonId,
+                        Nombre = tb.Nombre,
+                        Descripcion = tb.Descripcion,
+                        Activo = tb.Activo
+                    }).ToList();
                 return new ResultadoPaginacionDto<TipoBombonListDto>
                 {
                     Items = listaDto,
                     TotalRegistros = resultado.cantidadRegistros,
-                    CantidadPorPagina=cantidadPorPagina,
-                    PaginaActual= paginaActual
+                    CantidadPorPagina = cantidadPorPagina,
+                    PaginaActual = paginaActual
                 };
             }
             catch (Exception)
@@ -144,7 +144,7 @@ namespace Bombones2026.Servicios.Servicios
         }
 
         public int ObtenerPaginaRegistro(string nombre, int cantidadPorPagina,
-            bool? filtroActivo=null, string? textoBuscar=null)
+            bool? filtroActivo = null, string? textoBuscar = null)
         {
             int posicion = _tipoBombonRepositorio
                 .ObtenerPosicionAlfabetica(nombre, filtroActivo, textoBuscar);

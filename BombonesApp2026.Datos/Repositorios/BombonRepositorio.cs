@@ -1,9 +1,10 @@
-﻿using BombonesApp2026.Entidades.Entidades;
+﻿using BombonesApp2026.Datos.Interfaces;
+using BombonesApp2026.Entidades.Entidades;
 using Microsoft.EntityFrameworkCore;
 
 namespace BombonesApp2026.Datos.Repositorios
 {
-    public class BombonRepositorio
+    public class BombonRepositorio : IBombonRepositorio
     {
         private readonly BombonesDbContext _context;
 
@@ -14,7 +15,7 @@ namespace BombonesApp2026.Datos.Repositorios
         public List<Bombon> ObtenerTodos()
         {
             return _context.Bombones
-                .Include(b=>b.TipoBombon)
+                .Include(b => b.TipoBombon)
                 .ToList();
         }
         public (List<Bombon> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
@@ -23,15 +24,15 @@ namespace BombonesApp2026.Datos.Repositorios
         {
             IQueryable<Bombon> query = _context
                 .Bombones
-                .Include(b=>b.TipoBombon)
+                .Include(b => b.TipoBombon)
                 .AsNoTracking();
             if (!string.IsNullOrWhiteSpace(textoBuscar))
             {
-                query = query.Where(b=>b.Nombre.Contains(textoBuscar));
+                query = query.Where(b => b.Nombre.Contains(textoBuscar));
             }
             var cantidad = query.Count();
             var lista = query
-                .OrderBy(b=>b.Nombre)
+                .OrderBy(b => b.Nombre)
                 .Skip(cantidadPorPagina * (paginaActual - 1))
                 .Take(cantidadPorPagina)
                 .ToList();
@@ -43,7 +44,7 @@ namespace BombonesApp2026.Datos.Repositorios
             IQueryable<Bombon> query = _context.Bombones.AsNoTracking();
             if (!string.IsNullOrWhiteSpace(textoBuscar))
             {
-                query = query.Where(b=>b.Nombre.Contains(textoBuscar));
+                query = query.Where(b => b.Nombre.Contains(textoBuscar));
             }
             return query
                 .Count(c => string
@@ -58,7 +59,7 @@ namespace BombonesApp2026.Datos.Repositorios
 
         public bool ExisteBombon(Bombon Bombon)
         {
-            return _context.Bombones.Any(b=>b.Nombre == Bombon.Nombre
+            return _context.Bombones.Any(b => b.Nombre == Bombon.Nombre
                 && b.ProductoId != Bombon.ProductoId);
         }
         public void Borrar(int ProductoId)
@@ -72,7 +73,7 @@ namespace BombonesApp2026.Datos.Repositorios
         public Bombon? ObtenerPorId(int ProductoId)
         {
             return _context.Bombones
-                .FirstOrDefault(b=>b.ProductoId == ProductoId);
+                .FirstOrDefault(b => b.ProductoId == ProductoId);
         }
 
         public void Editar(Bombon bombon)
@@ -81,14 +82,14 @@ namespace BombonesApp2026.Datos.Repositorios
 
             if (bombonEnDb is null) throw new Exception("Bombon no encontrado");
             bombonEnDb.Nombre = bombon.Nombre;
-            bombonEnDb.TipoBombonId= bombon.TipoBombonId;
+            bombonEnDb.TipoBombonId = bombon.TipoBombonId;
             bombonEnDb.Descripcion = bombon.Descripcion;
             bombonEnDb.Precio = bombon.Precio;
-            bombonEnDb.Stock=bombon.Stock;
+            bombonEnDb.Stock = bombon.Stock;
             bombonEnDb.Activo = bombon.Activo;
-            bombonEnDb.TieneAzucar= bombon.TieneAzucar;
+            bombonEnDb.TieneAzucar = bombon.TieneAzucar;
             bombonEnDb.PesoEnGramos = bombon.PesoEnGramos;
-            
+
 
             _context.SaveChanges();
 

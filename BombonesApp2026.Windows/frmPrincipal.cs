@@ -1,53 +1,30 @@
 ﻿using Bombones2026.Servicios.Servicios;
-using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Servicios.Interfaces;
 using BombonesApp2026.Servicios.Servicios;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmPrincipal : Form
     {
-        private readonly TipoBombonRepositorio _tipoBombonRepositorio;
-        private readonly FormaDePagoRepositorio _formaDePagoRepositorio;
-        private readonly RolRepositorio _rolRepositorio;
-        private readonly ProvinciaRepositorio _provinciaRepositorio;
-        private readonly CiudadRepositorio _ciudadRepositorio;
-        private readonly TransporteRepositorio _transporteRepositorio;
-        private readonly BombonRepositorio _bombonRepositorio;
-        private readonly ClienteRepositorio _clienteRepositorio;
-        private readonly TipoBombonServicio _tipoBombonServicio;
-        private readonly FormaDePagoServicio _formaDePagoServicio;
-        private readonly RolServicio _rolServicio;
-        private readonly ProvinciaServicio _provinciaServicio;
-        private readonly CiudadServicio _ciudadServicio;
-        private readonly TransporteServicio _transporteServicio;
-        private readonly BombonServicio _bombonServicio;
-        private readonly ClienteServicio _clienteServicio;
-        public frmPrincipal(TipoBombonRepositorio tipoBombonRepositorio,
-            FormaDePagoRepositorio formaDePagoRepositorio,
-            RolRepositorio rolRepositorio,
-            ProvinciaRepositorio provinciaRepositorio,
-            CiudadRepositorio ciudadRepositorio,
-            TransporteRepositorio transporteRepositorio,
-            BombonRepositorio bombonRepositorio,
-            ClienteRepositorio clienteRepositorio,
-            TipoBombonServicio tipoBombonServicio,
+        private readonly ITipoBombonServicio _tipoBombonServicio;
+        private readonly IFormaDePagoServicio _formaDePagoServicio;
+        private readonly IRolServicio _rolServicio;
+        private readonly IProvinciaServicio _provinciaServicio;
+        private readonly ICiudadServicio _ciudadServicio;
+        private readonly ITransporteServicio _transporteServicio;
+        private readonly IBombonServicio _bombonServicio;
+        private readonly IClienteServicio _clienteServicio;
+        public frmPrincipal(ITipoBombonServicio tipoBombonServicio,
 
-            FormaDePagoServicio formaDePagoServicio,
-            RolServicio rolServicio,
-            ProvinciaServicio provinciaServicio,
-            CiudadServicio ciudadServicio,
-            TransporteServicio transporteServicio,
-            BombonServicio bombonServicio,
-            ClienteServicio clienteServicio)
+            IFormaDePagoServicio formaDePagoServicio,
+            IRolServicio rolServicio,
+            IProvinciaServicio provinciaServicio,
+            ICiudadServicio ciudadServicio,
+            ITransporteServicio transporteServicio,
+            IBombonServicio bombonServicio,
+            IClienteServicio clienteServicio)
         {
             InitializeComponent();
-            _tipoBombonRepositorio = tipoBombonRepositorio;
-            _formaDePagoRepositorio = formaDePagoRepositorio;
-            _rolRepositorio = rolRepositorio;
-            _provinciaRepositorio = provinciaRepositorio;
-            _ciudadRepositorio = ciudadRepositorio;
-            _transporteRepositorio = transporteRepositorio;
-            _clienteRepositorio = clienteRepositorio;
             _tipoBombonServicio = tipoBombonServicio;
             _formaDePagoServicio = formaDePagoServicio;
             _rolServicio = rolServicio;
@@ -124,7 +101,7 @@ namespace BombonesApp2026.Windows
 
         private void btnClientes_Click(object sender, EventArgs e)
         {
-            using (frmClientes frm = new frmClientes(_clienteServicio, _provinciaServicio, _ciudadServicio                                                                                                           ) { Text = "Listado de Clientes" })
+            using (frmClientes frm = new frmClientes(_clienteServicio, _provinciaServicio, _ciudadServicio) { Text = "Listado de Clientes" })
             {
                 frm.ShowDialog();
             }

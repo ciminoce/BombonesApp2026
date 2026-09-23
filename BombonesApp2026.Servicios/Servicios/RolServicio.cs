@@ -1,13 +1,14 @@
 ﻿using Bombones2026.Servicios.DTOs.Rol;
-using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Datos.Interfaces;
 using BombonesApp2026.Entidades.Entidades;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace Bombones2026.Servicios.Servicios
 {
-    public class RolServicio
+    public class RolServicio : IRolServicio
     {
-        private readonly RolRepositorio _rolRepositorio;
-        public RolServicio(RolRepositorio rolRepositorio)
+        private readonly IRolRepositorio _rolRepositorio;
+        public RolServicio(IRolRepositorio rolRepositorio)
         {
             _rolRepositorio = rolRepositorio;
         }
@@ -44,7 +45,7 @@ namespace Bombones2026.Servicios.Servicios
             {
 
                 throw new Exception($"Error al intentar agregar un rol: {ex.Message}");
-            }  
+            }
         }
         public void Borrar(int rolId)
         {

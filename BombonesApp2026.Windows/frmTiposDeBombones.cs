@@ -1,14 +1,14 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
 using Bombones2026.Servicios.DTOs.TipoBombon;
-using Bombones2026.Servicios.Servicios;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace BombonesApp2026.Windows
 {
     //TODO: OJO revisar cuando se borra!!
-    
+
     public partial class frmTiposDeBombones : Form
     {
-        private readonly TipoBombonServicio _tipoServicio;
+        private readonly ITipoBombonServicio _tipoServicio;
         private BindingSource _bindingSource = new BindingSource();
         //para filtrar
         private bool? filtroActivo = null;
@@ -20,7 +20,7 @@ namespace BombonesApp2026.Windows
         private int cantidadPorPagina = 10;
         private int totalRegistros = 0;
         private int totalPaginas = 0;
-        public frmTiposDeBombones(TipoBombonServicio tipoServicio)
+        public frmTiposDeBombones(ITipoBombonServicio tipoServicio)
         {
             InitializeComponent();
             _tipoServicio = tipoServicio;

@@ -1,15 +1,16 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
 using Bombones2026.Servicios.DTOs.Provincia;
-using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Datos.Interfaces;
 using BombonesApp2026.Entidades.Entidades;
 using BombonesApp2026.Entidades.Enum;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace Bombones2026.Servicios.Servicios
 {
-    public class ProvinciaServicio
+    public class ProvinciaServicio : IProvinciaServicio
     {
-        private readonly ProvinciaRepositorio _provinciaRepositorio;
-        public ProvinciaServicio(ProvinciaRepositorio provinciaRepositorio)
+        private readonly IProvinciaRepositorio _provinciaRepositorio;
+        public ProvinciaServicio(IProvinciaRepositorio provinciaRepositorio)
         {
             _provinciaRepositorio = provinciaRepositorio;
         }
@@ -136,7 +137,7 @@ namespace Bombones2026.Servicios.Servicios
         public List<ProvinciaListDto> ObtenerDatosCombo(TipoProvinciaDefault tipoDefault)
         {
             var lista = _provinciaRepositorio.ObtenerTodos()
-                .Select(p=>new ProvinciaListDto
+                .Select(p => new ProvinciaListDto
                 {
                     ProvinciaId = p.ProvinciaId,
                     Nombre = p.NombreProvincia
@@ -156,9 +157,9 @@ namespace Bombones2026.Servicios.Servicios
                 var defaultProvincia = new ProvinciaListDto
                 {
                     ProvinciaId = 0,
-                    Nombre="Seleccione"
+                    Nombre = "Seleccione"
                 };
-                lista.Insert(0,defaultProvincia);
+                lista.Insert(0, defaultProvincia);
             }
             return lista;
         }

@@ -1,20 +1,21 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
 using Bombones2026.Servicios.DTOs.Transporte;
-using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Datos.Interfaces;
 using BombonesApp2026.Entidades.Entidades;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace Bombones2026.Servicios.Servicios
 {
-    public class TransporteServicio
+    public class TransporteServicio : ITransporteServicio
     {
-        private readonly TransporteRepositorio _transporteRepositorio;
-        public TransporteServicio(TransporteRepositorio transporteRepositorio)
+        private readonly ITransporteRepositorio _transporteRepositorio;
+        public TransporteServicio(ITransporteRepositorio transporteRepositorio)
         {
             _transporteRepositorio = transporteRepositorio;
         }
         public ResultadoPaginacionDto<TransporteListDto> ObtenerPagina(int paginaActual,
                 int cantidadPorPagina, bool? filtroActivo = null,
-                int? provinciaIdFiltro=null,
+                int? provinciaIdFiltro = null,
                 string? textoBuscar = null)
         {
             try
@@ -204,7 +205,7 @@ namespace Bombones2026.Servicios.Servicios
         }
 
         public int ObtenerPaginaRegistro(string nombre, int cantidadPorPagina,
-            bool? filtroActivo = null, int? provinciaIdFiltro=null,
+            bool? filtroActivo = null, int? provinciaIdFiltro = null,
             string? textoBuscar = null)
         {
             int posicion = _transporteRepositorio

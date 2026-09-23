@@ -1,9 +1,10 @@
-﻿using BombonesApp2026.Entidades.Entidades;
+﻿using BombonesApp2026.Datos.Interfaces;
+using BombonesApp2026.Entidades.Entidades;
 using Microsoft.EntityFrameworkCore;
 
 namespace BombonesApp2026.Datos.Repositorios
 {
-    public class ClienteRepositorio
+    public class ClienteRepositorio : IClienteRepositorio
     {
         private readonly BombonesDbContext _context;
 
@@ -14,8 +15,8 @@ namespace BombonesApp2026.Datos.Repositorios
         public List<Cliente> ObtenerTodos()
         {
             return _context.Clientes
-                .Include(c=>c.Ciudad)
-                .ThenInclude(ci=>ci.Provincia)
+                .Include(c => c.Ciudad)
+                .ThenInclude(ci => ci.Provincia)
                 .ToList();
         }
         public (List<Cliente> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,
@@ -24,16 +25,16 @@ namespace BombonesApp2026.Datos.Repositorios
         {
             IQueryable<Cliente> query = _context
                 .Clientes
-                .Include(c=>c.Ciudad)
-                .ThenInclude(ci=>ci.Provincia)
+                .Include(c => c.Ciudad)
+                .ThenInclude(ci => ci.Provincia)
                 .AsNoTracking();
             if (!string.IsNullOrWhiteSpace(textoBuscar))
             {
-                query = query.Where(c=>c.Nombre.Contains(textoBuscar));
+                query = query.Where(c => c.Nombre.Contains(textoBuscar));
             }
             var cantidad = query.Count();
             var lista = query
-                .OrderBy(c=>c.Apellido).ThenBy(c=>c.Nombre)
+                .OrderBy(c => c.Apellido).ThenBy(c => c.Nombre)
                 .Skip(cantidadPorPagina * (paginaActual - 1))
                 .Take(cantidadPorPagina)
                 .ToList();
@@ -45,7 +46,7 @@ namespace BombonesApp2026.Datos.Repositorios
             IQueryable<Cliente> query = _context.Clientes.AsNoTracking();
             if (!string.IsNullOrWhiteSpace(textoBuscar))
             {
-                query = query.Where(c=>c.Nombre.Contains(textoBuscar));
+                query = query.Where(c => c.Nombre.Contains(textoBuscar));
             }
             return query
                 .Count(c => string
@@ -60,7 +61,7 @@ namespace BombonesApp2026.Datos.Repositorios
 
         public bool ExisteBombon(Cliente cliente)
         {
-            return _context.Clientes.Any(c=>c.Documento==cliente.Documento
+            return _context.Clientes.Any(c => c.Documento == cliente.Documento
                 && c.ClienteId != cliente.ClienteId);
 
         }
@@ -75,7 +76,7 @@ namespace BombonesApp2026.Datos.Repositorios
         public Cliente? ObtenerPorId(int clienteId)
         {
             return _context.Clientes
-                .FirstOrDefault(c=>c.ClienteId == clienteId);
+                .FirstOrDefault(c => c.ClienteId == clienteId);
         }
 
         public void Editar(Cliente cliente)
@@ -92,7 +93,7 @@ namespace BombonesApp2026.Datos.Repositorios
             clienteEnDb.CodigoPostal = cliente.CodigoPostal;
             clienteEnDb.CiudadId = cliente.CiudadId;
             clienteEnDb.Activo = cliente.Activo;
-            
+
 
 
             _context.SaveChanges();

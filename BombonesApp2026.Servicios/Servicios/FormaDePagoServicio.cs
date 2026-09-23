@@ -1,14 +1,15 @@
 ﻿using Bombones2026.Servicios.DTOs.FormaDePago;
 using Bombones2026.Servicios.DTOs.Paginacion;
-using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Datos.Interfaces;
 using BombonesApp2026.Entidades.Entidades;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace Bombones2026.Servicios.Servicios
 {
-    public class FormaDePagoServicio
+    public class FormaDePagoServicio : IFormaDePagoServicio
     {
-        private readonly FormaDePagoRepositorio _formasDePagoRepositorio;
-        public FormaDePagoServicio(FormaDePagoRepositorio formasDePagoRepositorio)
+        private readonly IFormaDePagoRepositorio _formasDePagoRepositorio;
+        public FormaDePagoServicio(IFormaDePagoRepositorio formasDePagoRepositorio)
         {
             _formasDePagoRepositorio = formasDePagoRepositorio;
         }

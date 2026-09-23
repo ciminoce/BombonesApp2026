@@ -1,12 +1,12 @@
 ﻿using Bombones2026.Servicios.DTOs.FormaDePago;
 using Bombones2026.Servicios.DTOs.Paginacion;
-using Bombones2026.Servicios.Servicios;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmFormasDePago : Form
     {
-        private readonly FormaDePagoServicio _formaDePagoServicio;
+        private readonly IFormaDePagoServicio _formaDePagoServicio;
         private BindingSource _bindingSource = new BindingSource();
         //para paginar
         private int paginaActual = 1;
@@ -16,7 +16,7 @@ namespace BombonesApp2026.Windows
 
         private bool? filtroActivo = null;
         private string? textoBuscar = null;
-        public frmFormasDePago(FormaDePagoServicio formaDePagoServicio)
+        public frmFormasDePago(IFormaDePagoServicio formaDePagoServicio)
         {
             InitializeComponent();
             _formaDePagoServicio = formaDePagoServicio;

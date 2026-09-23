@@ -1,16 +1,16 @@
 ﻿using Bombones2026.Servicios.DTOs.Ciudad;
 using Bombones2026.Servicios.DTOs.Paginacion;
-using Bombones2026.Servicios.DTOs.Provincia;
-using BombonesApp2026.Datos.Repositorios;
+using BombonesApp2026.Datos.Interfaces;
 using BombonesApp2026.Entidades.Entidades;
 using BombonesApp2026.Entidades.Enum;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace Bombones2026.Servicios.Servicios
 {
-    public class CiudadServicio
+    public class CiudadServicio : ICiudadServicio
     {
-        private readonly CiudadRepositorio _ciudadRepositorio;
-        public CiudadServicio(CiudadRepositorio ciudadRepositorio)
+        private readonly ICiudadRepositorio _ciudadRepositorio;
+        public CiudadServicio(ICiudadRepositorio ciudadRepositorio)
         {
             _ciudadRepositorio = ciudadRepositorio;
         }

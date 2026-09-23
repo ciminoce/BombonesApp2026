@@ -1,13 +1,13 @@
 ﻿using Bombones2026.Servicios.DTOs.Paginacion;
 using Bombones2026.Servicios.DTOs.Provincia;
-using Bombones2026.Servicios.Servicios;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace BombonesApp2026.Windows
 {
     //TODO: Buscar Provincia
     public partial class frmProvincias : Form
     {
-        private readonly ProvinciaServicio _provinciaServicio;
+        private readonly IProvinciaServicio _provinciaServicio;
         private BindingSource _bindingSource = new BindingSource();
         //para paginar
         private int paginaActual = 1;
@@ -17,10 +17,10 @@ namespace BombonesApp2026.Windows
         //para filtrar
         private bool? filtroActivo = null;
         private string? textoBuscar = null;
-        public frmProvincias(ProvinciaServicio servicio)
+        public frmProvincias(IProvinciaServicio servicio)
         {
             InitializeComponent();
-            _provinciaServicio =servicio;
+            _provinciaServicio = servicio;
         }
 
         private void tsbCerrar_Click(object sender, EventArgs e)

@@ -1,20 +1,21 @@
-﻿using BombonesApp2026.Entidades.Entidades;
+﻿using BombonesApp2026.Datos.Interfaces;
+using BombonesApp2026.Entidades.Entidades;
 using Microsoft.EntityFrameworkCore;
 
 namespace BombonesApp2026.Datos.Repositorios
 {
-    public class CiudadRepositorio
+    public class CiudadRepositorio : ICiudadRepositorio
     {
         private readonly BombonesDbContext _context;
         public CiudadRepositorio(BombonesDbContext context)
         {
             _context = context;
         }
-        public List<Ciudad> ObtenerTodos(int? provinciaId=null)
+        public List<Ciudad> ObtenerTodos(int? provinciaId = null)
         {
             return _context.Ciudades
-                .OrderBy(c=>c.Nombre)
-                .Where(c => c.ProvinciaId==provinciaId)
+                .OrderBy(c => c.Nombre)
+                .Where(c => c.ProvinciaId == provinciaId)
                 .ToList();
         }
         public (List<Ciudad> lista, int cantidadRegistros) ObtenerPagina(int paginaActual,

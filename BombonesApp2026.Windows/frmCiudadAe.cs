@@ -1,14 +1,15 @@
 ﻿using Bombones2026.Servicios.DTOs.Ciudad;
 using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Entidades.Enum;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmCiudadAe : Form
     {
-        private readonly ProvinciaServicio _provinciaServicio;
+        private readonly IProvinciaServicio _provinciaServicio;
         private CiudadEditDto? _ciudadDto;
-        public frmCiudadAe(ProvinciaServicio servicio)
+        public frmCiudadAe(IProvinciaServicio servicio)
         {
             InitializeComponent();
             _provinciaServicio = servicio;

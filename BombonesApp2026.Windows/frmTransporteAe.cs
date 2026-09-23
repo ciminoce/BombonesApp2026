@@ -2,14 +2,15 @@
 using Bombones2026.Servicios.DTOs.Transporte;
 using Bombones2026.Servicios.Servicios;
 using BombonesApp2026.Entidades.Enum;
+using BombonesApp2026.Servicios.Interfaces;
 
 namespace BombonesApp2026.Windows
 {
     public partial class frmTransporteAe : Form
     {
-        private readonly ProvinciaServicio _provinciaServicio;
+        private readonly IProvinciaServicio _provinciaServicio;
         private TransporteEditDto? _transporteDto;
-        public frmTransporteAe(ProvinciaServicio provinciaServicio)
+        public frmTransporteAe(IProvinciaServicio provinciaServicio)
         {
             InitializeComponent();
             _provinciaServicio = provinciaServicio;

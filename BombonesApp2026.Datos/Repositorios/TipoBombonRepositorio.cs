@@ -1,9 +1,10 @@
-﻿using BombonesApp2026.Entidades.Entidades;
+﻿using BombonesApp2026.Datos.Interfaces;
+using BombonesApp2026.Entidades.Entidades;
 using Microsoft.EntityFrameworkCore;
 
 namespace BombonesApp2026.Datos.Repositorios
 {
-    public class TipoBombonRepositorio
+    public class TipoBombonRepositorio : ITipoBombonRepositorio
     {
         private readonly BombonesDbContext _context;
         public TipoBombonRepositorio(BombonesDbContext context)
@@ -13,7 +14,7 @@ namespace BombonesApp2026.Datos.Repositorios
         public List<TipoBombon> ObtenerTodos()
         {
             return _context.TipoBombones
-                .OrderBy(tb=>tb.Nombre)
+                .OrderBy(tb => tb.Nombre)
                 .AsNoTracking()
                 .ToList();
         }
