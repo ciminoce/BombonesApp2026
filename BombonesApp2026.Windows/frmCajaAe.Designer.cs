@@ -49,9 +49,10 @@
             colId = new DataGridViewTextBoxColumn();
             colBombon = new DataGridViewTextBoxColumn();
             colCantidad = new DataGridViewTextBoxColumn();
-            btnAgregarBombon = new Button();
-            btnBorrarBombon = new Button();
             btnEditarBombon = new Button();
+            btnBorrarBombon = new Button();
+            btnAgregarBombon = new Button();
+            chkEsSurtida = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)nudStock).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudCantidadBombones).BeginInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
@@ -247,16 +248,16 @@
             colCantidad.ReadOnly = true;
             colCantidad.Width = 80;
             // 
-            // btnAgregarBombon
+            // btnEditarBombon
             // 
-            btnAgregarBombon.Image = Properties.Resources.ok_24px;
-            btnAgregarBombon.Location = new Point(14, 13);
-            btnAgregarBombon.Name = "btnAgregarBombon";
-            btnAgregarBombon.Size = new Size(134, 60);
-            btnAgregarBombon.TabIndex = 9;
-            btnAgregarBombon.Text = "Agregar Bombón";
-            btnAgregarBombon.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnAgregarBombon.UseVisualStyleBackColor = true;
+            btnEditarBombon.Image = Properties.Resources.edit_property_24px;
+            btnEditarBombon.Location = new Point(14, 145);
+            btnEditarBombon.Name = "btnEditarBombon";
+            btnEditarBombon.Size = new Size(134, 60);
+            btnEditarBombon.TabIndex = 9;
+            btnEditarBombon.Text = "Editar Bombón";
+            btnEditarBombon.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnEditarBombon.UseVisualStyleBackColor = true;
             // 
             // btnBorrarBombon
             // 
@@ -269,16 +270,27 @@
             btnBorrarBombon.TextImageRelation = TextImageRelation.ImageAboveText;
             btnBorrarBombon.UseVisualStyleBackColor = true;
             // 
-            // btnEditarBombon
+            // btnAgregarBombon
             // 
-            btnEditarBombon.Image = Properties.Resources.edit_property_24px;
-            btnEditarBombon.Location = new Point(14, 145);
-            btnEditarBombon.Name = "btnEditarBombon";
-            btnEditarBombon.Size = new Size(134, 60);
-            btnEditarBombon.TabIndex = 9;
-            btnEditarBombon.Text = "Editar Bombón";
-            btnEditarBombon.TextImageRelation = TextImageRelation.ImageAboveText;
-            btnEditarBombon.UseVisualStyleBackColor = true;
+            btnAgregarBombon.Image = Properties.Resources.ok_24px;
+            btnAgregarBombon.Location = new Point(14, 13);
+            btnAgregarBombon.Name = "btnAgregarBombon";
+            btnAgregarBombon.Size = new Size(134, 60);
+            btnAgregarBombon.TabIndex = 9;
+            btnAgregarBombon.Text = "Agregar Bombón";
+            btnAgregarBombon.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnAgregarBombon.UseVisualStyleBackColor = true;
+            // 
+            // chkEsSurtida
+            // 
+            chkEsSurtida.AutoSize = true;
+            chkEsSurtida.CheckAlign = ContentAlignment.MiddleRight;
+            chkEsSurtida.Location = new Point(500, 136);
+            chkEsSurtida.Name = "chkEsSurtida";
+            chkEsSurtida.Size = new Size(82, 19);
+            chkEsSurtida.TabIndex = 13;
+            chkEsSurtida.Text = "Es Surtida?";
+            chkEsSurtida.UseVisualStyleBackColor = true;
             // 
             // frmCajaAe
             // 
@@ -286,6 +298,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(794, 479);
             Controls.Add(panel1);
+            Controls.Add(chkEsSurtida);
             Controls.Add(chkActivo);
             Controls.Add(nudCantidadBombones);
             Controls.Add(nudStock);
@@ -342,5 +355,6 @@
         private Button btnBorrarBombon;
         private Button btnAgregarBombon;
         private Button btnEditarBombon;
+        private CheckBox chkEsSurtida;
     }
 }
