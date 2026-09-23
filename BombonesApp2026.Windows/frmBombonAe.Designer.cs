@@ -59,6 +59,7 @@
             cboTipoBombon.Name = "cboTipoBombon";
             cboTipoBombon.Size = new Size(334, 23);
             cboTipoBombon.TabIndex = 11;
+            cboTipoBombon.SelectedIndexChanged += cboTipoBombon_SelectedIndexChanged;
             // 
             // btnCancelar
             // 
@@ -70,6 +71,7 @@
             btnCancelar.Text = "Cancelar";
             btnCancelar.TextImageRelation = TextImageRelation.ImageAboveText;
             btnCancelar.UseVisualStyleBackColor = true;
+            btnCancelar.Click += btnCancelar_Click;
             // 
             // btnOK
             // 
@@ -81,6 +83,7 @@
             btnOK.Text = "OK";
             btnOK.TextImageRelation = TextImageRelation.ImageAboveText;
             btnOK.UseVisualStyleBackColor = true;
+            btnOK.Click += btnOK_Click;
             // 
             // txtNombreBombon
             // 
@@ -193,9 +196,11 @@
             // nudPesoEnGramos
             // 
             nudPesoEnGramos.Location = new Point(140, 250);
+            nudPesoEnGramos.Minimum = new decimal(new int[] { 5, 0, 0, 0 });
             nudPesoEnGramos.Name = "nudPesoEnGramos";
             nudPesoEnGramos.Size = new Size(134, 23);
             nudPesoEnGramos.TabIndex = 12;
+            nudPesoEnGramos.Value = new decimal(new int[] { 5, 0, 0, 0 });
             // 
             // errorProvider1
             // 
@@ -224,6 +229,7 @@
             Controls.Add(label1);
             Name = "frmBombonAe";
             Text = "frmBombonAe";
+            Load += frmBombonAe_Load;
             ((System.ComponentModel.ISupportInitialize)nudStock).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudPesoEnGramos).EndInit();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();

@@ -58,17 +58,8 @@ namespace BombonesApp2026.Datos.Repositorios
 
         public bool ExisteBombon(Bombon Bombon)
         {
-            if (Bombon.ProductoId == 0)
-            {
-                return _context.Bombones.Any(b=>b.Nombre == Bombon.Nombre
-                    && b.ProductoId == Bombon.ProductoId);
-            }
-            else
-            {
-                return _context.Bombones.Any(b=>b.Nombre == Bombon.Nombre
-                    && b.ProductoId != Bombon.ProductoId);
-
-            }
+            return _context.Bombones.Any(b=>b.Nombre == Bombon.Nombre
+                && b.ProductoId != Bombon.ProductoId);
         }
         public void Borrar(int ProductoId)
         {
@@ -90,6 +81,7 @@ namespace BombonesApp2026.Datos.Repositorios
 
             if (bombonEnDb is null) throw new Exception("Bombon no encontrado");
             bombonEnDb.Nombre = bombon.Nombre;
+            bombonEnDb.TipoBombonId= bombon.TipoBombonId;
             bombonEnDb.Descripcion = bombon.Descripcion;
             bombonEnDb.Precio = bombon.Precio;
             bombonEnDb.Stock=bombon.Stock;

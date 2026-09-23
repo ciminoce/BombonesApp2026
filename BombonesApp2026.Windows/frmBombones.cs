@@ -293,5 +293,25 @@ namespace BombonesApp2026.Windows
             tsbBuscar.BackColor = SystemColors.Control;
             RecargarGrilla();
         }
+
+        private void tsbDetalle_Click(object sender, EventArgs e)
+        {
+            if (_bindingSource.Current == null)
+            {
+                MessageBox.Show("Debe seleccionar una fila de la grilla",
+                    "Advertencia",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+            BombonListDto bombonDto = (BombonListDto)_bindingSource.Current!;
+            BombonEditDto? bombonEditDto = _bombonServicio.ObtenerParaEditar(bombonDto.ProductoId);
+            if (bombonEditDto is null) return;
+            using (frmDetalleBombon frm=new frmDetalleBombon() { Text=$"Descripción del Bombón: {bombonEditDto.Nombre}"})
+            {
+                frm.SetDescripcion(bombonEditDto.Descripcion);
+                frm.ShowDialog(this);
+            }
+        }
     }
 }

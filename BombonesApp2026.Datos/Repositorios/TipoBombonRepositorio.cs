@@ -13,6 +13,7 @@ namespace BombonesApp2026.Datos.Repositorios
         public List<TipoBombon> ObtenerTodos()
         {
             return _context.TipoBombones
+                .OrderBy(tb=>tb.Nombre)
                 .AsNoTracking()
                 .ToList();
         }

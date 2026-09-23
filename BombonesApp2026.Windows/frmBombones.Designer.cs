@@ -47,6 +47,13 @@
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvDatos = new DataGridView();
+            colId = new DataGridViewTextBoxColumn();
+            colNombre = new DataGridViewTextBoxColumn();
+            colTipoBombon = new DataGridViewTextBoxColumn();
+            colPrecio = new DataGridViewTextBoxColumn();
+            colStock = new DataGridViewTextBoxColumn();
+            colAzucar = new DataGridViewCheckBoxColumn();
+            colActivo = new DataGridViewCheckBoxColumn();
             lblPaginas = new Label();
             label1 = new Label();
             btnUltimo = new Button();
@@ -55,13 +62,6 @@
             btnAnterior = new Button();
             btnSiguiente = new Button();
             label2 = new Label();
-            colId = new DataGridViewTextBoxColumn();
-            colNombre = new DataGridViewTextBoxColumn();
-            colTipoBombon = new DataGridViewTextBoxColumn();
-            colPrecio = new DataGridViewTextBoxColumn();
-            colStock = new DataGridViewTextBoxColumn();
-            colAzucar = new DataGridViewTextBoxColumn();
-            colActivo = new DataGridViewCheckBoxColumn();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -88,6 +88,7 @@
             tsbNuevo.Size = new Size(52, 67);
             tsbNuevo.Text = "&Nuevo";
             tsbNuevo.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbNuevo.Click += tsbNuevo_Click;
             // 
             // tsbBorrar
             // 
@@ -98,6 +99,7 @@
             tsbBorrar.Size = new Size(52, 67);
             tsbBorrar.Text = "&Borrar";
             tsbBorrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbBorrar.Click += tsbBorrar_Click;
             // 
             // tsbEditar
             // 
@@ -108,6 +110,7 @@
             tsbEditar.Size = new Size(52, 67);
             tsbEditar.Text = "&Editar";
             tsbEditar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbEditar.Click += tsbEditar_Click;
             // 
             // toolStripSeparator1
             // 
@@ -123,6 +126,7 @@
             tsbDetalle.Size = new Size(52, 67);
             tsbDetalle.Text = "&Detalles";
             tsbDetalle.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbDetalle.Click += tsbDetalle_Click;
             // 
             // toolStripSeparator3
             // 
@@ -169,6 +173,7 @@
             tsbBuscar.Size = new Size(52, 67);
             tsbBuscar.Text = "B&uscar";
             tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbBuscar.Click += tsbBuscar_Click;
             // 
             // tsbActualizar
             // 
@@ -194,6 +199,7 @@
             tsbCerrar.Size = new Size(52, 67);
             tsbCerrar.Text = "&Cerrar";
             tsbCerrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbCerrar.Click += tsbCerrar_Click;
             // 
             // splitContainer1
             // 
@@ -236,80 +242,6 @@
             dgvDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvDatos.Size = new Size(917, 321);
             dgvDatos.TabIndex = 0;
-            // 
-            // lblPaginas
-            // 
-            lblPaginas.AutoSize = true;
-            lblPaginas.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblPaginas.Location = new Point(197, 33);
-            lblPaginas.Name = "lblPaginas";
-            lblPaginas.Size = new Size(14, 15);
-            lblPaginas.TabIndex = 12;
-            lblPaginas.Text = "0";
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(66, 12);
-            label1.Name = "label1";
-            label1.Size = new Size(125, 15);
-            label1.TabIndex = 11;
-            label1.Text = "Cantidad de Registros:";
-            // 
-            // btnUltimo
-            // 
-            btnUltimo.Image = Properties.Resources.last_24px;
-            btnUltimo.Location = new Point(642, 12);
-            btnUltimo.Name = "btnUltimo";
-            btnUltimo.Size = new Size(42, 38);
-            btnUltimo.TabIndex = 6;
-            btnUltimo.UseVisualStyleBackColor = true;
-            // 
-            // btnPrimero
-            // 
-            btnPrimero.Image = Properties.Resources.first_24px;
-            btnPrimero.Location = new Point(498, 12);
-            btnPrimero.Name = "btnPrimero";
-            btnPrimero.Size = new Size(42, 38);
-            btnPrimero.TabIndex = 10;
-            btnPrimero.UseVisualStyleBackColor = true;
-            // 
-            // lblCantidad
-            // 
-            lblCantidad.AutoSize = true;
-            lblCantidad.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblCantidad.Location = new Point(197, 12);
-            lblCantidad.Name = "lblCantidad";
-            lblCantidad.Size = new Size(14, 15);
-            lblCantidad.TabIndex = 13;
-            lblCantidad.Text = "0";
-            // 
-            // btnAnterior
-            // 
-            btnAnterior.Image = Properties.Resources.previous_24px;
-            btnAnterior.Location = new Point(546, 12);
-            btnAnterior.Name = "btnAnterior";
-            btnAnterior.Size = new Size(42, 38);
-            btnAnterior.TabIndex = 9;
-            btnAnterior.UseVisualStyleBackColor = true;
-            // 
-            // btnSiguiente
-            // 
-            btnSiguiente.Image = Properties.Resources.next_24px;
-            btnSiguiente.Location = new Point(594, 12);
-            btnSiguiente.Name = "btnSiguiente";
-            btnSiguiente.Size = new Size(42, 38);
-            btnSiguiente.TabIndex = 7;
-            btnSiguiente.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(66, 33);
-            label2.Name = "label2";
-            label2.Size = new Size(118, 15);
-            label2.TabIndex = 8;
-            label2.Text = "Cantidad de Páginas:";
             // 
             // colId
             // 
@@ -355,6 +287,8 @@
             colAzucar.HeaderText = "Azucar?";
             colAzucar.Name = "colAzucar";
             colAzucar.ReadOnly = true;
+            colAzucar.Resizable = DataGridViewTriState.True;
+            colAzucar.SortMode = DataGridViewColumnSortMode.Automatic;
             // 
             // colActivo
             // 
@@ -362,6 +296,84 @@
             colActivo.HeaderText = "Activo";
             colActivo.Name = "colActivo";
             colActivo.ReadOnly = true;
+            // 
+            // lblPaginas
+            // 
+            lblPaginas.AutoSize = true;
+            lblPaginas.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblPaginas.Location = new Point(197, 33);
+            lblPaginas.Name = "lblPaginas";
+            lblPaginas.Size = new Size(14, 15);
+            lblPaginas.TabIndex = 12;
+            lblPaginas.Text = "0";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(66, 12);
+            label1.Name = "label1";
+            label1.Size = new Size(125, 15);
+            label1.TabIndex = 11;
+            label1.Text = "Cantidad de Registros:";
+            // 
+            // btnUltimo
+            // 
+            btnUltimo.Image = Properties.Resources.last_24px;
+            btnUltimo.Location = new Point(642, 12);
+            btnUltimo.Name = "btnUltimo";
+            btnUltimo.Size = new Size(42, 38);
+            btnUltimo.TabIndex = 6;
+            btnUltimo.UseVisualStyleBackColor = true;
+            btnUltimo.Click += btnUltimo_Click;
+            // 
+            // btnPrimero
+            // 
+            btnPrimero.Image = Properties.Resources.first_24px;
+            btnPrimero.Location = new Point(498, 12);
+            btnPrimero.Name = "btnPrimero";
+            btnPrimero.Size = new Size(42, 38);
+            btnPrimero.TabIndex = 10;
+            btnPrimero.UseVisualStyleBackColor = true;
+            btnPrimero.Click += btnPrimero_Click;
+            // 
+            // lblCantidad
+            // 
+            lblCantidad.AutoSize = true;
+            lblCantidad.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblCantidad.Location = new Point(197, 12);
+            lblCantidad.Name = "lblCantidad";
+            lblCantidad.Size = new Size(14, 15);
+            lblCantidad.TabIndex = 13;
+            lblCantidad.Text = "0";
+            // 
+            // btnAnterior
+            // 
+            btnAnterior.Image = Properties.Resources.previous_24px;
+            btnAnterior.Location = new Point(546, 12);
+            btnAnterior.Name = "btnAnterior";
+            btnAnterior.Size = new Size(42, 38);
+            btnAnterior.TabIndex = 9;
+            btnAnterior.UseVisualStyleBackColor = true;
+            btnAnterior.Click += btnAnterior_Click;
+            // 
+            // btnSiguiente
+            // 
+            btnSiguiente.Image = Properties.Resources.next_24px;
+            btnSiguiente.Location = new Point(594, 12);
+            btnSiguiente.Name = "btnSiguiente";
+            btnSiguiente.Size = new Size(42, 38);
+            btnSiguiente.TabIndex = 7;
+            btnSiguiente.UseVisualStyleBackColor = true;
+            btnSiguiente.Click += btnSiguiente_Click;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(66, 33);
+            label2.Name = "label2";
+            label2.Size = new Size(118, 15);
+            label2.TabIndex = 8;
+            label2.Text = "Cantidad de Páginas:";
             // 
             // frmBombones
             // 
@@ -419,7 +431,7 @@
         private DataGridViewTextBoxColumn colTipoBombon;
         private DataGridViewTextBoxColumn colPrecio;
         private DataGridViewTextBoxColumn colStock;
-        private DataGridViewTextBoxColumn colAzucar;
+        private DataGridViewCheckBoxColumn colAzucar;
         private DataGridViewCheckBoxColumn colActivo;
     }
 }
