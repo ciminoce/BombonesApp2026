@@ -31,7 +31,7 @@
             components = new System.ComponentModel.Container();
             btnCancelar = new Button();
             btnOK = new Button();
-            txtNombreBombon = new TextBox();
+            txtNombreCaja = new TextBox();
             label2 = new Label();
             label3 = new Label();
             txtDescripcion = new TextBox();
@@ -87,22 +87,22 @@
             btnOK.UseVisualStyleBackColor = true;
             btnOK.Click += btnOK_Click;
             // 
-            // txtNombreBombon
+            // txtNombreCaja
             // 
-            txtNombreBombon.Location = new Point(140, 28);
-            txtNombreBombon.MaxLength = 100;
-            txtNombreBombon.Name = "txtNombreBombon";
-            txtNombreBombon.Size = new Size(334, 23);
-            txtNombreBombon.TabIndex = 8;
+            txtNombreCaja.Location = new Point(140, 28);
+            txtNombreCaja.MaxLength = 100;
+            txtNombreCaja.Name = "txtNombreCaja";
+            txtNombreCaja.Size = new Size(334, 23);
+            txtNombreCaja.TabIndex = 8;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Location = new Point(31, 31);
             label2.Name = "label2";
-            label2.Size = new Size(103, 15);
+            label2.Size = new Size(80, 15);
             label2.TabIndex = 6;
-            label2.Text = "Nombre Bombón:";
+            label2.Text = "Nombre Caja:";
             // 
             // label3
             // 
@@ -310,7 +310,7 @@
             Controls.Add(label5);
             Controls.Add(txtPrecio);
             Controls.Add(label4);
-            Controls.Add(txtNombreBombon);
+            Controls.Add(txtNombreCaja);
             Controls.Add(label2);
             Name = "frmCajaAe";
             Text = "frmBombonAe";
@@ -332,7 +332,7 @@
         private ComboBox cboTipoBombon;
         private Button btnCancelar;
         private Button btnOK;
-        private TextBox txtNombreBombon;
+        private TextBox txtNombreCaja;
         private Label label2;
         private Label label1;
         private Label label3;

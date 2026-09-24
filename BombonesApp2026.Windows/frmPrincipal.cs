@@ -14,6 +14,7 @@ namespace BombonesApp2026.Windows
         private readonly ITransporteServicio _transporteServicio;
         private readonly IBombonServicio _bombonServicio;
         private readonly IClienteServicio _clienteServicio;
+        private readonly ICajaServicio _cajaServicio;
         public frmPrincipal(ITipoBombonServicio tipoBombonServicio,
 
             IFormaDePagoServicio formaDePagoServicio,
@@ -22,7 +23,8 @@ namespace BombonesApp2026.Windows
             ICiudadServicio ciudadServicio,
             ITransporteServicio transporteServicio,
             IBombonServicio bombonServicio,
-            IClienteServicio clienteServicio)
+            IClienteServicio clienteServicio,
+            ICajaServicio cajaServicio)
         {
             InitializeComponent();
             _tipoBombonServicio = tipoBombonServicio;
@@ -33,6 +35,7 @@ namespace BombonesApp2026.Windows
             _transporteServicio = transporteServicio;
             _bombonServicio = bombonServicio;
             _clienteServicio = clienteServicio;
+            _cajaServicio = cajaServicio;
         }
 
         private void btnRoles_Click(object sender, EventArgs e)
@@ -102,6 +105,14 @@ namespace BombonesApp2026.Windows
         private void btnClientes_Click(object sender, EventArgs e)
         {
             using (frmClientes frm = new frmClientes(_clienteServicio, _provinciaServicio, _ciudadServicio) { Text = "Listado de Clientes" })
+            {
+                frm.ShowDialog();
+            }
+        }
+
+        private void btnCajas_Click(object sender, EventArgs e)
+        {
+            using (frmCajas frm = new frmCajas(_cajaServicio) { Text = "Listado de Cajas" }) 
             {
                 frm.ShowDialog();
             }

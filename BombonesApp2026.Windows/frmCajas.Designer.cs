@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             toolStrip1 = new ToolStrip();
             tsbNuevo = new ToolStripButton();
             tsbBorrar = new ToolStripButton();
@@ -47,6 +47,13 @@
             tsbCerrar = new ToolStripButton();
             splitContainer1 = new SplitContainer();
             dgvDatos = new DataGridView();
+            colId = new DataGridViewTextBoxColumn();
+            colNombre = new DataGridViewTextBoxColumn();
+            colPrecio = new DataGridViewTextBoxColumn();
+            colStock = new DataGridViewTextBoxColumn();
+            colCantidadBombones = new DataGridViewTextBoxColumn();
+            colEsSurtida = new DataGridViewCheckBoxColumn();
+            colActivo = new DataGridViewCheckBoxColumn();
             lblPaginas = new Label();
             label1 = new Label();
             btnUltimo = new Button();
@@ -55,12 +62,6 @@
             btnAnterior = new Button();
             btnSiguiente = new Button();
             label2 = new Label();
-            colId = new DataGridViewTextBoxColumn();
-            colNombre = new DataGridViewTextBoxColumn();
-            colPrecio = new DataGridViewTextBoxColumn();
-            colStock = new DataGridViewTextBoxColumn();
-            colCantidadBombones = new DataGridViewTextBoxColumn();
-            colActivo = new DataGridViewCheckBoxColumn();
             toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -87,6 +88,7 @@
             tsbNuevo.Size = new Size(52, 67);
             tsbNuevo.Text = "&Nuevo";
             tsbNuevo.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbNuevo.Click += tsbNuevo_Click;
             // 
             // tsbBorrar
             // 
@@ -97,6 +99,7 @@
             tsbBorrar.Size = new Size(52, 67);
             tsbBorrar.Text = "&Borrar";
             tsbBorrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbBorrar.Click += tsbBorrar_Click;
             // 
             // tsbEditar
             // 
@@ -107,6 +110,7 @@
             tsbEditar.Size = new Size(52, 67);
             tsbEditar.Text = "&Editar";
             tsbEditar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbEditar.Click += tsbEditar_Click;
             // 
             // toolStripSeparator1
             // 
@@ -168,6 +172,7 @@
             tsbBuscar.Size = new Size(52, 67);
             tsbBuscar.Text = "B&uscar";
             tsbBuscar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbBuscar.Click += tsbBuscar_Click;
             // 
             // tsbActualizar
             // 
@@ -178,6 +183,7 @@
             tsbActualizar.Size = new Size(63, 67);
             tsbActualizar.Text = "&Actualizar";
             tsbActualizar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbActualizar.Click += tsbActualizar_Click;
             // 
             // toolStripSeparator2
             // 
@@ -193,6 +199,7 @@
             tsbCerrar.Size = new Size(52, 67);
             tsbCerrar.Text = "&Cerrar";
             tsbCerrar.TextImageRelation = TextImageRelation.ImageAboveText;
+            tsbCerrar.Click += tsbCerrar_Click;
             // 
             // splitContainer1
             // 
@@ -223,10 +230,10 @@
             // 
             dgvDatos.AllowUserToAddRows = false;
             dgvDatos.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle1.BackColor = Color.FromArgb(224, 224, 224);
-            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.BackColor = Color.FromArgb(224, 224, 224);
+            dgvDatos.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle2;
             dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colNombre, colPrecio, colStock, colCantidadBombones, colActivo });
+            dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colNombre, colPrecio, colStock, colCantidadBombones, colEsSurtida, colActivo });
             dgvDatos.Dock = DockStyle.Fill;
             dgvDatos.Location = new Point(0, 0);
             dgvDatos.MultiSelect = false;
@@ -235,6 +242,57 @@
             dgvDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvDatos.Size = new Size(883, 321);
             dgvDatos.TabIndex = 0;
+            // 
+            // colId
+            // 
+            colId.DataPropertyName = "ProductoId";
+            colId.HeaderText = "Id";
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            colId.Visible = false;
+            // 
+            // colNombre
+            // 
+            colNombre.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colNombre.DataPropertyName = "Nombre";
+            colNombre.HeaderText = "Nombre";
+            colNombre.Name = "colNombre";
+            colNombre.ReadOnly = true;
+            // 
+            // colPrecio
+            // 
+            colPrecio.DataPropertyName = "Precio";
+            colPrecio.HeaderText = "Precio";
+            colPrecio.Name = "colPrecio";
+            colPrecio.ReadOnly = true;
+            // 
+            // colStock
+            // 
+            colStock.DataPropertyName = "Stock";
+            colStock.HeaderText = "Stock";
+            colStock.Name = "colStock";
+            colStock.ReadOnly = true;
+            // 
+            // colCantidadBombones
+            // 
+            colCantidadBombones.DataPropertyName = "CantidadBombones";
+            colCantidadBombones.HeaderText = "Cant. Bombones";
+            colCantidadBombones.Name = "colCantidadBombones";
+            colCantidadBombones.ReadOnly = true;
+            // 
+            // colEsSurtida
+            // 
+            colEsSurtida.DataPropertyName = "EsSurtida";
+            colEsSurtida.HeaderText = "Es surtida?";
+            colEsSurtida.Name = "colEsSurtida";
+            colEsSurtida.ReadOnly = true;
+            // 
+            // colActivo
+            // 
+            colActivo.DataPropertyName = "Activo";
+            colActivo.HeaderText = "Activo";
+            colActivo.Name = "colActivo";
+            colActivo.ReadOnly = true;
             // 
             // lblPaginas
             // 
@@ -263,6 +321,7 @@
             btnUltimo.Size = new Size(42, 38);
             btnUltimo.TabIndex = 6;
             btnUltimo.UseVisualStyleBackColor = true;
+            btnUltimo.Click += btnUltimo_Click;
             // 
             // btnPrimero
             // 
@@ -272,6 +331,7 @@
             btnPrimero.Size = new Size(42, 38);
             btnPrimero.TabIndex = 10;
             btnPrimero.UseVisualStyleBackColor = true;
+            btnPrimero.Click += btnPrimero_Click;
             // 
             // lblCantidad
             // 
@@ -291,6 +351,7 @@
             btnAnterior.Size = new Size(42, 38);
             btnAnterior.TabIndex = 9;
             btnAnterior.UseVisualStyleBackColor = true;
+            btnAnterior.Click += btnAnterior_Click;
             // 
             // btnSiguiente
             // 
@@ -300,6 +361,7 @@
             btnSiguiente.Size = new Size(42, 38);
             btnSiguiente.TabIndex = 7;
             btnSiguiente.UseVisualStyleBackColor = true;
+            btnSiguiente.Click += btnSiguiente_Click;
             // 
             // label2
             // 
@@ -309,46 +371,6 @@
             label2.Size = new Size(118, 15);
             label2.TabIndex = 8;
             label2.Text = "Cantidad de Páginas:";
-            // 
-            // colId
-            // 
-            colId.DataPropertyName = "Ciudadid";
-            colId.HeaderText = "Id";
-            colId.Name = "colId";
-            colId.ReadOnly = true;
-            colId.Visible = false;
-            // 
-            // colNombre
-            // 
-            colNombre.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colNombre.DataPropertyName = "Bombón";
-            colNombre.HeaderText = "Nombre";
-            colNombre.Name = "colNombre";
-            colNombre.ReadOnly = true;
-            // 
-            // colPrecio
-            // 
-            colPrecio.HeaderText = "Precio";
-            colPrecio.Name = "colPrecio";
-            colPrecio.ReadOnly = true;
-            // 
-            // colStock
-            // 
-            colStock.HeaderText = "Stock";
-            colStock.Name = "colStock";
-            colStock.ReadOnly = true;
-            // 
-            // colCantidadBombones
-            // 
-            colCantidadBombones.HeaderText = "Cant. Bombones";
-            colCantidadBombones.Name = "colCantidadBombones";
-            colCantidadBombones.ReadOnly = true;
-            // 
-            // colActivo
-            // 
-            colActivo.HeaderText = "Activo";
-            colActivo.Name = "colActivo";
-            colActivo.ReadOnly = true;
             // 
             // frmCajas
             // 
@@ -360,6 +382,7 @@
             Name = "frmCajas";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "frmCiudades";
+            Load += frmCajas_Load;
             toolStrip1.ResumeLayout(false);
             toolStrip1.PerformLayout();
             splitContainer1.Panel1.ResumeLayout(false);
@@ -405,6 +428,7 @@
         private DataGridViewTextBoxColumn colPrecio;
         private DataGridViewTextBoxColumn colStock;
         private DataGridViewTextBoxColumn colCantidadBombones;
+        private DataGridViewCheckBoxColumn colEsSurtida;
         private DataGridViewCheckBoxColumn colActivo;
     }
 }

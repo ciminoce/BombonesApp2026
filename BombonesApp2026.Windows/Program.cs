@@ -4,6 +4,9 @@ using BombonesApp2026.Datos.Interfaces;
 using BombonesApp2026.Datos.Repositorios;
 using BombonesApp2026.Servicios.Interfaces;
 using BombonesApp2026.Servicios.Servicios;
+using CajaesApp2026.Datos.Interfaces;
+using CajaesApp2026.Datos.Repositorios;
+using CajaesApp2026.Servicios.Servicios;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -51,6 +54,7 @@ namespace BombonesApp2026.Windows
             ITransporteRepositorio transporteRepositorio = new TransporteRepositorio(context);
             IBombonRepositorio bombonRepositorio = new BombonRepositorio(context);
             IClienteRepositorio clienteRepositorio = new ClienteRepositorio(context);
+            ICajaRepositorio cajaRepositorio=new CajaRepositorio(context);
 
             ITipoBombonServicio tipoBombonServicio = new TipoBombonServicio(tipoBombonRepositorio);
             IFormaDePagoServicio formaDePagoServicio = new FormaDePagoServicio(formaDePagoRepositorio);
@@ -60,6 +64,7 @@ namespace BombonesApp2026.Windows
             ITransporteServicio transporteServicio = new TransporteServicio(transporteRepositorio);
             IBombonServicio bombonServicio = new BombonServicio(bombonRepositorio);
             IClienteServicio clienteServicio = new ClienteServicio(clienteRepositorio);
+            ICajaServicio cajaServicio=new CajaServicio(cajaRepositorio);
             Application.Run(new frmPrincipal(
                 tipoBombonServicio,
                 formaDePagoServicio,
@@ -68,7 +73,8 @@ namespace BombonesApp2026.Windows
                 ciudadServicio,
                 transporteServicio,
                 bombonServicio,
-                clienteServicio));
+                clienteServicio,
+                cajaServicio));
         }
     }
 }
