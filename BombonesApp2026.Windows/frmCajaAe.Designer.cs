@@ -1,0 +1,421 @@
+﻿namespace BombonesApp2026.Windows
+{
+    partial class frmCajaAe
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            components = new System.ComponentModel.Container();
+            btnCancelar = new Button();
+            btnOK = new Button();
+            txtNombreCaja = new TextBox();
+            label2 = new Label();
+            label3 = new Label();
+            txtDescripcion = new TextBox();
+            label4 = new Label();
+            txtPrecio = new TextBox();
+            label5 = new Label();
+            nudStock = new NumericUpDown();
+            chkActivo = new CheckBox();
+            label6 = new Label();
+            errorProvider1 = new ErrorProvider(components);
+            panel1 = new Panel();
+            splitContainer1 = new SplitContainer();
+            dgvDatos = new DataGridView();
+            colId = new DataGridViewTextBoxColumn();
+            colBombon = new DataGridViewTextBoxColumn();
+            colCantidad = new DataGridViewTextBoxColumn();
+            btnEditarBombon = new Button();
+            btnBorrarBombon = new Button();
+            btnAgregarBombon = new Button();
+            txtCantidadBombones = new TextBox();
+            label1 = new Label();
+            txtSurtida = new TextBox();
+            ((System.ComponentModel.ISupportInitialize)nudStock).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
+            layoutPrincipal = new TableLayoutPanel();
+            pnlContenido = new Panel();
+            pnlAvisoInactividad = new Panel();
+            layoutPrincipal.SuspendLayout();
+            pnlContenido.SuspendLayout();
+            SuspendLayout();
+            // 
+            // btnCancelar
+            // 
+            btnCancelar.Image = Properties.Resources.cancel_24px;
+            btnCancelar.Location = new Point(675, 538);
+            btnCancelar.Name = "btnCancelar";
+            btnCancelar.Size = new Size(75, 60);
+            btnCancelar.TabIndex = 10;
+            btnCancelar.Text = "Cancelar";
+            btnCancelar.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnCancelar.UseVisualStyleBackColor = true;
+            btnCancelar.Click += btnCancelar_Click;
+            // 
+            // btnOK
+            // 
+            btnOK.Image = Properties.Resources.ok_24px;
+            btnOK.Location = new Point(31, 538);
+            btnOK.Name = "btnOK";
+            btnOK.Size = new Size(75, 60);
+            btnOK.TabIndex = 9;
+            btnOK.Text = "OK";
+            btnOK.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnOK.UseVisualStyleBackColor = true;
+            btnOK.Click += btnOK_Click;
+            // 
+            // txtNombreCaja
+            // 
+            txtNombreCaja.Location = new Point(140, 28);
+            txtNombreCaja.MaxLength = 100;
+            txtNombreCaja.Name = "txtNombreCaja";
+            txtNombreCaja.Size = new Size(334, 23);
+            txtNombreCaja.TabIndex = 8;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(31, 31);
+            label2.Name = "label2";
+            label2.Size = new Size(80, 15);
+            label2.TabIndex = 6;
+            label2.Text = "Nombre Caja:";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(31, 60);
+            label3.Name = "label3";
+            label3.Size = new Size(72, 15);
+            label3.TabIndex = 6;
+            label3.Text = "Descripción:";
+            // 
+            // txtDescripcion
+            // 
+            txtDescripcion.Location = new Point(140, 57);
+            txtDescripcion.MaxLength = 250;
+            txtDescripcion.Multiline = true;
+            txtDescripcion.Name = "txtDescripcion";
+            txtDescripcion.Size = new Size(334, 54);
+            txtDescripcion.TabIndex = 8;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(20, 461);
+            label4.Name = "label4";
+            label4.Size = new Size(43, 15);
+            label4.TabIndex = 6;
+            label4.Text = "Precio:";
+            // 
+            // txtPrecio
+            // 
+            txtPrecio.Enabled = false;
+            txtPrecio.Location = new Point(129, 456);
+            txtPrecio.MaxLength = 100;
+            txtPrecio.Name = "txtPrecio";
+            txtPrecio.Size = new Size(134, 23);
+            txtPrecio.TabIndex = 8;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(31, 124);
+            label5.Name = "label5";
+            label5.Size = new Size(39, 15);
+            label5.TabIndex = 6;
+            label5.Text = "Stock:";
+            // 
+            // nudStock
+            // 
+            nudStock.Location = new Point(140, 120);
+            nudStock.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudStock.Name = "nudStock";
+            nudStock.Size = new Size(134, 23);
+            nudStock.TabIndex = 12;
+            nudStock.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // chkActivo
+            // 
+            chkActivo.AutoSize = true;
+            chkActivo.CheckAlign = ContentAlignment.MiddleRight;
+            chkActivo.Location = new Point(414, 124);
+            chkActivo.Name = "chkActivo";
+            chkActivo.Size = new Size(60, 19);
+            chkActivo.TabIndex = 13;
+            chkActivo.Text = "Activo";
+            chkActivo.UseVisualStyleBackColor = true;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(20, 431);
+            label6.Name = "label6";
+            label6.Size = new Size(98, 15);
+            label6.TabIndex = 6;
+            label6.Text = "Cant. Bombones:";
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(splitContainer1);
+            panel1.Location = new Point(9, 166);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(751, 225);
+            panel1.TabIndex = 14;
+            // 
+            // splitContainer1
+            // 
+            splitContainer1.Dock = DockStyle.Fill;
+            splitContainer1.Location = new Point(0, 0);
+            splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(dgvDatos);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.Controls.Add(btnEditarBombon);
+            splitContainer1.Panel2.Controls.Add(btnBorrarBombon);
+            splitContainer1.Panel2.Controls.Add(btnAgregarBombon);
+            splitContainer1.Size = new Size(751, 225);
+            splitContainer1.SplitterDistance = 574;
+            splitContainer1.TabIndex = 0;
+            // 
+            // dgvDatos
+            // 
+            dgvDatos.AllowUserToAddRows = false;
+            dgvDatos.AllowUserToDeleteRows = false;
+            dgvDatos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvDatos.Columns.AddRange(new DataGridViewColumn[] { colId, colBombon, colCantidad });
+            dgvDatos.Dock = DockStyle.Fill;
+            dgvDatos.Location = new Point(0, 0);
+            dgvDatos.MultiSelect = false;
+            dgvDatos.Name = "dgvDatos";
+            dgvDatos.ReadOnly = true;
+            dgvDatos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvDatos.Size = new Size(574, 225);
+            dgvDatos.TabIndex = 0;
+            // 
+            // colId
+            // 
+            colId.DataPropertyName = "BombonId";
+            colId.HeaderText = "Id";
+            colId.Name = "colId";
+            colId.ReadOnly = true;
+            colId.Visible = false;
+            // 
+            // colBombon
+            // 
+            colBombon.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colBombon.DataPropertyName = "NombreBombon";
+            colBombon.HeaderText = "Bombón";
+            colBombon.Name = "colBombon";
+            colBombon.ReadOnly = true;
+            // 
+            // colCantidad
+            // 
+            colCantidad.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            colCantidad.DataPropertyName = "Cantidad";
+            colCantidad.HeaderText = "Cantidad";
+            colCantidad.Name = "colCantidad";
+            colCantidad.ReadOnly = true;
+            colCantidad.Width = 80;
+            // 
+            // btnEditarBombon
+            // 
+            btnEditarBombon.Image = Properties.Resources.edit_property_24px;
+            btnEditarBombon.Location = new Point(14, 145);
+            btnEditarBombon.Name = "btnEditarBombon";
+            btnEditarBombon.Size = new Size(134, 60);
+            btnEditarBombon.TabIndex = 9;
+            btnEditarBombon.Text = "Editar Bombón";
+            btnEditarBombon.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnEditarBombon.UseVisualStyleBackColor = true;
+            btnEditarBombon.Click += btnEditarBombon_Click;
+            // 
+            // btnBorrarBombon
+            // 
+            btnBorrarBombon.Image = Properties.Resources.cancel_24px;
+            btnBorrarBombon.Location = new Point(14, 79);
+            btnBorrarBombon.Name = "btnBorrarBombon";
+            btnBorrarBombon.Size = new Size(134, 60);
+            btnBorrarBombon.TabIndex = 9;
+            btnBorrarBombon.Text = "Borrar Bombón";
+            btnBorrarBombon.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnBorrarBombon.UseVisualStyleBackColor = true;
+            btnBorrarBombon.Click += btnBorrarBombon_Click;
+            // 
+            // btnAgregarBombon
+            // 
+            btnAgregarBombon.Image = Properties.Resources.ok_24px;
+            btnAgregarBombon.Location = new Point(14, 13);
+            btnAgregarBombon.Name = "btnAgregarBombon";
+            btnAgregarBombon.Size = new Size(134, 60);
+            btnAgregarBombon.TabIndex = 9;
+            btnAgregarBombon.Text = "Agregar Bombón";
+            btnAgregarBombon.TextImageRelation = TextImageRelation.ImageAboveText;
+            btnAgregarBombon.UseVisualStyleBackColor = true;
+            btnAgregarBombon.Click += btnAgregarBombon_Click;
+            // 
+            // txtCantidadBombones
+            // 
+            txtCantidadBombones.Enabled = false;
+            txtCantidadBombones.Location = new Point(129, 428);
+            txtCantidadBombones.MaxLength = 100;
+            txtCantidadBombones.Name = "txtCantidadBombones";
+            txtCantidadBombones.Size = new Size(134, 23);
+            txtCantidadBombones.TabIndex = 8;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(20, 490);
+            label1.Name = "label1";
+            label1.Size = new Size(47, 15);
+            label1.TabIndex = 6;
+            label1.Text = "Surtida:";
+            // 
+            // txtSurtida
+            // 
+            txtSurtida.Enabled = false;
+            txtSurtida.Location = new Point(129, 485);
+            txtSurtida.MaxLength = 100;
+            txtSurtida.Name = "txtSurtida";
+            txtSurtida.Size = new Size(134, 23);
+            txtSurtida.TabIndex = 8;
+            // 
+            // frmCajaAe
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(794, 650);
+            pnlContenido.Controls.Add(panel1);
+            pnlContenido.Controls.Add(chkActivo);
+            pnlContenido.Controls.Add(nudStock);
+            pnlContenido.Controls.Add(btnCancelar);
+            pnlContenido.Controls.Add(btnOK);
+            pnlContenido.Controls.Add(txtDescripcion);
+            pnlContenido.Controls.Add(label6);
+            pnlContenido.Controls.Add(label3);
+            pnlContenido.Controls.Add(label5);
+            pnlContenido.Controls.Add(txtCantidadBombones);
+            pnlContenido.Controls.Add(txtSurtida);
+            pnlContenido.Controls.Add(label1);
+            pnlContenido.Controls.Add(txtPrecio);
+            pnlContenido.Controls.Add(label4);
+            pnlContenido.Controls.Add(txtNombreCaja);
+            pnlContenido.Controls.Add(label2);
+            // Filas independientes: contenido y aviso de inactividad.
+            layoutPrincipal.ColumnCount = 1;
+            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            layoutPrincipal.RowCount = 2;
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
+            layoutPrincipal.Size = new Size(794, 650);
+            layoutPrincipal.Dock = DockStyle.Fill;
+            layoutPrincipal.Margin = new Padding(0);
+            layoutPrincipal.Padding = new Padding(0);
+            layoutPrincipal.Name = "layoutPrincipal";
+            layoutPrincipal.TabIndex = 0;
+            pnlContenido.Size = new Size(794, 640);
+            pnlContenido.Dock = DockStyle.Fill;
+            pnlContenido.Margin = new Padding(0);
+            pnlContenido.Name = "pnlContenido";
+            pnlContenido.TabIndex = 0;
+            pnlContenido.AutoScroll = true;
+            pnlContenido.AutoScrollMinSize = new Size(794, 640);
+            pnlAvisoInactividad.Size = new Size(794, 96);
+            pnlAvisoInactividad.Dock = DockStyle.Fill;
+            pnlAvisoInactividad.Margin = new Padding(0);
+            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
+            pnlAvisoInactividad.TabIndex = 1;
+            pnlAvisoInactividad.TabStop = false;
+            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
+            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
+            Controls.Add(layoutPrincipal);
+            MinimumSize = new Size(810, 600);
+            Name = "frmCajaAe";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "frmCajaAe";
+            ((System.ComponentModel.ISupportInitialize)nudStock).EndInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
+            panel1.ResumeLayout(false);
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
+            pnlContenido.ResumeLayout(false);
+            pnlContenido.PerformLayout();
+            layoutPrincipal.ResumeLayout(false);
+            ResumeLayout(false);
+            PerformLayout();
+        }
+
+        #endregion
+
+        private TableLayoutPanel layoutPrincipal;
+        private Panel pnlContenido;
+        private Panel pnlAvisoInactividad;
+
+        private Button btnCancelar;
+        private Button btnOK;
+        private TextBox txtNombreCaja;
+        private Label label2;
+        private Label label3;
+        private TextBox txtDescripcion;
+        private Label label4;
+        private TextBox txtPrecio;
+        private Label label5;
+        private NumericUpDown nudStock;
+        private CheckBox chkActivo;
+        private Label label6;
+        private ErrorProvider errorProvider1;
+        private Panel panel1;
+        private SplitContainer splitContainer1;
+        private DataGridView dgvDatos;
+        private Button btnBorrarBombon;
+        private Button btnAgregarBombon;
+        private Button btnEditarBombon;
+        private TextBox txtCantidadBombones;
+        private DataGridViewTextBoxColumn colId;
+        private DataGridViewTextBoxColumn colBombon;
+        private DataGridViewTextBoxColumn colCantidad;
+        private TextBox txtSurtida;
+        private Label label1;
+    }
+}
