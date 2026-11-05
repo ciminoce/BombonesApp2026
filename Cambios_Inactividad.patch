@@ -1,0 +1,2733 @@
+--- original/BombonesApp2026.Windows/Helpers/ControlInactividad.cs
++++ actualizado/BombonesApp2026.Windows/Helpers/ControlInactividad.cs
+@@ -0,0 +1,206 @@
++using System.Diagnostics;
++using System.Runtime.InteropServices;
++
++namespace BombonesApp2026.Windows.Helpers
++{
++    /// <summary>
++    /// Abre un diálogo con cierre por inactividad. Usar siempre en el hilo de UI.
++    /// El formulario y su scope siguen siendo responsabilidad del llamador.
++    /// </summary>
++    public static class ControlInactividad
++    {
++        // Cambiar solamente este valor para ajustar todos los formularios.
++        public static TimeSpan TiempoLimite { get; set; } = TimeSpan.FromMinutes(5);
++
++        public static DialogResult MostrarConInactividad(this Form formulario,
++            IWin32Window propietario)
++        {
++            if (TiempoLimite <= TimeSpan.Zero)
++                throw new InvalidOperationException("El tiempo de inactividad debe ser positivo.");
++
++            using var control = new Vigilancia(formulario, TiempoLimite);
++            return formulario.ShowDialog(propietario);
++        }
++
++        private sealed class Vigilancia : IMessageFilter, IDisposable
++        {
++            // Cada ShowDialog anidado suspende la vigilancia del anterior.
++            [ThreadStatic]
++            private static Vigilancia? _actual;
++
++            private readonly Vigilancia? _anterior;
++            private readonly Form _formulario;
++            private readonly TimeSpan _limite;
++            private readonly Stopwatch _reloj = Stopwatch.StartNew();
++            private readonly System.Windows.Forms.Timer _timer;
++            private readonly Label _aviso;
++            private readonly Control _contenedorAviso;
++            private static readonly TimeSpan AnticipacionAviso = TimeSpan.FromSeconds(30);
++            private bool _bloqueado;
++            private bool _disposed;
++
++            public Vigilancia(Form formulario, TimeSpan limite)
++            {
++                _formulario = formulario;
++                _limite = limite;
++                // Cada diálogo reserva una fila propia para el aviso.
++                _contenedorAviso = _formulario.Controls
++                    .Find("pnlAvisoInactividad", true).OfType<Panel>().FirstOrDefault()
++                    ?? throw new InvalidOperationException(
++                        $"El formulario {formulario.Name} necesita el panel pnlAvisoInactividad.");
++                _anterior = _actual;
++                _actual = this;
++                _aviso = new Label
++                {
++                    Name = "lblAvisoInactividad",
++                    AutoSize = false,
++                    BackColor = Color.FromArgb(255, 243, 184),
++                    ForeColor = Color.FromArgb(75, 52, 0),
++                    BorderStyle = BorderStyle.FixedSingle,
++                    TextAlign = ContentAlignment.MiddleLeft,
++                    UseMnemonic = false,
++                    TabStop = false,
++                    Visible = false,
++                    AccessibleName = "Aviso de cierre por inactividad"
++                };
++                _aviso.Dock = DockStyle.Fill;
++                _contenedorAviso.Controls.Add(_aviso);
++                _contenedorAviso.ClientSizeChanged += AjustarAviso;
++                _anterior?.Reiniciar();
++                _formulario.Shown += AlMostrar;
++                Application.AddMessageFilter(this);
++                _timer = new System.Windows.Forms.Timer { Interval = 500 };
++                _timer.Tick += ComprobarInactividad;
++                _timer.Start();
++            }
++
++            private void AlMostrar(object? sender, EventArgs e) => Reiniciar();
++
++            private void Reiniciar()
++            {
++                if (_disposed) return;
++                _reloj.Restart();
++                _aviso.Visible = false;
++            }
++
++            private void MostrarAviso(TimeSpan restante)
++            {
++                int segundos = Math.Max(1, (int)Math.Ceiling(restante.TotalSeconds));
++                string texto = $"Este formulario se cerrará automáticamente en {segundos} " +
++                    (segundos == 1 ? "segundo" : "segundos") +
++                    " por inactividad.\nLos cambios sin confirmar se descartarán. " +
++                    "Presioná una tecla o hacé clic para continuar.";
++                if (_aviso.Text != texto)
++                {
++                    _aviso.Text = texto;
++                    AjustarAviso(this, EventArgs.Empty);
++                }
++                if (!_aviso.Visible)
++                {
++                    _aviso.BringToFront();
++                    _aviso.Visible = true;
++                }
++            }
++
++            private void AjustarAviso(object? sender, EventArgs e)
++            {
++                if (_aviso.IsDisposed || _formulario.IsDisposed) return;
++                int margen = Math.Max(8, (int)(12 * _formulario.DeviceDpi / 96f));
++                _aviso.Padding = new Padding(margen);
++                // Dock.Fill limita el mensaje al panel reservado por el diseñador.
++            }
++
++            public bool PreFilterMessage(ref Message m)
++            {
++                if (ReferenceEquals(_actual, this) && EsActividad(m.Msg))
++                    Reiniciar();
++
++                // Observar el mensaje sin impedir que llegue al control.
++                return false;
++            }
++
++            private static bool EsActividad(int mensaje)
++            {
++                return mensaje switch
++                {
++                    0x0100 or 0x0101 => true, // WM_KEYDOWN / WM_KEYUP
++                    0x0104 or 0x0105 => true, // WM_SYSKEYDOWN / WM_SYSKEYUP (Alt)
++                    0x0201 or 0x0202 or 0x0203 => true, // Botón izquierdo
++                    0x0204 or 0x0205 or 0x0206 => true, // Botón derecho
++                    0x0207 or 0x0208 or 0x0209 => true, // Botón central
++                    0x020B or 0x020C or 0x020D => true, // Botones adicionales
++                    0x020A or 0x020E => true, // Rueda vertical / horizontal
++                    0x00A1 or 0x00A2 or 0x00A3 => true, // Clic izquierdo en marco/título
++                    0x00A4 or 0x00A5 or 0x00A6 => true, // Clic derecho en marco/título
++                    0x00A7 or 0x00A8 or 0x00A9 => true, // Clic central en marco/título
++                    0x00AB or 0x00AC or 0x00AD => true, // Botones adicionales en marco
++                    // WM_MOUSEMOVE, WM_NCMOUSEMOVE, hover y paint NO cuentan.
++                    _ => false
++                };
++            }
++
++            private void ComprobarInactividad(object? sender, EventArgs e)
++            {
++                if (!ReferenceEquals(_actual, this) || _disposed ||
++                    _formulario.IsDisposed || !_formulario.Visible ||
++                    !_formulario.IsHandleCreated)
++                    return;
++
++                // Un MessageBox nativo puede deshabilitar la ventana sin cambiar
++                // el estado administrado. No cerrar su propietario por detrás.
++                if (!IsWindowEnabled(_formulario.Handle))
++                {
++                    _bloqueado = true;
++                    Reiniciar();
++                    return;
++                }
++
++                if (_bloqueado)
++                {
++                    _bloqueado = false;
++                    Reiniciar();
++                    return;
++                }
++
++                if (_formulario.DialogResult != DialogResult.None) return;
++
++                TimeSpan restante = _limite - _reloj.Elapsed;
++                if (restante > TimeSpan.Zero)
++                {
++                    if (restante <= AnticipacionAviso) MostrarAviso(restante);
++                    return;
++                }
++
++                Reiniciar();
++                // ShowDialog termina con Cancel. No ejecutar OK ni guardar.
++                // Los using existentes disponen el formulario y, al terminar
++                // la grilla, también el scope y su DbContext.
++                _formulario.DialogResult = DialogResult.Cancel;
++            }
++
++            public void Dispose()
++            {
++                if (_disposed) return;
++                _disposed = true;
++                _timer.Stop();
++                _timer.Tick -= ComprobarInactividad;
++                _timer.Dispose();
++                Application.RemoveMessageFilter(this);
++                _formulario.Shown -= AlMostrar;
++                _contenedorAviso.ClientSizeChanged -= AjustarAviso;
++                if (!_contenedorAviso.IsDisposed) _contenedorAviso.Controls.Remove(_aviso);
++                _aviso.Dispose();
++                _reloj.Stop();
++
++                _actual = _anterior;
++                // El padre recibe un período completo, aunque ya llevara
++                // varios minutos abierto antes de entrar al hijo.
++                _anterior?.Reiniciar();
++            }
++
++            [DllImport("user32.dll", ExactSpelling = true)]
++            [return: MarshalAs(UnmanagedType.Bool)]
++            private static extern bool IsWindowEnabled(IntPtr hWnd);
++        }
++    }
++}
+--- original/BombonesApp2026.Windows/Program.cs
++++ actualizado/BombonesApp2026.Windows/Program.cs
+@@ -77,7 +77,7 @@
+             {
+                 servicios.AddTransient(tipoForm);
+             }
+-            var serviceProvider = servicios.BuildServiceProvider();
++            using var serviceProvider = servicios.BuildServiceProvider();
+ 
+             var frm = serviceProvider.GetRequiredService<frmPrincipal>();
+             frm.Text = "Sistema de Bombonería";
+--- original/BombonesApp2026.Windows/frmBombonAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmBombonAe.Designer.cs
+@@ -49,6 +49,11 @@
+             ((System.ComponentModel.ISupportInitialize)nudStock).BeginInit();
+             ((System.ComponentModel.ISupportInitialize)nudPesoEnGramos).BeginInit();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // cboTipoBombon
+@@ -210,23 +215,52 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(511, 407);
+-            Controls.Add(chkActivo);
+-            Controls.Add(chkTieneAzucar);
+-            Controls.Add(nudPesoEnGramos);
+-            Controls.Add(nudStock);
+-            Controls.Add(cboTipoBombon);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOK);
+-            Controls.Add(txtDescripcion);
+-            Controls.Add(label6);
+-            Controls.Add(label3);
+-            Controls.Add(label5);
+-            Controls.Add(txtPrecio);
+-            Controls.Add(label4);
+-            Controls.Add(txtNombreBombon);
+-            Controls.Add(label2);
+-            Controls.Add(label1);
++            ClientSize = new Size(511, 503);
++            pnlContenido.Controls.Add(chkActivo);
++            pnlContenido.Controls.Add(chkTieneAzucar);
++            pnlContenido.Controls.Add(nudPesoEnGramos);
++            pnlContenido.Controls.Add(nudStock);
++            pnlContenido.Controls.Add(cboTipoBombon);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOK);
++            pnlContenido.Controls.Add(txtDescripcion);
++            pnlContenido.Controls.Add(label6);
++            pnlContenido.Controls.Add(label3);
++            pnlContenido.Controls.Add(label5);
++            pnlContenido.Controls.Add(txtPrecio);
++            pnlContenido.Controls.Add(label4);
++            pnlContenido.Controls.Add(txtNombreBombon);
++            pnlContenido.Controls.Add(label2);
++            pnlContenido.Controls.Add(label1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(511, 503);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(511, 407);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(511, 407);
++            pnlAvisoInactividad.Size = new Size(511, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(527, 542);
+             Name = "frmBombonAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmBombonAe";
+@@ -234,11 +268,18 @@
+             ((System.ComponentModel.ISupportInitialize)nudStock).EndInit();
+             ((System.ComponentModel.ISupportInitialize)nudPesoEnGramos).EndInit();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private ComboBox cboTipoBombon;
+         private Button btnCancelar;
+--- original/BombonesApp2026.Windows/frmBombones.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmBombones.Designer.cs
+@@ -68,6 +68,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -204,6 +209,7 @@
+             // 
+             // splitContainer1
+             // 
++            splitContainer1.FixedPanel = FixedPanel.Panel2;
+             splitContainer1.Dock = DockStyle.Fill;
+             splitContainer1.Location = new Point(0, 70);
+             splitContainer1.Name = "splitContainer1";
+@@ -380,9 +386,36 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(917, 450);
+-            Controls.Add(splitContainer1);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(917, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(917, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(917, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(917, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(933, 585);
+             Name = "frmBombones";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmBombones";
+@@ -395,11 +428,18 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private ToolStrip toolStrip1;
+         private ToolStripButton tsbNuevo;
+--- original/BombonesApp2026.Windows/frmBombones.cs
++++ actualizado/BombonesApp2026.Windows/frmBombones.cs
+@@ -78,7 +78,7 @@
+             using (frmBombonAe frm =_serviceProvider.GetRequiredService<frmBombonAe>())
+             {
+                 frm.Text = "Nuevo Bombón";
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 BombonEditDto? bombonEditDto = frm.GetBombon();
+                 if (bombonEditDto == null) return;
+                 try
+@@ -158,7 +158,7 @@
+             {
+                 frm.Text = "Editar Bombón";
+                 frm.SetBombon(bombonEditDto);
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 bombonEditDto = frm.GetBombon();
+                 if (bombonEditDto is null) return;
+                 try
+@@ -257,7 +257,7 @@
+             {
+                 frm.Text = $"Detalles del Bombón {bombonDto.Nombre}";
+                 frm.SetDescripcion(bombonEditDto.Descripcion);
+-                frm.ShowDialog(this);
++                frm.MostrarConInactividad(this);
+             }
+         }
+     }
+--- original/BombonesApp2026.Windows/frmCajaAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmCajaAe.Designer.cs
+@@ -62,6 +62,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // btnCancelar
+@@ -317,23 +322,52 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(794, 640);
+-            Controls.Add(panel1);
+-            Controls.Add(chkActivo);
+-            Controls.Add(nudStock);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOK);
+-            Controls.Add(txtDescripcion);
+-            Controls.Add(label6);
+-            Controls.Add(label3);
+-            Controls.Add(label5);
+-            Controls.Add(txtCantidadBombones);
+-            Controls.Add(txtSurtida);
+-            Controls.Add(label1);
+-            Controls.Add(txtPrecio);
+-            Controls.Add(label4);
+-            Controls.Add(txtNombreCaja);
+-            Controls.Add(label2);
++            ClientSize = new Size(794, 650);
++            pnlContenido.Controls.Add(panel1);
++            pnlContenido.Controls.Add(chkActivo);
++            pnlContenido.Controls.Add(nudStock);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOK);
++            pnlContenido.Controls.Add(txtDescripcion);
++            pnlContenido.Controls.Add(label6);
++            pnlContenido.Controls.Add(label3);
++            pnlContenido.Controls.Add(label5);
++            pnlContenido.Controls.Add(txtCantidadBombones);
++            pnlContenido.Controls.Add(txtSurtida);
++            pnlContenido.Controls.Add(label1);
++            pnlContenido.Controls.Add(txtPrecio);
++            pnlContenido.Controls.Add(label4);
++            pnlContenido.Controls.Add(txtNombreCaja);
++            pnlContenido.Controls.Add(label2);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(794, 650);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(794, 640);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(794, 640);
++            pnlAvisoInactividad.Size = new Size(794, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(810, 600);
+             Name = "frmCajaAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmCajaAe";
+@@ -345,11 +379,18 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private Button btnCancelar;
+         private Button btnOK;
+--- original/BombonesApp2026.Windows/frmCajaAe.cs
++++ actualizado/BombonesApp2026.Windows/frmCajaAe.cs
+@@ -109,7 +109,7 @@
+             using (frmManejarBombonCajaAe frm = _serviceProvider.GetRequiredService<frmManejarBombonCajaAe>())
+             {
+                 frm.Text = "Nueve Detalle de Caja";
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 var (bombonDto, cantidad) = frm.GetDatos();
+                 if (bombonDto is null) return;
+ 
+@@ -171,7 +171,7 @@
+                     var bombonDto = _bombonServicio.ObtenerPorId(detalleDto.BombonId);
+                     if (bombonDto is null) return;
+                     frm.SetDatos(bombonDto, detalleDto.Cantidad);
+-                    if (frm.ShowDialog() == DialogResult.Cancel) return;
++                    if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                     var (bombon, cantidad) = frm.GetDatos();
+                     if (bombon is null) return;
+                     try
+--- original/BombonesApp2026.Windows/frmCajas.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmCajas.Designer.cs
+@@ -68,6 +68,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -204,6 +209,7 @@
+             // 
+             // splitContainer1
+             // 
++            splitContainer1.FixedPanel = FixedPanel.Panel2;
+             splitContainer1.Dock = DockStyle.Fill;
+             splitContainer1.Location = new Point(0, 70);
+             splitContainer1.Name = "splitContainer1";
+@@ -377,9 +383,36 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(883, 450);
+-            Controls.Add(splitContainer1);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(883, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(883, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(883, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(883, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(899, 585);
+             Name = "frmCajas";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmCajas";
+@@ -392,11 +425,18 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private ToolStrip toolStrip1;
+         private ToolStripButton tsbNuevo;
+--- original/BombonesApp2026.Windows/frmCajas.cs
++++ actualizado/BombonesApp2026.Windows/frmCajas.cs
+@@ -127,7 +127,7 @@
+             using (frmCajaAe frm = _serviceProvider.GetRequiredService<frmCajaAe>())
+             {
+                 frm.Text = "Nueva Caja";
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+ 
+                 CajaEditDto? cajaEditDto = frm.GetCaja();
+                 if (cajaEditDto == null) return;
+@@ -211,7 +211,7 @@
+             {
+                 frm.Text = "Editar Caja";
+                 frm.SetCaja(cajaEditDto);
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 cajaEditDto = frm.GetCaja();
+                 if (cajaEditDto is null) return;
+                 try
+@@ -276,7 +276,7 @@
+             {
+                 frm.Text = "Detalles de Caja";
+                 frm.SetCaja(cajaDetailDto);
+-                frm.ShowDialog();
++                frm.MostrarConInactividad(this);
+             }
+         }
+     }
+--- original/BombonesApp2026.Windows/frmCiudadAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmCiudadAe.Designer.cs
+@@ -37,6 +37,11 @@
+             btnCancelar = new Button();
+             cboProvincias = new ComboBox();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // label1
+@@ -106,22 +111,58 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(520, 234);
+-            Controls.Add(cboProvincias);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOK);
+-            Controls.Add(txtCiudad);
+-            Controls.Add(label2);
+-            Controls.Add(label1);
++            ClientSize = new Size(520, 330);
++            pnlContenido.Controls.Add(cboProvincias);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOK);
++            pnlContenido.Controls.Add(txtCiudad);
++            pnlContenido.Controls.Add(label2);
++            pnlContenido.Controls.Add(label1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(520, 330);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(520, 234);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(520, 234);
++            pnlAvisoInactividad.Size = new Size(520, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(536, 369);
+             Name = "frmCiudadAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmCiudadAe";
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private Label label1;
+         private Label label2;
+--- original/BombonesApp2026.Windows/frmCiudades.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmCiudades.Designer.cs
+@@ -62,6 +62,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -182,6 +187,7 @@
+             // 
+             // splitContainer1
+             // 
++            splitContainer1.FixedPanel = FixedPanel.Panel2;
+             splitContainer1.Dock = DockStyle.Fill;
+             splitContainer1.Location = new Point(0, 70);
+             splitContainer1.Name = "splitContainer1";
+@@ -328,9 +334,36 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(860, 450);
+-            Controls.Add(splitContainer1);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(860, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(860, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(860, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(860, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(876, 585);
+             Name = "frmCiudades";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmCiudades";
+@@ -343,11 +376,18 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private ToolStrip toolStrip1;
+         private ToolStripButton tsbNuevo;
+--- original/BombonesApp2026.Windows/frmCiudades.cs
++++ actualizado/BombonesApp2026.Windows/frmCiudades.cs
+@@ -76,7 +76,7 @@
+             using (frmCiudadAe frm = _serviceProvider.GetRequiredService<frmCiudadAe>())
+             {
+                 frm.Text = "Nueva Ciudad";
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 CiudadEditDto? ciudadEditDto = frm.GetCiudad();
+                 if (ciudadEditDto == null) return;
+                 try
+@@ -161,7 +161,7 @@
+             {
+                 frm.Text = "Eidtar Ciudad";
+                 frm.SetCiudad(ciudadEditDto);
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 ciudadEditDto = frm.GetCiudad();
+                 if (ciudadEditDto is null) return;
+                 try
+--- original/BombonesApp2026.Windows/frmClienteAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmClienteAe.Designer.cs
+@@ -58,6 +58,11 @@
+             groupBox2.SuspendLayout();
+             groupBox1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // btnCancelar
+@@ -315,11 +320,40 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(890, 527);
+-            Controls.Add(groupBox1);
+-            Controls.Add(groupBox2);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOK);
++            ClientSize = new Size(890, 623);
++            pnlContenido.Controls.Add(groupBox1);
++            pnlContenido.Controls.Add(groupBox2);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOK);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(890, 623);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(890, 527);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(890, 527);
++            pnlAvisoInactividad.Size = new Size(890, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(906, 600);
+             Name = "frmClienteAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmClienteAe";
+@@ -328,10 +362,17 @@
+             groupBox1.ResumeLayout(false);
+             groupBox1.PerformLayout();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private Button btnCancelar;
+         private Button btnOK;
+--- original/BombonesApp2026.Windows/frmClientes.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmClientes.Designer.cs
+@@ -68,6 +68,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -200,6 +205,7 @@
+             // 
+             // splitContainer1
+             // 
++            splitContainer1.FixedPanel = FixedPanel.Panel2;
+             splitContainer1.Dock = DockStyle.Fill;
+             splitContainer1.Location = new Point(0, 70);
+             splitContainer1.Name = "splitContainer1";
+@@ -374,9 +380,36 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(1009, 450);
+-            Controls.Add(splitContainer1);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(1009, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(1009, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(1009, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(1009, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(1025, 585);
+             Name = "frmClientes";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmClientes";
+@@ -389,11 +422,18 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private ToolStrip toolStrip1;
+         private ToolStripButton tsbNuevo;
+--- original/BombonesApp2026.Windows/frmClientes.cs
++++ actualizado/BombonesApp2026.Windows/frmClientes.cs
+@@ -83,7 +83,7 @@
+             using (frmClienteAe frm =_serviceProvider.GetRequiredService<frmClienteAe>())
+             {
+                 frm.Text = "Nuevo Cliente";
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 ClienteEditDto? clienteEditDto = frm.GetCliente();
+                 if (clienteEditDto == null) return;
+                 try
+@@ -163,7 +163,7 @@
+             {
+                 frm.Text = "Editar Cliente";
+                 frm.SetCliente(clienteEditDto);
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 clienteEditDto = frm.GetCliente();
+                 if (clienteEditDto is null) return;
+                 try
+--- original/BombonesApp2026.Windows/frmDetalleBombon.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmDetalleBombon.Designer.cs
+@@ -32,6 +32,11 @@
+             txtDescripcion = new TextBox();
+             btnCerrar = new Button();
+             groupBox1.SuspendLayout();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // groupBox1
+@@ -69,21 +74,56 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(664, 285);
++            ClientSize = new Size(664, 381);
+             ControlBox = false;
+-            Controls.Add(btnCerrar);
+-            Controls.Add(groupBox1);
+-            MaximumSize = new Size(680, 324);
+-            MinimumSize = new Size(680, 324);
++            pnlContenido.Controls.Add(btnCerrar);
++            pnlContenido.Controls.Add(groupBox1);
++            MaximumSize = new Size(680, 420);
++            MinimumSize = new Size(680, 420);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(664, 381);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(664, 285);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(664, 285);
++            pnlAvisoInactividad.Size = new Size(664, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
+             Name = "frmDetalleBombon";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmDetalleBombon";
+             groupBox1.ResumeLayout(false);
+             groupBox1.PerformLayout();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private GroupBox groupBox1;
+         private TextBox txtDescripcion;
+--- original/BombonesApp2026.Windows/frmDetalleRol.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmDetalleRol.Designer.cs
+@@ -43,6 +43,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // splitContainer1
+@@ -156,8 +161,37 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(568, 450);
+-            Controls.Add(splitContainer1);
++            ClientSize = new Size(568, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(568, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(568, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(568, 450);
++            pnlAvisoInactividad.Size = new Size(568, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(584, 585);
+             Name = "frmDetalleRol";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmDetalleRol";
+@@ -167,10 +201,17 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private SplitContainer splitContainer1;
+         private CheckBox chkActivo;
+--- original/BombonesApp2026.Windows/frmDetallesCaja.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmDetallesCaja.Designer.cs
+@@ -52,6 +52,11 @@
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
+             panel1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // btnCerrar
+@@ -241,33 +246,69 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(572, 640);
+-            Controls.Add(panel1);
+-            Controls.Add(chkActivo);
+-            Controls.Add(btnCerrar);
+-            Controls.Add(txtDescripcion);
+-            Controls.Add(label6);
+-            Controls.Add(label3);
+-            Controls.Add(label5);
+-            Controls.Add(txtCantidadBombones);
+-            Controls.Add(txtSurtida);
+-            Controls.Add(label1);
+-            Controls.Add(txtPrecio);
+-            Controls.Add(label4);
+-            Controls.Add(txtStock);
+-            Controls.Add(txtNombreCaja);
+-            Controls.Add(label2);
++            ClientSize = new Size(572, 650);
++            pnlContenido.Controls.Add(panel1);
++            pnlContenido.Controls.Add(chkActivo);
++            pnlContenido.Controls.Add(btnCerrar);
++            pnlContenido.Controls.Add(txtDescripcion);
++            pnlContenido.Controls.Add(label6);
++            pnlContenido.Controls.Add(label3);
++            pnlContenido.Controls.Add(label5);
++            pnlContenido.Controls.Add(txtCantidadBombones);
++            pnlContenido.Controls.Add(txtSurtida);
++            pnlContenido.Controls.Add(label1);
++            pnlContenido.Controls.Add(txtPrecio);
++            pnlContenido.Controls.Add(label4);
++            pnlContenido.Controls.Add(txtStock);
++            pnlContenido.Controls.Add(txtNombreCaja);
++            pnlContenido.Controls.Add(label2);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(572, 650);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(572, 640);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(572, 640);
++            pnlAvisoInactividad.Size = new Size(572, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(588, 600);
+             Name = "frmDetallesCaja";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmDetallesCaja";
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
+             panel1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private Button btnCerrar;
+         private TextBox txtNombreCaja;
+--- original/BombonesApp2026.Windows/frmEmpleadoAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmEmpleadoAe.Designer.cs
+@@ -57,6 +57,11 @@
+             groupBox2.SuspendLayout();
+             groupBox1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // btnCancelar
+@@ -299,13 +304,41 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(890, 527);
+-            Controls.Add(groupBox1);
+-            Controls.Add(groupBox2);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOK);
+-            MaximumSize = new Size(906, 566);
+-            MinimumSize = new Size(906, 566);
++            ClientSize = new Size(890, 623);
++            pnlContenido.Controls.Add(groupBox1);
++            pnlContenido.Controls.Add(groupBox2);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOK);
++            MaximumSize = new Size(906, 662);
++            MinimumSize = new Size(906, 662);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(890, 623);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(890, 527);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(890, 527);
++            pnlAvisoInactividad.Size = new Size(890, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
+             Name = "frmEmpleadoAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmEmpleadoAe";
+@@ -314,10 +347,17 @@
+             groupBox1.ResumeLayout(false);
+             groupBox1.PerformLayout();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private Button btnCancelar;
+         private Button btnOK;
+--- original/BombonesApp2026.Windows/frmEmpleados.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmEmpleados.Designer.cs
+@@ -64,6 +64,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -179,6 +184,7 @@
+             // 
+             // splitContainer1
+             // 
++            splitContainer1.FixedPanel = FixedPanel.Panel2;
+             splitContainer1.Dock = DockStyle.Fill;
+             splitContainer1.Location = new Point(0, 70);
+             splitContainer1.Name = "splitContainer1";
+@@ -330,9 +336,36 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(958, 450);
+-            Controls.Add(splitContainer1);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(958, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(958, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(958, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(958, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(974, 585);
+             Name = "frmEmpleados";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmEmpleados";
+@@ -344,11 +377,18 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private ToolStrip toolStrip1;
+         private ToolStripButton tsbNuevo;
+--- original/BombonesApp2026.Windows/frmFormaDePagoAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmFormaDePagoAe.Designer.cs
+@@ -36,6 +36,11 @@
+             btnCancelar = new Button();
+             chkActivo = new CheckBox();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // label1
+@@ -99,23 +104,58 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(520, 234);
+-            Controls.Add(chkActivo);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOK);
+-            Controls.Add(txtFormaDePago);
+-            Controls.Add(label1);
+-            MaximumSize = new Size(536, 273);
+-            MinimumSize = new Size(536, 273);
++            ClientSize = new Size(520, 330);
++            pnlContenido.Controls.Add(chkActivo);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOK);
++            pnlContenido.Controls.Add(txtFormaDePago);
++            pnlContenido.Controls.Add(label1);
++            MaximumSize = new Size(536, 369);
++            MinimumSize = new Size(536, 369);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(520, 330);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(520, 234);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(520, 234);
++            pnlAvisoInactividad.Size = new Size(520, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
+             Name = "frmFormaDePagoAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmFormaDePagoAe";
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private Label label1;
+         private TextBox txtFormaDePago;
+--- original/BombonesApp2026.Windows/frmFormasDePago.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmFormasDePago.Designer.cs
+@@ -62,6 +62,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -187,6 +192,7 @@
+             // 
+             // splitContainer1
+             // 
++            splitContainer1.FixedPanel = FixedPanel.Panel2;
+             splitContainer1.Dock = DockStyle.Fill;
+             splitContainer1.Location = new Point(0, 70);
+             splitContainer1.Name = "splitContainer1";
+@@ -332,9 +338,36 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(800, 450);
+-            Controls.Add(splitContainer1);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(800, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(800, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(800, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(800, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(816, 585);
+             Name = "frmFormasDePago";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmFormasDePago";
+@@ -347,11 +380,18 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private ToolStrip toolStrip1;
+         private ToolStripButton tsbNuevo;
+--- original/BombonesApp2026.Windows/frmFormasDePago.cs
++++ actualizado/BombonesApp2026.Windows/frmFormasDePago.cs
+@@ -49,7 +49,7 @@
+             using (frmFormaDePagoAe frm =_serviceProvider.GetRequiredService<frmFormaDePagoAe>())
+             {
+                 frm.Text = "Nueva Forma de Pago";
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 FormaDePagoEditDto? formaEditDto = frm.GetTipo();
+                 if (formaEditDto == null) return;
+                 try
+@@ -132,7 +132,7 @@
+             {
+                 frm.Text = "Nueva Forma de Pago";
+                 frm.SetFormaDePago(formaDePagoEditDto);
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 formaDePagoEditDto = frm.GetFormaDePago();
+                 if (formaDePagoEditDto is null) return;
+                 try
+--- original/BombonesApp2026.Windows/frmManejarBombonCajaAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmManejarBombonCajaAe.Designer.cs
+@@ -39,6 +39,11 @@
+             txtBombon = new TextBox();
+             ((System.ComponentModel.ISupportInitialize)nudCantidad).BeginInit();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // nudCantidad
+@@ -116,24 +121,60 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(644, 199);
+-            Controls.Add(txtBombon);
+-            Controls.Add(nudCantidad);
+-            Controls.Add(label2);
+-            Controls.Add(cboBombones);
+-            Controls.Add(label1);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOk);
++            ClientSize = new Size(644, 295);
++            pnlContenido.Controls.Add(txtBombon);
++            pnlContenido.Controls.Add(nudCantidad);
++            pnlContenido.Controls.Add(label2);
++            pnlContenido.Controls.Add(cboBombones);
++            pnlContenido.Controls.Add(label1);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOk);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(644, 295);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(644, 199);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(644, 199);
++            pnlAvisoInactividad.Size = new Size(644, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(660, 334);
+             Name = "frmManejarBombonCajaAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmManejarBombonCajaAE";
+             ((System.ComponentModel.ISupportInitialize)nudCantidad).EndInit();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private NumericUpDown nudCantidad;
+         private Label label2;
+--- original/BombonesApp2026.Windows/frmPrincipal.cs
++++ actualizado/BombonesApp2026.Windows/frmPrincipal.cs
+@@ -1,10 +1,10 @@
++using BombonesApp2026.Windows.Helpers;
+ using Microsoft.Extensions.DependencyInjection;
+ 
+ namespace BombonesApp2026.Windows
+ {
+     public partial class frmPrincipal : Form
+     {
+-        //TODO:Ver clase para cerrar el formulario
+         private readonly IServiceScopeFactory _scopeFactory;
+         public frmPrincipal(IServiceScopeFactory scopeFactory)
+         {
+@@ -19,7 +19,7 @@
+                     .GetRequiredService<TForm>())
+                 {
+                     frm.Text = titulo;
+-                    frm.ShowDialog();
++                    frm.MostrarConInactividad(this);
+                 }
+             }
+         }
+--- original/BombonesApp2026.Windows/frmProvinciaAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmProvinciaAe.Designer.cs
+@@ -35,6 +35,11 @@
+             btnOK = new Button();
+             btnCancelar = new Button();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // label1
+@@ -86,17 +91,46 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(520, 188);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOK);
+-            Controls.Add(txtProvincia);
+-            Controls.Add(label1);
+-            MaximumSize = new Size(536, 227);
+-            MinimumSize = new Size(536, 227);
++            ClientSize = new Size(520, 284);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOK);
++            pnlContenido.Controls.Add(txtProvincia);
++            pnlContenido.Controls.Add(label1);
++            MaximumSize = new Size(536, 323);
++            MinimumSize = new Size(536, 323);
++            // Dos filas independientes: contenido original y espacio del aviso.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(520, 284);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(520, 188);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(520, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
+             Name = "frmProvinciaAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmProvinciaAe";
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+@@ -104,6 +138,9 @@
+ 
+         #endregion
+ 
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+         private Label label1;
+         private TextBox txtProvincia;
+         private ErrorProvider errorProvider1;
+--- original/BombonesApp2026.Windows/frmProvincias.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmProvincias.Designer.cs
+@@ -58,6 +58,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -158,6 +163,7 @@
+             // 
+             // splitContainer1
+             // 
++            splitContainer1.FixedPanel = FixedPanel.Panel2;
+             splitContainer1.Dock = DockStyle.Fill;
+             splitContainer1.Location = new Point(0, 70);
+             splitContainer1.Name = "splitContainer1";
+@@ -296,9 +302,36 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(800, 450);
+-            Controls.Add(splitContainer1);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(800, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Dos filas independientes: contenido original y espacio del aviso.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(800, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(800, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(800, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(816, 585);
+             Name = "frmProvincias";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmProvincias";
+@@ -311,6 +344,9 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+@@ -331,6 +367,9 @@
+         private DataGridViewTextBoxColumn colId;
+         private DataGridViewTextBoxColumn colProvincia;
+         private Label lblPaginas;
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+         private Label label1;
+         private Button btnUltimo;
+         private Button btnPrimero;
+--- original/BombonesApp2026.Windows/frmProvincias.cs
++++ actualizado/BombonesApp2026.Windows/frmProvincias.cs
+@@ -49,7 +49,7 @@
+             using (frmProvinciaAe frm = _serviceProvider.GetRequiredService<frmProvinciaAe>())
+             {
+                 frm.Text = "Nueva Provincia";
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 ProvinciaEditDto? provinciaEditDto = frm.GetProvincia();
+                 if (provinciaEditDto == null) return;
+                 try
+@@ -127,7 +127,7 @@
+             {
+                 frm.Text = "Nueva Provincia";
+                 frm.SetProvincia(provinciaEditDto);
+-                if (frm.ShowDialog() == DialogResult.Cancel) return;
++                if (frm.MostrarConInactividad(this) != DialogResult.OK) return;
+                 provinciaEditDto = frm.GetProvincia();
+                 if (provinciaEditDto is null) return;
+                 try
+--- original/BombonesApp2026.Windows/frmRoles.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmRoles.Designer.cs
+@@ -54,6 +54,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -167,6 +172,7 @@
+             // 
+             // splitContainer1
+             // 
++            splitContainer1.FixedPanel = FixedPanel.Panel2;
+             splitContainer1.Dock = DockStyle.Fill;
+             splitContainer1.Location = new Point(0, 70);
+             splitContainer1.Name = "splitContainer1";
+@@ -247,9 +253,36 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(800, 450);
+-            Controls.Add(splitContainer1);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(800, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(800, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(800, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(800, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(816, 585);
+             Name = "frmRoles";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmRoles";
+@@ -262,11 +295,18 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private ToolStrip toolStrip1;
+         private ToolStripButton tsbNuevo;
+--- original/BombonesApp2026.Windows/frmRoles.cs
++++ actualizado/BombonesApp2026.Windows/frmRoles.cs
+@@ -1,3 +1,4 @@
++using BombonesApp2026.Windows.Helpers;
+ using Bombones2026.Servicios.DTOs.Rol;
+ using BombonesApp2026.Servicios.Interfaces;
+ using System.ComponentModel;
+@@ -58,8 +59,8 @@
+         {
+             using (frmRolesAe frm = new frmRolesAe() { Text = "Nuevo Rol" })
+             {
+-                DialogResult dr = frm.ShowDialog();
+-                if (dr == DialogResult.Cancel) return;
++                DialogResult dr = frm.MostrarConInactividad(this);
++                if (dr != DialogResult.OK) return;
+                 RolEditDto? rolEditDto = frm.GetRol();
+                 if (rolEditDto == null) return;
+                 try
+@@ -146,8 +147,8 @@
+             using (frmRolesAe frm = new frmRolesAe() { Text = "Editar Rol" })
+             {
+                 frm.SetRol(rolEditDto);
+-                DialogResult dr = frm.ShowDialog();
+-                if (dr == DialogResult.Cancel) return;
++                DialogResult dr = frm.MostrarConInactividad(this);
++                if (dr != DialogResult.OK) return;
+                 rolEditDto = frm.GetRol();
+                 if (rolEditDto is null) return;
+                 try
+--- original/BombonesApp2026.Windows/frmRolesAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmRolesAe.Designer.cs
+@@ -38,6 +38,11 @@
+             btnCancelar = new Button();
+             chkActivo = new CheckBox();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // label1
+@@ -118,24 +123,60 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(520, 234);
+-            Controls.Add(chkActivo);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOK);
+-            Controls.Add(txtDescripcion);
+-            Controls.Add(label2);
+-            Controls.Add(txtRol);
+-            Controls.Add(label1);
++            ClientSize = new Size(520, 330);
++            pnlContenido.Controls.Add(chkActivo);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOK);
++            pnlContenido.Controls.Add(txtDescripcion);
++            pnlContenido.Controls.Add(label2);
++            pnlContenido.Controls.Add(txtRol);
++            pnlContenido.Controls.Add(label1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(520, 330);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(520, 234);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(520, 234);
++            pnlAvisoInactividad.Size = new Size(520, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(536, 369);
+             Name = "frmRolesAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmRolAe";
+             Load += frmRolesAe_Load;
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private Label label1;
+         private TextBox txtRol;
+--- original/BombonesApp2026.Windows/frmTipoDeBombonesAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmTipoDeBombonesAe.Designer.cs
+@@ -38,6 +38,11 @@
+             btnCancelar = new Button();
+             chkActivo = new CheckBox();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // label1
+@@ -118,25 +123,60 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(520, 234);
+-            Controls.Add(chkActivo);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOK);
+-            Controls.Add(txtDescripcion);
+-            Controls.Add(label2);
+-            Controls.Add(txtTipoBombon);
+-            Controls.Add(label1);
+-            MaximumSize = new Size(536, 273);
+-            MinimumSize = new Size(536, 273);
++            ClientSize = new Size(520, 330);
++            pnlContenido.Controls.Add(chkActivo);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOK);
++            pnlContenido.Controls.Add(txtDescripcion);
++            pnlContenido.Controls.Add(label2);
++            pnlContenido.Controls.Add(txtTipoBombon);
++            pnlContenido.Controls.Add(label1);
++            MaximumSize = new Size(536, 369);
++            MinimumSize = new Size(536, 369);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(520, 330);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(520, 234);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(520, 234);
++            pnlAvisoInactividad.Size = new Size(520, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
+             Name = "frmTipoDeBombonesAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmTipoDeBombonAe";
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private Label label1;
+         private TextBox txtTipoBombon;
+--- original/BombonesApp2026.Windows/frmTiposDeBombones.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmTiposDeBombones.Designer.cs
+@@ -63,6 +63,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -188,6 +193,7 @@
+             // 
+             // splitContainer1
+             // 
++            splitContainer1.FixedPanel = FixedPanel.Panel2;
+             splitContainer1.Dock = DockStyle.Fill;
+             splitContainer1.Location = new Point(0, 70);
+             splitContainer1.Name = "splitContainer1";
+@@ -341,9 +347,36 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(800, 450);
+-            Controls.Add(splitContainer1);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(800, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(800, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(800, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(800, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(816, 585);
+             Name = "frmTiposDeBombones";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmTipoDeBombones";
+@@ -356,11 +389,18 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private ToolStrip toolStrip1;
+         private ToolStripButton tsbNuevo;
+--- original/BombonesApp2026.Windows/frmTiposDeBombones.cs
++++ actualizado/BombonesApp2026.Windows/frmTiposDeBombones.cs
+@@ -106,8 +106,8 @@
+         {
+             using (frmTipoDeBombonesAe frm = new frmTipoDeBombonesAe() { Text = "Nuevo Tipo de Bombón" })
+             {
+-                DialogResult dr = frm.ShowDialog();
+-                if (dr == DialogResult.Cancel) return;
++                DialogResult dr = frm.MostrarConInactividad(this);
++                if (dr != DialogResult.OK) return;
+                 TipoBombonEditDto? tipoEditDto = frm.GetTipo();
+                 if (tipoEditDto == null) return;
+                 try
+@@ -189,8 +189,8 @@
+             using (frmTipoDeBombonesAe frm = new frmTipoDeBombonesAe() { Text = "Editar Tipo de Bombón " })
+             {
+                 frm.SetTipo(tipoBombonEditDto);
+-                DialogResult dr = frm.ShowDialog();
+-                if (dr == DialogResult.Cancel) return;
++                DialogResult dr = frm.MostrarConInactividad(this);
++                if (dr != DialogResult.OK) return;
+                 tipoBombonEditDto = frm.GetTipo();
+                 if (tipoBombonEditDto is null) return;
+                 try
+--- original/BombonesApp2026.Windows/frmTransporteAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmTransporteAe.Designer.cs
+@@ -42,6 +42,11 @@
+             txtEmail = new TextBox();
+             chkActivo = new CheckBox();
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // label1
+@@ -157,29 +162,64 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(520, 234);
+-            Controls.Add(chkActivo);
+-            Controls.Add(cboProvincias);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOK);
+-            Controls.Add(txtEmail);
+-            Controls.Add(label4);
+-            Controls.Add(txtTelefono);
+-            Controls.Add(label3);
+-            Controls.Add(txtTransporte);
+-            Controls.Add(label2);
+-            Controls.Add(label1);
+-            MaximumSize = new Size(536, 273);
+-            MinimumSize = new Size(536, 273);
++            ClientSize = new Size(520, 330);
++            pnlContenido.Controls.Add(chkActivo);
++            pnlContenido.Controls.Add(cboProvincias);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOK);
++            pnlContenido.Controls.Add(txtEmail);
++            pnlContenido.Controls.Add(label4);
++            pnlContenido.Controls.Add(txtTelefono);
++            pnlContenido.Controls.Add(label3);
++            pnlContenido.Controls.Add(txtTransporte);
++            pnlContenido.Controls.Add(label2);
++            pnlContenido.Controls.Add(label1);
++            MaximumSize = new Size(536, 369);
++            MinimumSize = new Size(536, 369);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(520, 330);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(520, 234);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(520, 234);
++            pnlAvisoInactividad.Size = new Size(520, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
+             Name = "frmTransporteAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmCiudadAe";
+             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private Label label1;
+         private Label label2;
+--- original/BombonesApp2026.Windows/frmTransportes.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmTransportes.Designer.cs
+@@ -67,6 +67,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -201,6 +206,7 @@
+             // 
+             // splitContainer1
+             // 
++            splitContainer1.FixedPanel = FixedPanel.Panel2;
+             splitContainer1.Dock = DockStyle.Fill;
+             splitContainer1.Location = new Point(0, 70);
+             splitContainer1.Name = "splitContainer1";
+@@ -370,9 +376,36 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(1036, 450);
+-            Controls.Add(splitContainer1);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(1036, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(1036, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(1036, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(1036, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(1052, 585);
+             Name = "frmTransportes";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmTransportes";
+@@ -385,11 +418,18 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private ToolStrip toolStrip1;
+         private ToolStripButton tsbNuevo;
+--- original/BombonesApp2026.Windows/frmTransportes.cs
++++ actualizado/BombonesApp2026.Windows/frmTransportes.cs
+@@ -113,8 +113,8 @@
+         {
+             using (frmTransporteAe frm = new frmTransporteAe(_provinciaServicio) { Text = "Nuevo Transporte" })
+             {
+-                DialogResult dr = frm.ShowDialog();
+-                if (dr == DialogResult.Cancel) return;
++                DialogResult dr = frm.MostrarConInactividad(this);
++                if (dr != DialogResult.OK) return;
+                 TransporteEditDto? transporteEditDto = frm.GetTransporte();
+                 if (transporteEditDto == null) return;
+                 try
+@@ -199,8 +199,8 @@
+             using (frmTransporteAe frm = new frmTransporteAe(_provinciaServicio) { Text = "Editar Transporte " })
+             {
+                 frm.SetTransporte(transporteEditDto);
+-                DialogResult dr = frm.ShowDialog();
+-                if (dr == DialogResult.Cancel) return;
++                DialogResult dr = frm.MostrarConInactividad(this);
++                if (dr != DialogResult.OK) return;
+                 transporteEditDto = frm.GetTransporte();
+                 if (transporteEditDto is null) return;
+                 try
+--- original/BombonesApp2026.Windows/frmUsuarioAe.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmUsuarioAe.Designer.cs
+@@ -39,6 +39,11 @@
+             label3 = new Label();
+             label4 = new Label();
+             comboBox1 = new ComboBox();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // chkActivo
+@@ -148,28 +153,63 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(529, 300);
+-            Controls.Add(comboBox1);
+-            Controls.Add(cboRoles);
+-            Controls.Add(chkActivo);
+-            Controls.Add(btnCancelar);
+-            Controls.Add(btnOK);
+-            Controls.Add(label3);
+-            Controls.Add(label4);
+-            Controls.Add(label2);
+-            Controls.Add(textBox1);
+-            Controls.Add(txtUsuario);
+-            Controls.Add(label1);
+-            MaximumSize = new Size(545, 339);
+-            MinimumSize = new Size(545, 339);
++            ClientSize = new Size(529, 396);
++            pnlContenido.Controls.Add(comboBox1);
++            pnlContenido.Controls.Add(cboRoles);
++            pnlContenido.Controls.Add(chkActivo);
++            pnlContenido.Controls.Add(btnCancelar);
++            pnlContenido.Controls.Add(btnOK);
++            pnlContenido.Controls.Add(label3);
++            pnlContenido.Controls.Add(label4);
++            pnlContenido.Controls.Add(label2);
++            pnlContenido.Controls.Add(textBox1);
++            pnlContenido.Controls.Add(txtUsuario);
++            pnlContenido.Controls.Add(label1);
++            MaximumSize = new Size(545, 435);
++            MinimumSize = new Size(545, 435);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(529, 396);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(529, 300);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlContenido.AutoScroll = true;
++            pnlContenido.AutoScrollMinSize = new Size(529, 300);
++            pnlAvisoInactividad.Size = new Size(529, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
+             Name = "frmUsuarioAe";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmUsuarioAe";
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private CheckBox chkActivo;
+         private Button btnCancelar;
+--- original/BombonesApp2026.Windows/frmUsuarios.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmUsuarios.Designer.cs
+@@ -55,6 +55,11 @@
+             splitContainer1.Panel2.SuspendLayout();
+             splitContainer1.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvRoles).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -151,6 +156,7 @@
+             // 
+             // splitContainer1
+             // 
++            splitContainer1.FixedPanel = FixedPanel.Panel2;
+             splitContainer1.Dock = DockStyle.Fill;
+             splitContainer1.Location = new Point(0, 70);
+             splitContainer1.Name = "splitContainer1";
+@@ -241,9 +247,36 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(800, 450);
+-            Controls.Add(splitContainer1);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(800, 546);
++            pnlContenido.Controls.Add(splitContainer1);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(800, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(800, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(800, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(816, 585);
+             Name = "frmUsuarios";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmUsuarios";
+@@ -255,11 +288,18 @@
+             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+             splitContainer1.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvRoles).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+ 
+         private ToolStrip toolStrip1;
+         private ToolStripButton tsbNuevo;
+--- original/BombonesApp2026.Windows/frmVentas.Designer.cs
++++ actualizado/BombonesApp2026.Windows/frmVentas.Designer.cs
+@@ -61,6 +61,11 @@
+             panelNavegacion.SuspendLayout();
+             panelGrilla.SuspendLayout();
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).BeginInit();
++            layoutPrincipal = new TableLayoutPanel();
++            pnlContenido = new Panel();
++            pnlAvisoInactividad = new Panel();
++            layoutPrincipal.SuspendLayout();
++            pnlContenido.SuspendLayout();
+             SuspendLayout();
+             // 
+             // toolStrip1
+@@ -306,10 +311,37 @@
+             // 
+             AutoScaleDimensions = new SizeF(7F, 15F);
+             AutoScaleMode = AutoScaleMode.Font;
+-            ClientSize = new Size(800, 450);
+-            Controls.Add(panelGrilla);
+-            Controls.Add(panelNavegacion);
+-            Controls.Add(toolStrip1);
++            ClientSize = new Size(800, 546);
++            pnlContenido.Controls.Add(panelGrilla);
++            pnlContenido.Controls.Add(panelNavegacion);
++            pnlContenido.Controls.Add(toolStrip1);
++            // Filas independientes: contenido y aviso de inactividad.
++            layoutPrincipal.ColumnCount = 1;
++            layoutPrincipal.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowCount = 2;
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
++            layoutPrincipal.RowStyles.Add(new RowStyle(SizeType.Absolute, 96F));
++            layoutPrincipal.Size = new Size(800, 546);
++            layoutPrincipal.Dock = DockStyle.Fill;
++            layoutPrincipal.Margin = new Padding(0);
++            layoutPrincipal.Padding = new Padding(0);
++            layoutPrincipal.Name = "layoutPrincipal";
++            layoutPrincipal.TabIndex = 0;
++            pnlContenido.Size = new Size(800, 450);
++            pnlContenido.Dock = DockStyle.Fill;
++            pnlContenido.Margin = new Padding(0);
++            pnlContenido.Name = "pnlContenido";
++            pnlContenido.TabIndex = 0;
++            pnlAvisoInactividad.Size = new Size(800, 96);
++            pnlAvisoInactividad.Dock = DockStyle.Fill;
++            pnlAvisoInactividad.Margin = new Padding(0);
++            pnlAvisoInactividad.Name = "pnlAvisoInactividad";
++            pnlAvisoInactividad.TabIndex = 1;
++            pnlAvisoInactividad.TabStop = false;
++            layoutPrincipal.Controls.Add(pnlContenido, 0, 0);
++            layoutPrincipal.Controls.Add(pnlAvisoInactividad, 0, 1);
++            Controls.Add(layoutPrincipal);
++            MinimumSize = new Size(816, 585);
+             Name = "frmVentas";
+             StartPosition = FormStartPosition.CenterScreen;
+             Text = "frmVentas";
+@@ -319,11 +351,18 @@
+             panelNavegacion.PerformLayout();
+             panelGrilla.ResumeLayout(false);
+             ((System.ComponentModel.ISupportInitialize)dgvDatos).EndInit();
++            pnlContenido.ResumeLayout(false);
++            pnlContenido.PerformLayout();
++            layoutPrincipal.ResumeLayout(false);
+             ResumeLayout(false);
+             PerformLayout();
+         }
+ 
+         #endregion
++
++        private TableLayoutPanel layoutPrincipal;
++        private Panel pnlContenido;
++        private Panel pnlAvisoInactividad;
+         private ToolStrip toolStrip1;
+         private ToolStripButton tsbNuevo;
+         private ToolStripButton tsbAnular;
